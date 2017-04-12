@@ -84,17 +84,17 @@
 
 
 
-<meta name="description" content="深入理解项目构建之后的可操作动作.">
+<meta name="description" content="像使用vim一样使用chrome和firefox浏览器">
 <meta name="keywords">
 <meta property="og:type" content="article">
-<meta property="og:title" content="jenkins 构建后操作">
-<meta property="og:url" content="https://iluoy.github.io/2017/01/25/jenkins-构建后操作/index.html">
+<meta property="og:title" content="像vim一样使用浏览器">
+<meta property="og:url" content="https://iluoy.github.io/2017/04/11/像vim一样使用浏览器/index.html">
 <meta property="og:site_name" content="iluoy">
-<meta property="og:description" content="深入理解项目构建之后的可操作动作.">
-<meta property="og:updated_time" content="2017-04-12T02:31:00.280Z">
+<meta property="og:description" content="像使用vim一样使用chrome和firefox浏览器">
+<meta property="og:updated_time" content="2017-04-12T01:00:30.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="jenkins 构建后操作">
-<meta name="twitter:description" content="深入理解项目构建之后的可操作动作.">
+<meta name="twitter:title" content="像vim一样使用浏览器">
+<meta name="twitter:description" content="像使用vim一样使用chrome和firefox浏览器">
 
 
 
@@ -122,13 +122,13 @@
 
 
 
-  <link rel="canonical" href="https://iluoy.github.io/2017/01/25/jenkins-构建后操作/"/>
+  <link rel="canonical" href="https://iluoy.github.io/2017/04/11/像vim一样使用浏览器/"/>
 
 
 
 
 
-  <title> jenkins 构建后操作 | iluoy </title>
+  <title> 像vim一样使用浏览器 | iluoy </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -271,7 +271,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://iluoy.github.io/2017/01/25/jenkins-构建后操作/">
+  <link itemprop="mainEntityOfPage" href="https://iluoy.github.io/2017/04/11/像vim一样使用浏览器/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="iluoy">
@@ -295,7 +295,7 @@
             
             
               
-                jenkins 构建后操作
+                像vim一样使用浏览器
               
             
           </h1>
@@ -310,8 +310,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-25T15:29:32-05:00">
-                2017-01-26
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-11T20:56:33+08:00">
+                2017-04-11
               </time>
             
 
@@ -333,8 +333,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/jenkins/" itemprop="url" rel="index">
-                    <span itemprop="name">jenkins</span>
+                  <a href="/categories/vim/" itemprop="url" rel="index">
+                    <span itemprop="name">vim</span>
                   </a>
                 </span>
 
@@ -357,7 +357,7 @@
 
           
               <div class="post-description">
-                  深入理解项目构建之后的可操作动作.
+                  像使用vim一样使用chrome和firefox浏览器
               </div>
           
 
@@ -372,44 +372,10 @@
       
 
       
-        <p><strong><em>Aggregate downstream test result</em></strong></p>
-<pre><code>因为在测试中执行时间通常是占主要地位的,一个好的jenkins实践包含了将测试执行分开到不同的项目中
-去,可能是多重不同的项目.
-当这样做了，设置测试聚会对于从下游测试项目中收集所有的测试结果并且在构建的时候展示出来是一个
-十分方便的方式,通过这种方式可以更快更方便的看到所有被构建的测试的状态.
-</code></pre><p><strong><em>Archive the artifacts</em></strong></p>
-<pre><code>生成归档文件(例如,zip和jar格式)是为了以后能够下载,归档文件可以在jenkins的网页上访问.
-通常如果一个构建日志被保存下来了jenkins就会保存归档文件.但是如果不需要旧的归档文件并且更倾向
-于节省磁盘空间的话,你可以这样做.
-</code></pre><p><strong><em>Build other projects</em></strong></p>
-<pre><code>构建其他的项目
-</code></pre><p><strong><em>Deploy artifacts to Maven repository</em></strong></p>
-<pre><code>将项目的artifacts部署到一个Maven仓库,与标准的mvn deploy比较起来,这个特性允许你在整个的构建
-被确认成功的时候部署artifacts.
-</code></pre><p><strong><em>Publish Performance test result report</em></strong></p>
-<pre><code>这个插件能够理解JMeter分析报告的XML格式,JMeter Summariser报告文本格式, SOAPUI JUnit格式
-报告,和Iago格式.
-此插件不执行实际分析,只显示有关分析结果的有用信息,例如，平均响应时间,历史结果趋势,查看分析报
-告的WEB用户界面等.
-要使用此功能,首先建立运行测试，然后选择解析器(JMeter, JUnit, or Iago),最后必须指定不同性能
-文件的路径,默认情况下,对于JMeter使用**/*.jtl,对于Junit测试使用**/TEST*.xml,对于JMeter 
-Summariser使用**/*.log,对于Iago使用parrot-server-stats.log.
-</code></pre><p><strong><em>Record fingerprints of files to track usage</em></strong></p>
-<pre><code>jenkins能够记录文件的指纹(大多数情况下是jar文件)以跟踪这些文件什么时候产生的和被使用的,当在
-jenkins上有内部依赖的项目,能快速找出问题的解决方法,例如:
-    1.在我的磁盘上有foo.jar文件,但是这个文件是从哪里产生的?
-    2.BAR项目依赖于从FOO项目产生的foo.jar文件
-        构建生成foo.jar的什么东西会被BAR项目需要?
-        构建生成的BAR项目对于foo.jar包含bug修复吗?
-要想使用这个功能,所有相关的项目(不仅仅是生成的文件的项目,而且包含被使用的文件的项目)都需要使
-用它来记录指纹信息
-</code></pre><p><strong><em>Git Publisher</em></strong></p>
-<pre><code>可选性的将结果,标记,分支推送到远程版本库中.
-</code></pre><p><strong><em>Deploy war/ear to a container</em></strong></p>
-<pre><code>将war包或者ear包部署到一个容器中.
-</code></pre><p><strong><em>Trigger parameterized build on other projects</em></strong></p>
-<pre><code>这个插件触发器是构建在其它的项目上的,其参数是预定义或者由结束的构建来提供.
-即使目标没有参数化,又或者没有定义该名字的属性,每一个参数都会传递到项目中.
+        <h3 id="Chrome"><a href="#Chrome" class="headerlink" title="Chrome"></a>Chrome</h3><pre><code>1.打开Chrome浏览器，输入chrome://extensions/进入扩展程序界面
+2.搜索Vimium并安装
+</code></pre><h3 id="Firefox"><a href="#Firefox" class="headerlink" title="Firefox"></a>Firefox</h3><pre><code>1.打开Firefox浏览器，输入about:addons进入添加扩展界面
+2.搜索Vimperator并安装
 </code></pre>
       
     </div>
@@ -436,18 +402,14 @@ jenkins上有内部依赖的项目,能快速找出问题的解决方法,例如:
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/25/jenkins-参数化构建/" rel="next" title="jenkins 参数化构建">
-                <i class="fa fa-chevron-left"></i> jenkins 参数化构建
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/01/25/jenkins-构建触发器/" rel="prev" title="jenkins 构建触发器">
-                jenkins 构建触发器 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/01/28/mysql-不能通过socket文件连接MySQL-Server/" rel="prev" title="mysql 不能通过socket文件连接MySQL Server">
+                mysql 不能通过socket文件连接MySQL Server <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -495,8 +457,17 @@ jenkins上有内部依赖的项目,能快速找出问题的解决方法,例如:
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/images/tuxiang.jpg"
@@ -545,6 +516,22 @@ jenkins上有内部依赖的项目,能快速找出问题的解决方法,例如:
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Chrome"><span class="nav-number">1.</span> <span class="nav-text">Chrome</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Firefox"><span class="nav-number">2.</span> <span class="nav-text">Firefox</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>

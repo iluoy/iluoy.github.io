@@ -1,0 +1,761 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="持续集成，让工作更轻松，效率更高。">
+<meta name="keywords">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jenkins搭建及基本配置">
+<meta property="og:url" content="https://iluoy.github.io/2017/01/12/jenkins搭建及基本配置/index.html">
+<meta property="og:site_name" content="iluoy">
+<meta property="og:description" content="持续集成，让工作更轻松，效率更高。">
+<meta property="og:image" content="https://iluoy.github.io/2017/01/12/jenkins搭建及基本配置/tool.jpg">
+<meta property="og:image" content="https://iluoy.github.io/2017/01/12/jenkins搭建及基本配置/jdk.jpg">
+<meta property="og:image" content="https://iluoy.github.io/2017/01/12/jenkins搭建及基本配置/git.jpg">
+<meta property="og:image" content="https://iluoy.github.io/2017/01/12/jenkins搭建及基本配置/maven.jpg">
+<meta property="og:image" content="https://iluoy.github.io/2017/01/12/jenkins搭建及基本配置/xitongsehzhi.jpg">
+<meta property="og:updated_time" content="2017-04-12T02:31:00.278Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="jenkins搭建及基本配置">
+<meta name="twitter:description" content="持续集成，让工作更轻松，效率更高。">
+<meta name="twitter:image" content="https://iluoy.github.io/2017/01/12/jenkins搭建及基本配置/tool.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://iluoy.github.io/2017/01/12/jenkins搭建及基本配置/"/>
+
+
+
+
+
+  <title> jenkins搭建及基本配置 | iluoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?0e9f914dc83d3c5ad0861bb1afaa78ec";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">iluoy</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">短剑虫蛀之日，岂是归来之时</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://iluoy.github.io/2017/01/12/jenkins搭建及基本配置/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="iluoy">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/tuxiang.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="iluoy">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="iluoy" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                jenkins搭建及基本配置
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-12T03:48:27-05:00">
+                2017-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/jenkins/" itemprop="url" rel="index">
+                    <span itemprop="name">jenkins</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+              <div class="post-description">
+                  持续集成，让工作更轻松，效率更高。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h3><pre><code>1.java:
+    最低java7，推荐java8
+2.内存：
+    最少需要256MB-1GB
+</code></pre><h3 id="安装jdk"><a href="#安装jdk" class="headerlink" title="安装jdk"></a>安装jdk</h3><h4 id="下载Oracle-jdk通用二进制版本-全凭个人喜好）"><a href="#下载Oracle-jdk通用二进制版本-全凭个人喜好）" class="headerlink" title="下载Oracle jdk通用二进制版本(全凭个人喜好）"></a>下载Oracle jdk通用二进制版本(全凭个人喜好）</h4><pre><code>wget http://download.oracle.com/otn-pub/java/jdk/8u111-b14/jdk-8u111-linux-x64.tar.gz
+</code></pre><h4 id="解压到指定目录，例如"><a href="#解压到指定目录，例如" class="headerlink" title="解压到指定目录，例如:"></a>解压到指定目录，例如:</h4><pre><code>tar xf jdk-8u111-linux-x64.tar.gz -C /usr/local
+</code></pre><h4 id="建立软链接"><a href="#建立软链接" class="headerlink" title="建立软链接:"></a>建立软链接:</h4><pre><code>ln -sv /usr/local/jdk1.8.0_111 /usr/local/java
+</code></pre><h4 id="修改PATH环境变量"><a href="#修改PATH环境变量" class="headerlink" title="修改PATH环境变量:"></a>修改PATH环境变量:</h4><pre><code>cat &gt; /etc/profile.d/java.sh &lt;&lt;&quot;EOF&quot;
+&gt; export JAVA_HOME=/usr/local/java
+&gt; export PATH=$JAVA_HOME/bin:$PATH
+&gt; export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+&gt; EOF
+</code></pre><h4 id="重读配置文件"><a href="#重读配置文件" class="headerlink" title="重读配置文件:"></a>重读配置文件:</h4><pre><code>. /etc/profile.d/java.sh
+</code></pre><h4 id="测试"><a href="#测试" class="headerlink" title="测试:"></a>测试:</h4><pre><code>java -version
+</code></pre><h3 id="下载jenkins"><a href="#下载jenkins" class="headerlink" title="下载jenkins"></a>下载jenkins</h3><pre><code>wget http://mirrors.jenkins.io/war-stable/latest/jenkins.war
+</code></pre><h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><h4 id="java-jar启动"><a href="#java-jar启动" class="headerlink" title="java -jar启动"></a>java -jar启动</h4><pre><code>1.java -jar jenkins.war
+2.ip:8080访问
+</code></pre><h4 id="Tomcat启动"><a href="#Tomcat启动" class="headerlink" title="Tomcat启动"></a>Tomcat启动</h4><h5 id="下载tomcat"><a href="#下载tomcat" class="headerlink" title="下载tomcat"></a>下载tomcat</h5><pre><code>wget http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-8/v8.5.9/bin/apache-tomcat-8.5.9.tar.gz
+</code></pre><h5 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h5><pre><code>1.tar xf apache-tomcat-8.5.9.tar.gz -C /usr/local/
+</code></pre><h5 id="建立软链接-1"><a href="#建立软链接-1" class="headerlink" title="建立软链接"></a>建立软链接</h5><pre><code>2.ln -sv /usr/local/apache-tomcat-8.5.9 /usr/local/tomcat
+</code></pre><h5 id="将jenkins-war移动到tomcat项目部署目录"><a href="#将jenkins-war移动到tomcat项目部署目录" class="headerlink" title="将jenkins.war移动到tomcat项目部署目录"></a>将jenkins.war移动到tomcat项目部署目录</h5><pre><code>3.mv jenkins.war /usr/local/tomcat/webapps
+</code></pre><h5 id="启动tomcat"><a href="#启动tomcat" class="headerlink" title="启动tomcat"></a>启动tomcat</h5><pre><code>4./usr/local/tomcat/bin/startup.sh
+</code></pre><h5 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h5><pre><code>5.ip:8080/jenkins访问
+</code></pre><h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><h3 id="Global-Tool-Configuration"><a href="#Global-Tool-Configuration" class="headerlink" title="Global Tool Configuration"></a>Global Tool Configuration</h3><p><img src="./tool.jpg" alt="Global Tool Configuration"></p>
+<h4 id="jdk设置"><a href="#jdk设置" class="headerlink" title="jdk设置"></a>jdk设置</h4><h5 id="先在jenkins主机上面安装JDK"><a href="#先在jenkins主机上面安装JDK" class="headerlink" title="先在jenkins主机上面安装JDK"></a>先在jenkins主机上面安装JDK</h5><pre><code>前面已经安装了
+</code></pre><h5 id="jenkins设置jdk"><a href="#jenkins设置jdk" class="headerlink" title="jenkins设置jdk"></a>jenkins设置jdk</h5><p><img src="./jdk.jpg" alt="jdk"></p>
+<h4 id="git设置"><a href="#git设置" class="headerlink" title="git设置"></a>git设置</h4><h5 id="先在jenkins主机上面安装git"><a href="#先在jenkins主机上面安装git" class="headerlink" title="先在jenkins主机上面安装git"></a>先在jenkins主机上面安装git</h5><pre><code>yum -y install git
+</code></pre><h5 id="jenkins设置git"><a href="#jenkins设置git" class="headerlink" title="jenkins设置git"></a>jenkins设置git</h5><p><img src="./git.jpg" alt="git"></p>
+<h4 id="maven设置"><a href="#maven设置" class="headerlink" title="maven设置"></a>maven设置</h4><h5 id="maven安装"><a href="#maven安装" class="headerlink" title="maven安装"></a>maven安装</h5><h6 id="下载maven"><a href="#下载maven" class="headerlink" title="下载maven"></a>下载maven</h6><pre><code>wget http://mirrors.tuna.tsinghua.edu.cn/apache/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+</code></pre><h6 id="解压到指定目录"><a href="#解压到指定目录" class="headerlink" title="解压到指定目录"></a>解压到指定目录</h6><pre><code>tar xf apache-maven-3.3.9-bin.tar.gz -C /usr/local/
+</code></pre><h6 id="建立软链接-2"><a href="#建立软链接-2" class="headerlink" title="建立软链接"></a>建立软链接</h6><pre><code>ln -sv /usr/local/apache-maven-3.3.9 /usr/local/maven
+</code></pre><h6 id="新建文件maven-sh"><a href="#新建文件maven-sh" class="headerlink" title="新建文件maven.sh"></a>新建文件maven.sh</h6><pre><code>cat &gt; /etc/profile.d/maven.sh &lt;&lt; &quot;EOF&quot;
+&gt; MAVEN_HOME=/usr/local/maven
+&gt; PATH=$MAVEN_HOME/bin:$PATH
+</code></pre><h6 id="重读maven-sh"><a href="#重读maven-sh" class="headerlink" title="重读maven.sh"></a>重读maven.sh</h6><pre><code>. /etc/profile.d/maven.sh
+</code></pre><h6 id="测试-1"><a href="#测试-1" class="headerlink" title="测试"></a>测试</h6><pre><code>mvn -v
+</code></pre><h5 id="jenkins的maven配置"><a href="#jenkins的maven配置" class="headerlink" title="jenkins的maven配置"></a>jenkins的maven配置</h5><p><img src="./maven.jpg" alt="maven配置"></p>
+<h3 id="系统设置"><a href="#系统设置" class="headerlink" title="系统设置"></a>系统设置</h3><pre><code>1.点击系统管理
+2.点击系统设置
+</code></pre><p><img src="./xitongsehzhi.jpg" alt="系统设置"></p>
+<h3 id="jenkins家目录"><a href="#jenkins家目录" class="headerlink" title="jenkins家目录"></a>jenkins家目录</h3><blockquote>
+<p>默认情况下家目录在~/.jenkins，可以按照下面的方式来修改</p>
+</blockquote>
+<h4 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h4><h5 id="新建文件jenkins-sh"><a href="#新建文件jenkins-sh" class="headerlink" title="新建文件jenkins.sh"></a>新建文件jenkins.sh</h5><pre><code>cat &gt; /etc/profile.d/jenkins.sh &lt;&lt;&quot;EOF&quot;
+&gt; export JENKINS_HOME=/data/jenkins
+&gt; EOF
+</code></pre><h5 id="重读配置文件-1"><a href="#重读配置文件-1" class="headerlink" title="重读配置文件"></a>重读配置文件</h5><pre><code>. /etc/profile.d/jenkins.sh
+</code></pre><h4 id="Tomcat的catalina-sh文件"><a href="#Tomcat的catalina-sh文件" class="headerlink" title="Tomcat的catalina.sh文件"></a>Tomcat的catalina.sh文件</h4><pre><code>export JENKINS_HOME=/data/jenkins
+</code></pre><h4 id="修改jenkins-war的web-xml"><a href="#修改jenkins-war的web-xml" class="headerlink" title="修改jenkins.war的web.xml"></a>修改jenkins.war的web.xml</h4><pre><code>不推荐
+</code></pre><h3 id="备份恢复"><a href="#备份恢复" class="headerlink" title="备份恢复"></a>备份恢复</h3><h4 id="备份"><a href="#备份" class="headerlink" title="备份"></a>备份</h4><pre><code>备份整个JENKINS_HOME目录，可以在不停止jenkins服务的时候进行
+</code></pre><h4 id="恢复"><a href="#恢复" class="headerlink" title="恢复"></a>恢复</h4><pre><code>恢复就是将整个备份的JENINS_HOME目录移动到JENKINS_HOME，必须在停止jenkins服务的时候进行
+</code></pre><h3 id="job操作"><a href="#job操作" class="headerlink" title="job操作"></a>job操作</h3><h4 id="移动"><a href="#移动" class="headerlink" title="移动"></a>移动</h4><pre><code>将一个job从一个jenkins移动到另一个jenkins只需要将对应的job目录移过去就行
+</code></pre><h4 id="复制"><a href="#复制" class="headerlink" title="复制"></a>复制</h4><pre><code>将一个job复制为另一个job只需要复制为另一个名字的job
+</code></pre><h4 id="重命名"><a href="#重命名" class="headerlink" title="重命名"></a>重命名</h4><pre><code>重命名一个job只需要修改对应的目录名字，但是其他调用此job的都需要修改
+</code></pre><h3 id="URL选项"><a href="#URL选项" class="headerlink" title="URL选项"></a>URL选项</h3><h4 id="重启"><a href="#重启" class="headerlink" title="重启"></a>重启</h4><pre><code>http:jenkins-server/restart
+</code></pre><h4 id="停止"><a href="#停止" class="headerlink" title="停止"></a>停止</h4><pre><code>http:jenkins-server/exit
+</code></pre><h4 id="重载配置"><a href="#重载配置" class="headerlink" title="重载配置"></a>重载配置</h4><pre><code>http:jenkins-server/reload
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/18/Sublime-Text3-入门/" rel="next" title="Sublime Text3 入门">
+                <i class="fa fa-chevron-left"></i> Sublime Text3 入门
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/12/Hexo-搭建与配置/" rel="prev" title="Hexo-搭建与配置">
+                Hexo-搭建与配置 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/tuxiang.jpg"
+               alt="iluoy" />
+          <p class="site-author-name" itemprop="name">iluoy</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#条件"><span class="nav-number">1.1.</span> <span class="nav-text">条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装jdk"><span class="nav-number">1.2.</span> <span class="nav-text">安装jdk</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下载Oracle-jdk通用二进制版本-全凭个人喜好）"><span class="nav-number">1.2.1.</span> <span class="nav-text">下载Oracle jdk通用二进制版本(全凭个人喜好）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解压到指定目录，例如"><span class="nav-number">1.2.2.</span> <span class="nav-text">解压到指定目录，例如:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#建立软链接"><span class="nav-number">1.2.3.</span> <span class="nav-text">建立软链接:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改PATH环境变量"><span class="nav-number">1.2.4.</span> <span class="nav-text">修改PATH环境变量:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重读配置文件"><span class="nav-number">1.2.5.</span> <span class="nav-text">重读配置文件:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试"><span class="nav-number">1.2.6.</span> <span class="nav-text">测试:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载jenkins"><span class="nav-number">1.3.</span> <span class="nav-text">下载jenkins</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动"><span class="nav-number">1.4.</span> <span class="nav-text">启动</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#java-jar启动"><span class="nav-number">1.4.1.</span> <span class="nav-text">java -jar启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tomcat启动"><span class="nav-number">1.4.2.</span> <span class="nav-text">Tomcat启动</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#下载tomcat"><span class="nav-number">1.4.2.1.</span> <span class="nav-text">下载tomcat</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解压"><span class="nav-number">1.4.2.2.</span> <span class="nav-text">解压</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#建立软链接-1"><span class="nav-number">1.4.2.3.</span> <span class="nav-text">建立软链接</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#将jenkins-war移动到tomcat项目部署目录"><span class="nav-number">1.4.2.4.</span> <span class="nav-text">将jenkins.war移动到tomcat项目部署目录</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#启动tomcat"><span class="nav-number">1.4.2.5.</span> <span class="nav-text">启动tomcat</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#验证"><span class="nav-number">1.4.2.6.</span> <span class="nav-text">验证</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置"><span class="nav-number">2.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Global-Tool-Configuration"><span class="nav-number">2.1.</span> <span class="nav-text">Global Tool Configuration</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#jdk设置"><span class="nav-number">2.1.1.</span> <span class="nav-text">jdk设置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#先在jenkins主机上面安装JDK"><span class="nav-number">2.1.1.1.</span> <span class="nav-text">先在jenkins主机上面安装JDK</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#jenkins设置jdk"><span class="nav-number">2.1.1.2.</span> <span class="nav-text">jenkins设置jdk</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#git设置"><span class="nav-number">2.1.2.</span> <span class="nav-text">git设置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#先在jenkins主机上面安装git"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">先在jenkins主机上面安装git</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#jenkins设置git"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">jenkins设置git</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#maven设置"><span class="nav-number">2.1.3.</span> <span class="nav-text">maven设置</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#maven安装"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">maven安装</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#下载maven"><span class="nav-number">2.1.3.1.1.</span> <span class="nav-text">下载maven</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#解压到指定目录"><span class="nav-number">2.1.3.1.2.</span> <span class="nav-text">解压到指定目录</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#建立软链接-2"><span class="nav-number">2.1.3.1.3.</span> <span class="nav-text">建立软链接</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#新建文件maven-sh"><span class="nav-number">2.1.3.1.4.</span> <span class="nav-text">新建文件maven.sh</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#重读maven-sh"><span class="nav-number">2.1.3.1.5.</span> <span class="nav-text">重读maven.sh</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#测试-1"><span class="nav-number">2.1.3.1.6.</span> <span class="nav-text">测试</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#jenkins的maven配置"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">jenkins的maven配置</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统设置"><span class="nav-number">2.2.</span> <span class="nav-text">系统设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jenkins家目录"><span class="nav-number">2.3.</span> <span class="nav-text">jenkins家目录</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#设置环境变量"><span class="nav-number">2.3.1.</span> <span class="nav-text">设置环境变量</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#新建文件jenkins-sh"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">新建文件jenkins.sh</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#重读配置文件-1"><span class="nav-number">2.3.1.2.</span> <span class="nav-text">重读配置文件</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tomcat的catalina-sh文件"><span class="nav-number">2.3.2.</span> <span class="nav-text">Tomcat的catalina.sh文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改jenkins-war的web-xml"><span class="nav-number">2.3.3.</span> <span class="nav-text">修改jenkins.war的web.xml</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#备份恢复"><span class="nav-number">2.4.</span> <span class="nav-text">备份恢复</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#备份"><span class="nav-number">2.4.1.</span> <span class="nav-text">备份</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#恢复"><span class="nav-number">2.4.2.</span> <span class="nav-text">恢复</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#job操作"><span class="nav-number">2.5.</span> <span class="nav-text">job操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#移动"><span class="nav-number">2.5.1.</span> <span class="nav-text">移动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#复制"><span class="nav-number">2.5.2.</span> <span class="nav-text">复制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重命名"><span class="nav-number">2.5.3.</span> <span class="nav-text">重命名</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#URL选项"><span class="nav-number">2.6.</span> <span class="nav-text">URL选项</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#重启"><span class="nav-number">2.6.1.</span> <span class="nav-text">重启</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#停止"><span class="nav-number">2.6.2.</span> <span class="nav-text">停止</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#重载配置"><span class="nav-number">2.6.3.</span> <span class="nav-text">重载配置</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">iluoy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
+      <!-- UY END -->
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

@@ -1,0 +1,866 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Hexo,你值得拥有~~">
+<meta name="keywords">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo-搭建与配置">
+<meta property="og:url" content="https://iluoy.github.io/2017/01/12/Hexo-搭建与配置/index.html">
+<meta property="og:site_name" content="iluoy">
+<meta property="og:description" content="Hexo,你值得拥有~~">
+<meta property="og:image" content="https://iluoy.github.io/2017/01/12/Hexo-搭建与配置/ssh.png">
+<meta property="og:image" content="https://iluoy.github.io/2017/01/12/Hexo-搭建与配置/reposetting.png">
+<meta property="og:image" content="https://iluoy.github.io/2017/01/12/Hexo-搭建与配置/gitpage.png">
+<meta property="og:updated_time" content="2017-04-12T02:31:00.280Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo-搭建与配置">
+<meta name="twitter:description" content="Hexo,你值得拥有~~">
+<meta name="twitter:image" content="https://iluoy.github.io/2017/01/12/Hexo-搭建与配置/ssh.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://iluoy.github.io/2017/01/12/Hexo-搭建与配置/"/>
+
+
+
+
+
+  <title> Hexo-搭建与配置 | iluoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?0e9f914dc83d3c5ad0861bb1afaa78ec";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">iluoy</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">短剑虫蛀之日，岂是归来之时</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://iluoy.github.io/2017/01/12/Hexo-搭建与配置/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="iluoy">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/tuxiang.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="iluoy">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="iluoy" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Hexo-搭建与配置
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-12T03:08:27-05:00">
+                2017-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hexo/" itemprop="url" rel="index">
+                    <span itemprop="name">Hexo</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+              <div class="post-description">
+                  Hexo,你值得拥有~~
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h2><h3 id="注册"><a href="#注册" class="headerlink" title="注册"></a>注册</h3><h3 id="ssh秘钥"><a href="#ssh秘钥" class="headerlink" title="ssh秘钥"></a>ssh秘钥</h3><pre><code>1.在linux主机上ssh-keygen -t rsa -C &quot;your_email@youremail.com&quot;(邮箱为注册github的邮箱)
+2.cat ~/.ssh/id.rsa.pub(复制秘钥)
+3.在github上点击setting--ssh and gpgkey，将复制的公钥粘贴进去
+</code></pre><p><img src="./ssh.png" alt="&quot;SSH秘钥&quot;"></p>
+<h3 id="测试连接"><a href="#测试连接" class="headerlink" title="测试连接"></a>测试连接</h3><pre><code>ssh -T git@github.com
+出现：Hi iluoy! You&apos;ve successfully authenticated, but GitHub does not provide shell access.表示成功(奇怪的是我翻墙的时候不行，推送的时候翻墙也失败)
+</code></pre><h3 id="创建仓库-start-a-project"><a href="#创建仓库-start-a-project" class="headerlink" title="创建仓库(start a project)"></a>创建仓库(start a project)</h3><pre><code>仓库名字必须：your_user_name.github.io
+</code></pre><h3 id="仓库设置"><a href="#仓库设置" class="headerlink" title="仓库设置"></a>仓库设置</h3><p><img src="./reposetting.png" alt="仓库设置"></p>
+<h3 id="GitHub-Pages"><a href="#GitHub-Pages" class="headerlink" title="GitHub Pages"></a>GitHub Pages</h3><p><img src="./gitpage.png" alt="GitHub Pages"></p>
+<hr>
+<h2 id="Hexo安装及基本配置"><a href="#Hexo安装及基本配置" class="headerlink" title="Hexo安装及基本配置"></a>Hexo安装及基本配置</h2><h3 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h3><pre><code>1.git
+2.node.js
+</code></pre><h3 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h3><pre><code>Centos: yum -y install git
+</code></pre><h3 id="安装node-js"><a href="#安装node-js" class="headerlink" title="安装node.js"></a>安装node.js</h3><pre><code>1.wget -qO- https://raw.github.com/creationix/nvm/master/install.sh | sh
+2.nvm install stable
+</code></pre><h3 id="配置淘宝镜像"><a href="#配置淘宝镜像" class="headerlink" title="配置淘宝镜像"></a>配置淘宝镜像</h3><pre><code>1.npm install -gd express --registry=http://registry.npm.taobao.org
+2.npm config set registry http://registry.npm.taobao.org
+</code></pre><h3 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装hexo</h3><pre><code>npm install -g hexo-cli
+</code></pre><h3 id="新建目录"><a href="#新建目录" class="headerlink" title="新建目录"></a>新建目录</h3><pre><code>mkdir /hexo
+</code></pre><h3 id="初始化此目录"><a href="#初始化此目录" class="headerlink" title="初始化此目录"></a>初始化此目录</h3><pre><code>hexo init /hexo
+</code></pre><h3 id="进入此目录"><a href="#进入此目录" class="headerlink" title="进入此目录"></a>进入此目录</h3><pre><code>cd /hexo
+</code></pre><h3 id="执行"><a href="#执行" class="headerlink" title="执行"></a>执行</h3><pre><code>npm install
+</code></pre><h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><pre><code>hexo s ##使用ip:4000访问##
+</code></pre><h3 id="站点配置文件-hexo-config-yml"><a href="#站点配置文件-hexo-config-yml" class="headerlink" title="站点配置文件/hexo/_config.yml"></a>站点配置文件/hexo/_config.yml</h3><pre><code># Hexo Configuration
+## Docs: https://hexo.io/docs/configuration.html
+## Source: https://github.com/hexojs/hexo/
+
+# Site
+title: iluoy  ##网站标题
+subtitle: 短剑虫蛀之日，岂是归来之时  ##网站副标题
+description: 短剑虫蛀之日，岂是归来之时 ##网站描述
+author: iluoy  ##您的名字
+language: zh-Hans ##网站使用的语言
+timezone:Asia/Shanghai ##网站时区
+
+# URL
+## If your site is put in a subdirectory,
+##set url as &apos;http://yoursite.com/child&apos; and root as &apos;/child/&apos;
+url: https://iluoy.github.io  ##网址
+root: /  ##网站根目录
+permalink: :year/:month/:day/:title/  ##文章的永久链接格式
+permalink_defaults:  ##永久链接中各部分的默认值
+
+# Directory
+source_dir: source  ##资源文件夹，这个文件夹用来存放内容.
+public_dir: public  ##公共文件夹，这个文件夹用于存放生成的站点文件.
+tag_dir: tags  ##标签文件夹，需要hexo new page &quot;tags&quot;生成&apos;.
+archive_dir: archives  ##归档文件夹.
+category_dir: categories  ##分类文件夹,需要hexo new page &quot;categories&quot;生成.
+code_dir: downloads/code  ##Include code 文件夹.
+i18n_dir: :lang  ##国际化（i18n）文件夹.
+skip_render:  ##跳过指定文件的渲染，您可使用glob表达式来匹配路径.    
+
+# Writing
+new_post_name: :title.md ##新文章的文件名称.
+default_layout: post  ##预设布局.
+titlecase: false ##把标题转换为 title case.
+external_link: true ##在新标签中打开链接.
+filename_case: 0  ##把文件名称转换为(1)小写或(2)大写.
+render_drafts: false  ##显示草稿.
+post_asset_folder: true  ##启动Asset文件夹.
+relative_link: false  ##把链接改为与根目录的相对位址.
+future: true  ##显示未来的文章.
+highlight:  ##代码块的设置.
+  enable: true
+  line_number: true
+  auto_detect: false
+  tab_replace:
+
+# Category &amp; Tag
+default_category: uncategorized  ##默认分类.
+category_map:  ##分类别名.
+tag_map:  ##标签别名.
+
+
+# Date / Time format
+## Hexo uses Moment.js to parse and display date
+## You can customize the date format as defined in
+## http://momentjs.com/docs/#/displaying/format/
+date_format: YYYY-MM-DD  ##日期格式.
+time_format: HH:mm:ss  ##时间格式.
+
+# Pagination
+## Set per_page to 0 to disable pagination
+per_page: 5  ##每页显示的文章量 (0 = 关闭分页功能).
+pagination_dir: page  ##分页目录.
+
+# Extensions
+## Plugins: https://hexo.io/plugins/
+## Themes: https://hexo.io/themes/
+theme: next  ##当前主题名称。值为false时禁用主题.
+
+# Deployment
+## Docs: https://hexo.io/docs/deployment.html
+deploy:  ##部署部分的设置,下面是部署到GitHub上面.
+  type: git
+  repo: git@github.com:iluoy/iluoy.github.io
+</code></pre><h3 id="编辑网站配置文件-config-yml"><a href="#编辑网站配置文件-config-yml" class="headerlink" title="编辑网站配置文件_config.yml"></a>编辑网站配置文件_config.yml</h3><pre><code>deploy:  
+  type: git
+  repo: git@github.com:iluoy/iluoy.github.io
+</code></pre><h3 id="在-hexo目录下"><a href="#在-hexo目录下" class="headerlink" title="在/hexo目录下"></a>在/hexo目录下</h3><pre><code>hexo clean
+rm db.json
+hexo d -g
+  部署到github上面
+  报错：ERROR Deployer not found: git 或者 ERROR Deployer not found: github
+  解决：npm install hexo-deployer-git --save
+</code></pre><hr>
+<h2 id="主题Next"><a href="#主题Next" class="headerlink" title="主题Next"></a>主题Next</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><pre><code>1.cd /hexo
+2.git clone https://github.com/iissnan/hexo-theme-next themes/next
+3.修改站点配置文件_config.yml
+    language: zh-Hans ##语言不一样布局不一样
+    theme: next
+</code></pre><h3 id="创建分类"><a href="#创建分类" class="headerlink" title="创建分类"></a>创建分类</h3><pre><code>1.cd /hexo
+2.hexo new page &quot;categories&quot;
+3.编辑生成的文件index.md(文件在站点配置文件中定义的目录下面)，新增
+    type: &quot;categories&quot;
+4.hexo new &quot;文章名字&quot;
+5.在Front-matter中增加
+    categories:
+        - name
+    ##表示此文章属于名字叫name的分类.
+6.在Front-matter中修改title
+    title: 分类
+</code></pre><h3 id="创建标签"><a href="#创建标签" class="headerlink" title="创建标签"></a>创建标签</h3><pre><code>1.cd /hexo
+2.hexo new page &quot;tags&quot;
+3.编辑生成的文件index.md(文件在站点配置文件中定义的目录下面)，新增
+    type: &quot;tags&quot;
+4.hexo new &quot;文章名字&quot;
+5.在Front-matter中增加
+    tags:
+        - name
+    ##表示此文章的标签为name
+6.在Front-matter中修改title
+    title: 标签
+</code></pre><h3 id="创建about"><a href="#创建about" class="headerlink" title="创建about"></a>创建about</h3><pre><code>1.cd /hexo
+2.hexo new page &quot;about&quot;
+3.编辑生成的文件index.md(文件在主题配置文件中定义的目录下面)，新增
+    type: &quot;about&quot;
+4.编辑主题配置文件去掉about前面的注释
+    about: /about
+5.编辑生成的文件index.md(文件在主题配置文件中定义的目录下面)，新增自定义个人信息
+6.在Front-matter中修改title修改title.
+    title: 关于我
+</code></pre><hr>
+<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><h3 id="本站图片"><a href="#本站图片" class="headerlink" title="本站图片"></a>本站图片</h3><pre><code>1.新建一篇文章
+    hexo new &quot;name&quot;     ##会在/hexo/source/_posts下面生成name.md的文件和name文件夹
+2.将图片放到name文件夹
+    win--&gt;linux:使用rz命令或者ftp软件上传到服务器    
+3.在需要的地方使用图片
+    ![&quot;图片说明信息&quot;](/image_name) 
+    ##这个路径是相对于生成的public文件夹中的此文章目录下的index.md文件的位置,使用hexo d -g
+    之后可以在public文件夹下面按日期找到对应的文章路径，如果生成的图片在别的位置,则要给出相
+    对于index.md的路径.##
+</code></pre><hr>
+<h2 id="文章折叠"><a href="#文章折叠" class="headerlink" title="文章折叠"></a>文章折叠</h2><h3 id="Front-matter中"><a href="#Front-matter中" class="headerlink" title="Front-matter中"></a>Front-matter中</h3><pre><code>在Front-matter中添加
+    description： XXX
+这种方式文章折叠在XXX的位置
+</code></pre><h3 id="博文中"><a href="#博文中" class="headerlink" title="博文中"></a>博文中</h3><pre><code>在博文中想要折叠的地方增加
+    &lt;!-- more --&gt;
+这种方式文章折叠在指定位置 
+</code></pre><hr>
+<blockquote>
+<p>参考:</p>
+</blockquote>
+<p>1.<a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="external">Hexo官方中文文档</a></p>
+<p>2.<a href="http://theme-next.iissnan.com/getting-started.html" target="_blank" rel="external">Next官方中文文档</a></p>
+<p>3.<a href="https://github.com/iissnan/hexo-theme-next/wiki" target="_blank" rel="external">GitHub Next中文文档</a></p>
+<p>4.<a href="https://wizardforcel.gitbooks.io/markdown-simple-world/content/" target="_blank" rel="external">GitBook</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/12/jenkins搭建及基本配置/" rel="next" title="jenkins搭建及基本配置">
+                <i class="fa fa-chevron-left"></i> jenkins搭建及基本配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/tuxiang.jpg"
+               alt="iluoy" />
+          <p class="site-author-name" itemprop="name">iluoy</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Github"><span class="nav-number">1.</span> <span class="nav-text">Github</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#注册"><span class="nav-number">1.1.</span> <span class="nav-text">注册</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ssh秘钥"><span class="nav-number">1.2.</span> <span class="nav-text">ssh秘钥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试连接"><span class="nav-number">1.3.</span> <span class="nav-text">测试连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建仓库-start-a-project"><span class="nav-number">1.4.</span> <span class="nav-text">创建仓库(start a project)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#仓库设置"><span class="nav-number">1.5.</span> <span class="nav-text">仓库设置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GitHub-Pages"><span class="nav-number">1.6.</span> <span class="nav-text">GitHub Pages</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo安装及基本配置"><span class="nav-number">2.</span> <span class="nav-text">Hexo安装及基本配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#条件"><span class="nav-number">2.1.</span> <span class="nav-text">条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装git"><span class="nav-number">2.2.</span> <span class="nav-text">安装git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装node-js"><span class="nav-number">2.3.</span> <span class="nav-text">安装node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#配置淘宝镜像"><span class="nav-number">2.4.</span> <span class="nav-text">配置淘宝镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装hexo"><span class="nav-number">2.5.</span> <span class="nav-text">安装hexo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#新建目录"><span class="nav-number">2.6.</span> <span class="nav-text">新建目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#初始化此目录"><span class="nav-number">2.7.</span> <span class="nav-text">初始化此目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进入此目录"><span class="nav-number">2.8.</span> <span class="nav-text">进入此目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行"><span class="nav-number">2.9.</span> <span class="nav-text">执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试"><span class="nav-number">2.10.</span> <span class="nav-text">测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#站点配置文件-hexo-config-yml"><span class="nav-number">2.11.</span> <span class="nav-text">站点配置文件/hexo/_config.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编辑网站配置文件-config-yml"><span class="nav-number">2.12.</span> <span class="nav-text">编辑网站配置文件_config.yml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在-hexo目录下"><span class="nav-number">2.13.</span> <span class="nav-text">在/hexo目录下</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主题Next"><span class="nav-number">3.</span> <span class="nav-text">主题Next</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建分类"><span class="nav-number">3.2.</span> <span class="nav-text">创建分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建标签"><span class="nav-number">3.3.</span> <span class="nav-text">创建标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建about"><span class="nav-number">3.4.</span> <span class="nav-text">创建about</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图片"><span class="nav-number">4.</span> <span class="nav-text">图片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#本站图片"><span class="nav-number">4.1.</span> <span class="nav-text">本站图片</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文章折叠"><span class="nav-number">5.</span> <span class="nav-text">文章折叠</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Front-matter中"><span class="nav-number">5.1.</span> <span class="nav-text">Front-matter中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#博文中"><span class="nav-number">5.2.</span> <span class="nav-text">博文中</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">iluoy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
+      <!-- UY END -->
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

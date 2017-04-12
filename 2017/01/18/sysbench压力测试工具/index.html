@@ -1,0 +1,740 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="让服务器性能更直观的显示在你的眼前！">
+<meta name="keywords">
+<meta property="og:type" content="article">
+<meta property="og:title" content="sysbench压力测试工具">
+<meta property="og:url" content="https://iluoy.github.io/2017/01/18/sysbench压力测试工具/index.html">
+<meta property="og:site_name" content="iluoy">
+<meta property="og:description" content="让服务器性能更直观的显示在你的眼前！">
+<meta property="og:updated_time" content="2017-04-12T02:31:00.282Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="sysbench压力测试工具">
+<meta name="twitter:description" content="让服务器性能更直观的显示在你的眼前！">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://iluoy.github.io/2017/01/18/sysbench压力测试工具/"/>
+
+
+
+
+
+  <title> sysbench压力测试工具 | iluoy </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?0e9f914dc83d3c5ad0861bb1afaa78ec";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">iluoy</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+    
+      <p class="site-subtitle">短剑虫蛀之日，岂是归来之时</p>
+    
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://iluoy.github.io/2017/01/18/sysbench压力测试工具/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="iluoy">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/tuxiang.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="iluoy">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="iluoy" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                sysbench压力测试工具
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-18T16:20:32-05:00">
+                2017-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/服务器压测/" itemprop="url" rel="index">
+                    <span itemprop="name">服务器压测</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+              <div class="post-description">
+                  让服务器性能更直观的显示在你的眼前！
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><pre><code>sysbench是一个开源的、模块化的、跨平台的多线程性能测试工具，可以用来进行CPU、内存、磁盘I/O、线程、数据库的性能测试。
+</code></pre><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><pre><code>1.配置EPEL源
+2.yum -y install sysbench
+</code></pre><h3 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h3><pre><code>1.--num-threads=N  ##创建测试线程的数目,默认为1
+2.--max-requests=N  ##请求的最大数目。默认为10000,0代表不限制。
+3.--max-time=N  ##最大执行时间，单位是s,默认是0，表示不限制。
+4.--forced-shutdown=STRING  ##超过max-time强制中断，默认是off。
+5.--thread-stack-size=SIZE  ##每个线程的堆栈大小，默认是32K。
+6.--init-rng=[on|off]  ##在测试开始时是否初始化随机数发生器。默认是off。
+7.--test=STRING  ##指定测试项目名称。
+8.--debug=[on|off]  ##是否显示更多的调试信息。默认是off。
+9.--validate=[on|off]  ##在可能情况下执行验证检查。默认是off。
+10.--help=[on|off]  ##显示帮助信息。
+11.--version=[on|off]  ##显示版本信息。
+</code></pre><h3 id="–test的项目名字"><a href="#–test的项目名字" class="headerlink" title="–test的项目名字"></a>–test的项目名字</h3><pre><code>1.fileio ##磁盘的IO性能。
+2.cpu  ##cpu性能测试。
+3.memory  ##内存测试。
+4.threads  ##线程性能。
+5.mutex  ##调度程序性能。
+6.oltp  ##数据库性能(OLTP基准测试)。
+</code></pre><h3 id="sysbench-–test-help"><a href="#sysbench-–test-help" class="headerlink" title="sysbench –test= help"></a>sysbench –test=<name> help</name></h3><h4 id="测试fileio命令帮助"><a href="#测试fileio命令帮助" class="headerlink" title="测试fileio命令帮助"></a>测试fileio命令帮助</h4><pre><code>获取帮助:sysbench --test=fileio help
+1.--file-num=N  ##代表生成测试文件的数量，默认为128
+2.--file-block-size=N  ##测试时所使用文件块的大小，如果想磁盘针对innodb存储引擎进行测试，可以将其设置为16384，即innodb存储引擎页的大小。默认为16384。
+3.--file-total-size=SIZE  ##创建测试文件的总大小，默认为2G大小。
+4.--file-test-mode=STRING  ##文件测试模式，包含：seqwr(顺序写), seqrewr(顺序读写), seqrd(顺序读), rndrd(随机读), rndwr(随机写), rndrw(随机读写)。
+5.--file-io-mode=STRING  ##文件操作的模式，sync（同步）,async（异步）,fastmmap（快速mmap）,slowmmap（慢速mmap），默认为sync同步模式。
+6.--file-async-backlog=N  ##对应每个线程队列的异步操作数，默认为128。
+7.--file-extra-flags=STRING  ##打开文件时的选项，这是与API相关的参数。
+8.--file-fsync-freq=N  ##执行fsync()函数的频率。fsync主要是同步磁盘文件，因为可能有系统和磁盘缓冲的关系。 0代表不使用fsync函数。默认值为100。
+9.--file-fsync-all=[on|off]  ##每执行完一次写操作，就执行一次fsync。默认为off。
+10.--file-fsync-end=[on|off]  ##在测试结束时执行fsync函数。默认为on。
+11.--file-fsync-mode=STRING  ##文件同步函数的选择，同样是和API相关的参数，由于多个操作系统对于fdatasync支持不同，因此不建议使用fdatasync。默认为fsync。
+12.--file-merged-requests=N  ##大多情况下，合并可能的IO的请求数，默认为0。
+13.--file-rw-ratio=N  ##测试时的读写比例，默认时为1.5，即可3：2。
+</code></pre><h4 id="测试cpu命令帮助"><a href="#测试cpu命令帮助" class="headerlink" title="测试cpu命令帮助"></a>测试cpu命令帮助</h4><pre><code>获取帮助:sysbench --test=cpu help
+1.--cpu-max-prime=N  ##用来选项指定最大的素数，具体参数可以根据CPU的性能来设置，默认为10000。 
+</code></pre><h4 id="测试memory命令帮助"><a href="#测试memory命令帮助" class="headerlink" title="测试memory命令帮助"></a>测试memory命令帮助</h4><pre><code>获取帮助:sysbench --test=memory help
+1.--memory-block-size=SIZE  ##测试内存块的大小，默认为1K。
+2.--memory-total-size=SIZE  ##数据传输的总大小，默认为100G。
+3.--memory-scope=STRING  ##内存访问的范围，包括全局和本地范围，默认为global。
+4.--memory-hugetlb=[on|off]  ##是否从HugeTLB池分配内存的开关，默认为off。
+5.
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/18/redis安装配置/" rel="next" title="redis安装配置">
+                <i class="fa fa-chevron-left"></i> redis安装配置
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/18/Sublime-Text3-入门/" rel="prev" title="Sublime Text3 入门">
+                Sublime Text3 入门 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/tuxiang.jpg"
+               alt="iluoy" />
+          <p class="site-author-name" itemprop="name">iluoy</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参数说明"><span class="nav-number">3.</span> <span class="nav-text">参数说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#–test的项目名字"><span class="nav-number">4.</span> <span class="nav-text">–test的项目名字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sysbench-–test-help"><span class="nav-number">5.</span> <span class="nav-text">sysbench –test= help</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#测试fileio命令帮助"><span class="nav-number">5.1.</span> <span class="nav-text">测试fileio命令帮助</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试cpu命令帮助"><span class="nav-number">5.2.</span> <span class="nav-text">测试cpu命令帮助</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试memory命令帮助"><span class="nav-number">5.3.</span> <span class="nav-text">测试memory命令帮助</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">iluoy</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
+      <!-- UY END -->
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

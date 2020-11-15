@@ -8,7 +8,7 @@
     <link href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos/"/>
     <url>/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos/</url>
     
-    <content type="html"><![CDATA[<h3 id="os简介"><a href="#os简介" class="headerlink" title="os简介"></a>os简介</h3><p>golang内置了跨平台的操作系统相关的模块：<strong>os</strong></p><h3 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h3><p>os模块中提供了操作环境变量的函数<br>| 函数原型 | 功能 |<br>| :—-    | —- |<br>| func Getenv(key string) string | 获取环境变量的值,如果不存在此变量则返回空字符串 |</p><p>例子：</p><pre><code>package mainimport(    &quot;os&quot;    &quot;fmt&quot;)func main()&#123;    if env_path := os.Getenv(&quot;PATH&quot;);env_path != nil&#123;        fmt.Printf(&quot;the value of PATH env is: %s\n&quot;,env_path)    &#125;else&#123;        fmt.Println(&quot;the env of PATH not found!&quot;)    &#125;&#125;</code></pre>]]></content>
+    <content type="html"><![CDATA[<h3 id="os简介"><a href="#os简介" class="headerlink" title="os简介"></a>os简介</h3><p>golang内置了跨平台的操作系统相关的模块：<strong>os</strong></p><h3 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h3><p>os模块中提供了操作环境变量的函数</p><table><thead><tr><th align="left">函数原型</th><th align="left">功能</th></tr></thead><tbody><tr><td align="left">func Getenv(key string) string</td><td align="left">获取环境变量的值,如果不存在此变量则返回空字符串</td></tr></tbody></table><p>例子：</p><pre><code>package mainimport(    &quot;os&quot;    &quot;fmt&quot;)func main()&#123;    if env_path := os.Getenv(&quot;PATH&quot;);env_path != nil&#123;        fmt.Printf(&quot;the value of PATH env is: %s\n&quot;,env_path)    &#125;else&#123;        fmt.Println(&quot;the env of PATH not found!&quot;)    &#125;&#125;</code></pre>]]></content>
     
     
     <categories>

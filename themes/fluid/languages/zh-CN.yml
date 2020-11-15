@@ -42,3 +42,15 @@ page404:
 links:
   title: 友链
   subtitle: 友情链接
+
+book:
+    title: 书籍
+    subtitle: 书籍
+
+movie:
+    title: 电影
+    subtitle: 电影
+
+music:
+    title: 音乐
+    subtitle: 音乐

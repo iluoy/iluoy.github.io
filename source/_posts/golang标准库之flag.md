@@ -5,22 +5,6 @@ tags: [golang,golang标准库,golang命令行]
 categories: [golang,golang标准库]
 ---
 
-### 测试
+### 简介
 
-测试代码
-
-    package main
-    import(
-        "flag"
-    )
-    var(
-        name  string
-        age   int
-        email string
-    )
-    func main(){
-        flag.StringVar(&name,"name","","user's name")
-        flag.IntVar(&age,"age",0,"user's age")
-        flag.StringVar(&email,"email","","user's email")
-        flag.Parse()
-    }
+golang标准库[flag](https://studygolang.com/pkgdoc)用于解析命令行参数,虽然现在更多使用的是flag的换代产品[pflag](https://github.com/ogier/pflag),但是由于pflag兼容flag,因此了解flag是十分有必要的

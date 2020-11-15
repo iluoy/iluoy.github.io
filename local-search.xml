@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>golang标准库之ioutil</title>
+    <link href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bioutil/"/>
+    <url>/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bioutil/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang标准库</tag>
+      
+      <tag>golang I/O</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang标准库之strings</title>
+    <link href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bstrings/"/>
+    <url>/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bstrings/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang标准库</tag>
+      
+      <tag>golang字符串</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang命令行之cobra</title>
+    <link href="/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bcobra/"/>
+    <url>/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bcobra/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang命令行</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang命令行</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang命令行之cli</title>
+    <link href="/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bcli/"/>
+    <url>/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bcli/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang命令行</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang命令行</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang命令行之pflag</title>
+    <link href="/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bpflag/"/>
+    <url>/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bpflag/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang命令行</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang命令行</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang日志之logrus</title>
+    <link href="/2020/11/14/golang%E6%97%A5%E5%BF%97%E4%B9%8Blogrus/"/>
+    <url>/2020/11/14/golang%E6%97%A5%E5%BF%97%E4%B9%8Blogrus/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang日志</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang日志</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang标准库之log</title>
+    <link href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Blog/"/>
+    <url>/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Blog/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang日志</tag>
+      
+      <tag>golang标准库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang标准库之flag</title>
+    <link href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bflag/"/>
+    <url>/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bflag/</url>
+    
+    <content type="html"><![CDATA[<style>  /* 设置整个页面的字体 */  .markdown-body {    font-family: "Iowan Old Style", "Ovo", "Hoefler Text", Georgia, "Times New Roman", "TIBch", "Source Han Sans", "PingFangSC-Regular", "Hiragino Sans GB", "STHeiti", "Microsoft Yahei", "Droid Sans Fallback", "WenQuanYi Micro Hei", sans-serif;    font-size: 15px;  }</style><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>golang标准库<a href="https://studygolang.com/pkgdoc">flag</a>用于解析命令行参数,虽然现在更多使用的是flag的换代产品<a href="https://github.com/ogier/pflag">pflag</a>,但是由于pflag兼容flag,因此了解flag是十分有必要的</p><h3 id="参数类型"><a href="#参数类型" class="headerlink" title="参数类型"></a>参数类型</h3><p>flag支持的参数类型相对于pflag比较少</p><h3 id="flag-Type"><a href="#flag-Type" class="headerlink" title="flag.Type()"></a>flag.Type()</h3><pre><code>package mainimport(    &quot;flag&quot;)func main()&#123;    var name = flag.String(&quot;name&quot;,&quot;&quot;,&quot;user name&quot;)    flag.Parse()&#125;</code></pre><h3 id="flag-TypeVar"><a href="#flag-TypeVar" class="headerlink" title="flag.TypeVar()"></a>flag.TypeVar()</h3>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang命令行</tag>
+      
+      <tag>golang标准库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>jenkins集成kubernetes实现动态jenkins slave</title>
+    <link href="/2020/11/14/jenkins%E9%9B%86%E6%88%90kubernetes%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81jenkins-slave/"/>
+    <url>/2020/11/14/jenkins%E9%9B%86%E6%88%90kubernetes%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81jenkins-slave/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>jenkins</category>
+      
+      <category>jenkins-slave</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>jenkins</tag>
+      
+      <tag>kubernetes</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>

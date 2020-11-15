@@ -4,6 +4,37 @@
   
   
   <entry>
+    <title>使用chrome获取网站上用的字体</title>
+    <link href="/2020/11/15/%E4%BD%BF%E7%94%A8chrome%E8%8E%B7%E5%8F%96%E7%BD%91%E7%AB%99%E4%B8%8A%E7%94%A8%E7%9A%84%E5%AD%97%E4%BD%93/"/>
+    <url>/2020/11/15/%E4%BD%BF%E7%94%A8chrome%E8%8E%B7%E5%8F%96%E7%BD%91%E7%AB%99%E4%B8%8A%E7%94%A8%E7%9A%84%E5%AD%97%E4%BD%93/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简言"><a href="#简言" class="headerlink" title="简言"></a>简言</h3><p>网站上使用font-family指定使用的字体,优先级从左到右边依次降低,如何确定自己电脑访问网站时候生效的字体?可以使用chrome扩展插件: What Font - find font</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>chrome</category>
+      
+      <category>chrome-extension</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>chrome</tag>
+      
+      <tag>chrome-extension</tag>
+      
+      <tag>字体</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>golang标准库之ioutil</title>
     <link href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bioutil/"/>
     <url>/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bioutil/</url>

@@ -312,7 +312,7 @@ import(
 )
 
 func main()&#123;
-    cmd := os.Command(&quot;ls&quot;,&quot;-al&quot;)
+    cmd := exec.Command(&quot;ls&quot;,&quot;-al&quot;)
     cmd.Stdin = os.Stdin
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr

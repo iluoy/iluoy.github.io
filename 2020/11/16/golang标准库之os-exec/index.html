@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.3k 字
+      1.5k 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      17
+      19
        分钟
     </span>
   
@@ -413,6 +413,29 @@ func main()&#123;
         fmt.Println(err)
     &#125;else&#123;
         fmt.Printf(&quot;output is %s\n&quot;,b)
+    &#125;
+&#125;</code></pre>
+<h3 id="LookPath函数"><a href="#LookPath函数" class="headerlink" title="LookPath函数"></a>LookPath函数</h3><p><code>LookPath</code>函数从环境变量中搜索可执行文件，如果参数有斜杠，则只在当前目录搜索，返回完整路径或者相对当前目录的相对路径</p>
+<p><code>LookPath</code>函数原型: <code>func LookPath(file string) (string, error)</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;fmt&quot;
+    &quot;os/exec&quot;
+)
+
+func main()&#123;
+    if file_path,err := exec.LookPath(&quot;ls&quot;);err != nil&#123;
+        fmt.Println(err)
+    &#125;else&#123;
+        fmt.Printf(&quot;exec file path is: %s&quot;,file_path)
+    &#125;
+
+    if file_path1,err := exec.LookPath(&quot;ls/a.out&quot;);err != nil&#123;
+        fmt.Println(err)
+    &#125;else&#123;
+        fmt.Printf(&quot;exec file path is: %s&quot;,file_path1)
     &#125;
 &#125;</code></pre>
 

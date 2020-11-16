@@ -371,7 +371,7 @@ func main()&#123;
     // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Warit
     err := cmd.Start()
     fmt.Println(&quot;command exec not finished&quot;)
-    cmd.Warit()
+    cmd.Wait()
     fmt.Println(&quot;command exec finished&quot;)
     fmt.Println(err)
 &#125;</code></pre>

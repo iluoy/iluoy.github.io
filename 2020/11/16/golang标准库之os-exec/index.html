@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.1k 字
+      1.3k 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      13
+      17
        分钟
     </span>
   
@@ -374,6 +374,48 @@ func main()&#123;
     cmd.Wait()
     fmt.Println(&quot;command exec finished&quot;)
     fmt.Println(err)
+&#125;</code></pre>
+<h3 id="Wait方法"><a href="#Wait方法" class="headerlink" title="Wait方法"></a>Wait方法</h3><p><code>Cmd.Wait</code>会阻塞直到命令执行完毕，<code>Cmd.Wait</code>的命令必须是被<code>Cmd.Start</code>方法开始执行的</p>
+<p><code>Cmd.Wait</code>方法原型：<code>func (c *Cmd) Wait() error</code></p>
+<p>样例代码见上</p>
+<h3 id="Output方法"><a href="#Output方法" class="headerlink" title="Output方法"></a>Output方法</h3><p><code>Cmd.Output</code>方法执行外部命令并且返回标准输出的切片</p>
+<p><code>Cmd.Output</code>方法原型：<code>func (c *Cmd) Output() ([]byte, error)</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;os/exec&quot;
+    &quot;fmt&quot;
+)
+
+func main()&#123;
+    cmd := exec.Command(&quot;ls&quot;,&quot;-a&quot;,&quot;-l&quot;)
+    if b,err := cmd.Output(); err != nil&#123;
+        fmt.Println(err)
+    &#125;
+
+    fmt.Printf(&quot;output is %s\n&quot;,b)
+
+&#125;</code></pre>
+<h3 id="CombinedOutput方法"><a href="#CombinedOutput方法" class="headerlink" title="CombinedOutput方法"></a>CombinedOutput方法</h3><p><code>Cmd.CombinedOutput</code>方法执行外部命令并且返回标准输出和标准错误输出合并的切片</p>
+<p><code>Cmd.CombinedOutput</code>方法原型：<code>func (c *Cmd) CombinedOutput() ([]byte, error)</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;fmt&quot;
+    &quot;os/exec&quot;
+)
+
+func main()&#123;
+    cmd := exec.Command(&quot;ls&quot;,&quot;-al&quot;)
+
+    if b,err := cmd.CombinedOutput();err != nil&#123;
+        fmt.Println(err)
+    &#125;
+
+    fmt.Printf(&quot;output is %s\n&quot;,b)
+
 &#125;</code></pre>
 
             </div>

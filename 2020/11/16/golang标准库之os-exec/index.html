@@ -322,7 +322,7 @@ func main()&#123;
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
 
-    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Warit
+    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Wait
     if err := cmd.Run();err != nil&#123;
         fmt.Println(err)
     &#125;
@@ -347,14 +347,14 @@ func main()&#123;
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
 
-    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Warit
+    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Wait
     err := cmd.Run()
 
     fmt.Println(err)
 
     fmt.Println(&quot;command exec finished&quot;)
 &#125;</code></pre>
-<h3 id="Start方法"><a href="#Start方法" class="headerlink" title="Start方法"></a>Start方法</h3><p>如上述，<code>Cmd.Start</code>方法执行外部命令并且不会阻塞,通常<code>Cmd.Start</code>配合<code>Cmd.Warit</code>、<code>Cmd.StdinPipe</code>、<code>Cmd.StdoutPipe</code>、<code>Cmd.StderrPipe</code>一起使用</p>
+<h3 id="Start方法"><a href="#Start方法" class="headerlink" title="Start方法"></a>Start方法</h3><p>如上述，<code>Cmd.Start</code>方法执行外部命令并且不会阻塞,通常<code>Cmd.Start</code>配合<code>Cmd.Wait</code>、<code>Cmd.StdinPipe</code>、<code>Cmd.StdoutPipe</code>、<code>Cmd.StderrPipe</code>一起使用</p>
 <p><code>Cmd.Run</code>方法原型: <code>func (c *Cmd) Start() error</code></p>
 <p>样例代码如下:</p>
 <pre><code>package main
@@ -368,7 +368,7 @@ func main()&#123;
     // 执行sleep命令,睡眠10s
     cmd := exec.Command(&quot;sleep&quot;,&quot;10&quot;)
 
-    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Warit
+    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Wait
     err := cmd.Start()
     fmt.Println(&quot;command exec not finished&quot;)
     cmd.Wait()

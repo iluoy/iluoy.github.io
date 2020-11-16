@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      662 字
+      1.1k 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      8
+      13
        分钟
     </span>
   
@@ -263,8 +263,8 @@
             <h1 style="display: none">golang标准库之os/exec</h1>
             
             <div class="markdown-body">
-              <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>很多时候我们都通过直接调用外部系统命令以减少工作量,golang已内置了<strong>os/exec</strong>用来执行外部命令,<strong>os/exec</strong>模块主要通过<strong>Cmd结构体</strong>来实现执行外部命令,具体可见：<a target="_blank" rel="noopener" href="https://studygolang.com/pkgdoc">os/exec</a></p>
-<h3 id="Cmd结构体"><a href="#Cmd结构体" class="headerlink" title="Cmd结构体"></a>Cmd结构体</h3><p><strong>Cmd</strong>表示一个准备执行或者正在执行中的外部命令,其中Cmd结构体中使用最多的字段有：<code>Path</code>、<code>Args</code>、<code>Dir</code>、<code>Stdio</code>、<code>Stdout</code>、<code>Stderr</code>其结构体原型如下：</p>
+              <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>很多时候我们都通过直接调用外部系统命令以减少工作量,golang已内置了<code>os/exec</code>用来执行外部命令,<code>os/exec</code>模块主要通过<code>Cmd结构体</code>来实现执行外部命令,具体可见：<a target="_blank" rel="noopener" href="https://studygolang.com/pkgdoc">os/exec</a></p>
+<h3 id="Cmd结构体"><a href="#Cmd结构体" class="headerlink" title="Cmd结构体"></a>Cmd结构体</h3><p><code>Cmd</code>表示一个准备执行或者正在执行中的外部命令,其中<code>Cmd结构体</code>中使用最多的字段有：<code>Path</code>、<code>Args</code>、<code>Dir</code>、<code>Stdio</code>、<code>Stdout</code>、<code>Stderr</code>其结构体原型如下：</p>
 <pre><code>type Cmd struct &#123;
     // Path是将要执行的命令的路径。
     //
@@ -302,7 +302,9 @@
     ProcessState *os.ProcessState
     // 内含隐藏或非导出字段
 &#125;</code></pre>
-<h3 id="Command函数"><a href="#Command函数" class="headerlink" title="Command函数"></a>Command函数</h3><p>一般而言都是通过<strong>os.Command</strong>函数来实现Cmd初始化,<strong>os.Command</strong>仅仅设定了<strong>Cmd</strong>的<code>Path</code>和<code>Args</code>字段,因此在使用<strong>os.Command</strong>初始化<strong>Cmd</strong>后使用其返回值来配置<code>Stdin</code>、<code>Stdout</code>、<code>Stderr</code>等属性,如下：</p>
+<h3 id="Command函数"><a href="#Command函数" class="headerlink" title="Command函数"></a>Command函数</h3><p>一般而言都是通过<code>os.Command</code>函数来实现Cmd初始化,<code>os.Command</code>仅仅设定了<code>Cmd</code>的<code>Path</code>和<code>Args</code>字段,因此在使用<code>os.Command</code>初始化<code>Cmd</code>后使用其返回值来配置<code>Stdin</code>、<code>Stdout</code>、<code>Stderr</code>等属性</p>
+<p>Command函数原型为：<code>func Command(name string, arg ...string) *Cmd</code></p>
+<p>样例代码如下：</p>
 <pre><code>package main
 
 import(
@@ -312,13 +314,64 @@ import(
 )
 
 func main()&#123;
+    // 执行ls -al命令
     cmd := exec.Command(&quot;ls&quot;,&quot;-al&quot;)
+
+    // 设置执行ls -al命令时候标准输入、标准输出、标准错误输出输出,os.Stdin、os.Stdout、os.Stderr是os模块的变量
     cmd.Stdin = os.Stdin
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
+
+    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Warit
     if err := cmd.Run();err != nil&#123;
         fmt.Println(err)
     &#125;
+&#125;</code></pre>
+<h3 id="Run方法"><a href="#Run方法" class="headerlink" title="Run方法"></a>Run方法</h3><p>如上述，<code>Cmd.run</code>方法执行外部命令并且会阻塞直至外部命令执行完成</p>
+<p><code>Cmd.Run</code>方法原型: <code>func (c *Cmd) Run() error</code></p>
+<p>样例代码如下:</p>
+<pre><code>package main
+
+import(
+    &quot;os&quot;
+    &quot;os/exec&quot;
+    &quot;fmt&quot;
+)
+
+func main()&#123;
+    // 执行sleep命令,睡眠10s
+    cmd := exec.Command(&quot;sleep&quot;,&quot;10&quot;)
+
+    // 设置执行sleep 10命令时候标准输入、标准输出、标准错误输出输出,os.Stdin、os.Stdout、os.Stderr是os模块的变量
+    cmd.Stdin = os.Stdin
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
+
+    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Warit
+    err := cmd.Run()
+
+    fmt.Println(&quot;command exec finished&quot;)
+&#125;</code></pre>
+<h3 id="Start方法"><a href="#Start方法" class="headerlink" title="Start方法"></a>Start方法</h3><p>如上述，<code>Cmd.Start</code>方法执行外部命令并且不会阻塞,通常<code>Cmd.Start</code>配合<code>Cmd.Warit</code>、<code>Cmd.StdinPipe</code>、<code>Cmd.StdoutPipe</code>、<code>Cmd.StderrPipe</code>一起使用</p>
+<p><code>Cmd.Run</code>方法原型: <code>func (c *Cmd) Start() error</code></p>
+<p>样例代码如下:</p>
+<pre><code>package main
+
+import(
+    &quot;os&quot;
+    &quot;os/exec&quot;
+    &quot;fmt&quot;
+)
+
+func main()&#123;
+    // 执行sleep命令,睡眠10s
+    cmd := exec.Command(&quot;sleep&quot;,&quot;10&quot;)
+
+    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Warit
+    err := cmd.Start()
+    fmt.Println(&quot;command exec not finished&quot;)
+    cmd.Warit()
+    fmt.Println(&quot;command exec finished&quot;)
 &#125;</code></pre>
 
             </div>

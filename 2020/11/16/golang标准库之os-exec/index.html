@@ -17,9 +17,25 @@
   <meta name="description" content="">
   <meta name="author" content="iluoy">
   <meta name="keywords" content="">
-  <title>标签 - golang标准库 - iluoy</title>
+  <title>golang标准库之os/exec - iluoy</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
 
 
 
@@ -47,7 +63,7 @@
 
 
 <body>
-  <header style="height: 80vh;">
+  <header style="height: 70vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -182,9 +198,46 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="标签 - golang标准库">
+            <span class="h2" id="subtitle" title="golang标准库之os/exec">
               
             </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-11-16 19:36" pubdate>
+        2020年11月16日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      662 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      8
+       分钟
+    </span>
+  
+
+  
+  
+</div>
 
             
           </div>
@@ -197,70 +250,145 @@
 
   <main>
     
-      <div class="container nopadding-md">
-        <div class="py-5" id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
-
-<div class="list-group">
-  <p class="h4">共计 6 篇文章</p>
-  <hr>
-  
-  
-    
       
-      <p class="h5">2020</p>
-    
-    <a href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-exec/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang标准库之os/exec</span>
-      <time style="float: right;">11-16</time>
-    </a>
-  
-    
-    <a href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang标准库之os</span>
-      <time style="float: right;">11-16</time>
-    </a>
-  
-    
-    <a href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bioutil/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang标准库之ioutil</span>
-      <time style="float: right;">11-14</time>
-    </a>
-  
-    
-    <a href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bstrings/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang标准库之strings</span>
-      <time style="float: right;">11-14</time>
-    </a>
-  
-    
-    <a href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Blog/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang标准库之log</span>
-      <time style="float: right;">11-14</time>
-    </a>
-  
-    
-    <a href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bflag/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang标准库之flag</span>
-      <time style="float: right;">11-14</time>
-    </a>
-  
-</div>
 
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">golang标准库之os/exec</h1>
+            
+            <div class="markdown-body">
+              <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>很多时候我们都通过直接调用外部系统命令以减少工作量,golang已内置了<strong>os/exec</strong>用来执行外部命令,<strong>os/exec</strong>模块主要通过<strong>Cmd结构体</strong>来实现执行外部命令,具体可见：<a target="_blank" rel="noopener" href="https://studygolang.com/pkgdoc">os/exec</a></p>
+<h3 id="Cmd结构体"><a href="#Cmd结构体" class="headerlink" title="Cmd结构体"></a>Cmd结构体</h3><p><strong>Cmd</strong>表示一个准备执行或者正在执行中的外部命令,其中Cmd结构体中使用最多的字段有：<code>Path</code>、<code>Args</code>、<code>Dir</code>、<code>Stdio</code>、<code>Stdout</code>、<code>Stderr</code>其结构体原型如下：</p>
+<pre><code>type Cmd struct &#123;
+    // Path是将要执行的命令的路径。
+    //
+    // 该字段不能为空，如为相对路径会相对于Dir字段。
+    Path string
+    // Args保管命令的参数，包括命令名作为第一个参数；如果为空切片或者nil，相当于无参数命令。
+    //
+    // 典型用法下，Path和Args都应被Command函数设定。
+    Args []string
+    // Env指定进程的环境，如为nil，则是在当前进程的环境下执行。
+    Env []string
+    // Dir指定命令的工作目录。如为空字符串，会在调用者的进程当前目录下执行。
+    Dir string
+    // Stdin指定进程的标准输入，如为nil，进程会从空设备读取（os.DevNull）
+    Stdin io.Reader
+    // Stdout和Stderr指定进程的标准输出和标准错误输出。
+    //
+    // 如果任一个为nil，Run方法会将对应的文件描述符关联到空设备（os.DevNull）
+    //
+    // 如果两个字段相同，同一时间最多有一个线程可以写入。
+    Stdout io.Writer
+    Stderr io.Writer
+    // ExtraFiles指定额外被新进程继承的已打开文件流，不包括标准输入、标准输出、标准错误输出。
+    // 如果本字段非nil，entry i会变成文件描述符3+i。
+    //
+    // BUG: 在OS X 10.6系统中，子进程可能会继承不期望的文件描述符。
+    // http://golang.org/issue/2603
+    ExtraFiles []*os.File
+    // SysProcAttr保管可选的、各操作系统特定的sys执行属性。
+    // Run方法会将它作为os.ProcAttr的Sys字段传递给os.StartProcess函数。
+    SysProcAttr *syscall.SysProcAttr
+    // Process是底层的，只执行一次的进程。
+    Process *os.Process
+    // ProcessState包含一个已经存在的进程的信息，只有在调用Wait或Run后才可用。
+    ProcessState *os.ProcessState
+    // 内含隐藏或非导出字段
+&#125;</code></pre>
+<h3 id="Command函数"><a href="#Command函数" class="headerlink" title="Command函数"></a>Command函数</h3><p>一般而言都是通过<strong>os.Command</strong>函数来实现Cmd初始化,<strong>os.Command</strong>仅仅设定了<strong>Cmd</strong>的<code>Path</code>和<code>Args</code>字段,因此在使用<strong>os.Command</strong>初始化<strong>Cmd</strong>后使用其返回值来配置<code>Stdin</code>、<code>Stdout</code>、<code>Stderr</code>等属性,如下：</p>
+<pre><code>package main
 
+import(
+    &quot;os&quot;
+    &quot;os/exec&quot;
+    &quot;fmt&quot;
+)
 
+func main()&#123;
+    cmd := os.Command(&quot;ls&quot;,&quot;-al&quot;)
+    cmd.Stdin = os.Stdin
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
+    if err := cmd.Run();err != nil&#123;
+        fmt.Println(err)
+    &#125;
+&#125;</code></pre>
 
-
-              </div>
             </div>
-          </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/golang/">golang</a>
+                    
+                      <a class="hover-with-bg" href="/categories/golang/golang%E6%A0%87%E5%87%86%E5%BA%93/">golang标准库</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/golang/">golang</a>
+                    
+                      <a class="hover-with-bg" href="/tags/golang%E6%A0%87%E5%87%86%E5%BA%93/">golang标准库</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos/">
+                        <span class="hidden-mobile">golang标准库之os</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
         </div>
       </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
     
 
     
@@ -343,9 +471,15 @@
 
 
 
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
 
 
 
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
 
 
 

@@ -392,10 +392,9 @@ func main()&#123;
     cmd := exec.Command(&quot;ls&quot;,&quot;-a&quot;,&quot;-l&quot;)
     if b,err := cmd.Output(); err != nil&#123;
         fmt.Println(err)
+    &#125;else&#123;
+        fmt.Printf(&quot;output is %s\n&quot;,b)
     &#125;
-
-    fmt.Printf(&quot;output is %s\n&quot;,b)
-
 &#125;</code></pre>
 <h3 id="CombinedOutput方法"><a href="#CombinedOutput方法" class="headerlink" title="CombinedOutput方法"></a>CombinedOutput方法</h3><p><code>Cmd.CombinedOutput</code>方法执行外部命令并且返回标准输出和标准错误输出合并的切片</p>
 <p><code>Cmd.CombinedOutput</code>方法原型：<code>func (c *Cmd) CombinedOutput() ([]byte, error)</code></p>
@@ -412,10 +411,9 @@ func main()&#123;
 
     if b,err := cmd.CombinedOutput();err != nil&#123;
         fmt.Println(err)
+    &#125;else&#123;
+        fmt.Printf(&quot;output is %s\n&quot;,b)
     &#125;
-
-    fmt.Printf(&quot;output is %s\n&quot;,b)
-
 &#125;</code></pre>
 
             </div>

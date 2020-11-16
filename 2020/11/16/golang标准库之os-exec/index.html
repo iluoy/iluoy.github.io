@@ -429,13 +429,13 @@ func main()&#123;
     if file_path,err := exec.LookPath(&quot;ls&quot;);err != nil&#123;
         fmt.Println(err)
     &#125;else&#123;
-        fmt.Printf(&quot;exec file path is: %s&quot;,file_path)
+        fmt.Printf(&quot;exec file path is: %s\n&quot;,file_path)
     &#125;
 
     if file_path1,err := exec.LookPath(&quot;ls/a.out&quot;);err != nil&#123;
         fmt.Println(err)
     &#125;else&#123;
-        fmt.Printf(&quot;exec file path is: %s&quot;,file_path1)
+        fmt.Printf(&quot;exec file path is: %s\n&quot;,file_path1)
     &#125;
 &#125;</code></pre>
 

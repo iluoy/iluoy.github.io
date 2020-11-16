@@ -4,6 +4,35 @@
   
   
   <entry>
+    <title>golang标准库之os/user</title>
+    <link href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-user/"/>
+    <url>/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-user/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>golang内置了获取系统用户的模块: <code>os/user</code>,<code>os/user</code>可以通过id获取用户信息，也可以通过用户名获取用户信息</p><h3 id="User结构体"><a href="#User结构体" class="headerlink" title="User结构体"></a>User结构体</h3><p><code>os/user</code>用户信息通过<code>user.User</code>结构体来定义，通常情况下使用<code>user.Current</code>、<code>user.Lookup</code>、<code>user.LookupId</code>这三个函数来初始化<code>user.User</code></p><p><code>user.User</code>结构体原型如下：</p><pre><code>type User struct &#123;    Uid      string // 用户ID    Gid      string // 初级组ID    Username string //用户名    Name     string    HomeDir  string //用户家目录&#125;</code></pre><h3 id="Current函数"><a href="#Current函数" class="headerlink" title="Current函数"></a>Current函数</h3><p><code>user.Current</code>函数用来获取当前用户信息</p><p><code>user.Current</code>函数原型： <code>func Current() (*User, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;    &quot;os/user&quot;)func main()&#123;    if user,err := user.Current(); err != nil&#123;        fmt.Println(err)    &#125;else&#123;        fmt.Printf(&quot;current user&#39;s uid is: %s\n&quot;,user.Uid)        fmt.Printf(&quot;current user&#39;s gid is: %s\n&quot;,user.Gid)        fmt.Printf(&quot;current user&#39;s username is: %s\n&quot;,user.Username)        fmt.Printf(&quot;current user&#39;s name is: %s\n&quot;,user.Name)        fmt.Printf(&quot;current user&#39;s homedir is: %s\n&quot;,user.HomeDir)    &#125;&#125;</code></pre><h3 id="Lookup函数"><a href="#Lookup函数" class="headerlink" title="Lookup函数"></a>Lookup函数</h3><p><code>user.Lookup</code>函数通过用户名获取用户信息</p><p><code>user.Lookup</code>函数原型：<code>func Lookup(username string) (*User, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;    &quot;os/user&quot;)func main()&#123;    if user,err := user.Lookup(&quot;root&quot;); err != nil&#123;        fmt.Println(err)    &#125;else&#123;        fmt.Printf(&quot;current user&#39;s uid is: %s\n&quot;,user.Uid)        fmt.Printf(&quot;current user&#39;s gid is: %s\n&quot;,user.Gid)        fmt.Printf(&quot;current user&#39;s username is: %s\n&quot;,user.Username)        fmt.Printf(&quot;current user&#39;s name is: %s\n&quot;,user.Name)        fmt.Printf(&quot;current user&#39;s homedir is: %s\n&quot;,user.HomeDir)    &#125;&#125;</code></pre><h3 id="LookupId函数"><a href="#LookupId函数" class="headerlink" title="LookupId函数"></a>LookupId函数</h3><p><code>user.LookupId</code>函数通过用户id获取用户信息</p><p><code>user.LookupId</code>函数原型：<code>func LookupId(uid string) (*User, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;    &quot;os/user&quot;)func main()&#123;    if user,err := user.LookupId(&quot;1&quot;);err != nil&#123;        fmt.Println(err)    &#125;else&#123;        fmt.Printf(&quot;current user&#39;s uid is: %s\n&quot;,user.Uid)        fmt.Printf(&quot;current user&#39;s gid is: %s\n&quot;,user.Gid)        fmt.Printf(&quot;current user&#39;s username is: %s\n&quot;,user.Username)        fmt.Printf(&quot;current user&#39;s name is: %s\n&quot;,user.Name)        fmt.Printf(&quot;current user&#39;s homedir is: %s\n&quot;,user.HomeDir)    &#125;&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang标准库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>golang标准库之os/exec</title>
     <link href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-exec/"/>
     <url>/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-exec/</url>

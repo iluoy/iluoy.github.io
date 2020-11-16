@@ -17,9 +17,25 @@
   <meta name="description" content="">
   <meta name="author" content="iluoy">
   <meta name="keywords" content="">
-  <title>标签 - golang - iluoy</title>
+  <title>golang标准库之os/user - iluoy</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
 
 
 
@@ -47,7 +63,7 @@
 
 
 <body>
-  <header style="height: 80vh;">
+  <header style="height: 70vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -182,9 +198,46 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="标签 - golang">
+            <span class="h2" id="subtitle" title="golang标准库之os/user">
               
             </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-11-16 22:44" pubdate>
+        2020年11月16日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      527 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      8
+       分钟
+    </span>
+  
+
+  
+  
+</div>
 
             
           </div>
@@ -197,106 +250,161 @@
 
   <main>
     
-      <div class="container nopadding-md">
-        <div class="py-5" id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
-
-<div class="list-group">
-  <p class="h4">共计 11 篇文章</p>
-  <hr>
-  
-  
-    
       
-      <p class="h5">2020</p>
-    
-    <a href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-user/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang标准库之os/user</span>
-      <time style="float: right;">11-16</time>
-    </a>
-  
-    
-    <a href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-exec/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang标准库之os/exec</span>
-      <time style="float: right;">11-16</time>
-    </a>
-  
-    
-    <a href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang标准库之os</span>
-      <time style="float: right;">11-16</time>
-    </a>
-  
-    
-    <a href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bioutil/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang标准库之ioutil</span>
-      <time style="float: right;">11-14</time>
-    </a>
-  
-    
-    <a href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bstrings/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang标准库之strings</span>
-      <time style="float: right;">11-14</time>
-    </a>
-  
-    
-    <a href="/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bcobra/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang命令行之cobra</span>
-      <time style="float: right;">11-14</time>
-    </a>
-  
-    
-    <a href="/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bcli/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang命令行之cli</span>
-      <time style="float: right;">11-14</time>
-    </a>
-  
-    
-    <a href="/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bpflag/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang命令行之pflag</span>
-      <time style="float: right;">11-14</time>
-    </a>
-  
-    
-    <a href="/2020/11/14/golang%E6%97%A5%E5%BF%97%E4%B9%8Blogrus/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang日志之logrus</span>
-      <time style="float: right;">11-14</time>
-    </a>
-  
-    
-    <a href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Blog/" class="list-group-item list-group-item-action">
-      <span class="archive-post-title">golang标准库之log</span>
-      <time style="float: right;">11-14</time>
-    </a>
-  
-</div>
 
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">golang标准库之os/user</h1>
+            
+            <div class="markdown-body">
+              <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>golang内置了获取系统用户的模块: <code>os/user</code>,<code>os/user</code>可以通过id获取用户信息，也可以通过用户名获取用户信息</p>
+<h3 id="User结构体"><a href="#User结构体" class="headerlink" title="User结构体"></a>User结构体</h3><p><code>os/user</code>用户信息通过<code>user.User</code>结构体来定义，通常情况下使用<code>user.Current</code>、<code>user.Lookup</code>、<code>user.LookupId</code>这三个函数来初始化<code>user.User</code></p>
+<p><code>user.User</code>结构体原型如下：</p>
+<pre><code>type User struct &#123;
+    Uid      string // 用户ID
+    Gid      string // 初级组ID
+    Username string //用户名
+    Name     string
+    HomeDir  string //用户家目录
+&#125;</code></pre>
+<h3 id="Current函数"><a href="#Current函数" class="headerlink" title="Current函数"></a>Current函数</h3><p><code>user.Current</code>函数用来获取当前用户信息</p>
+<p><code>user.Current</code>函数原型： <code>func Current() (*User, error)</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
 
-  <nav aria-label="navigation">
-    <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/tags/golang/page/2/">2</a><a class="extend next" rel="next" href="/tags/golang/page/2/"><i class="iconfont icon-arrowright"></i></a>
-    </span>
-  </nav>
-  
-  <script>
-    for (ele of document.getElementById("pagination").getElementsByTagName("a")) {
-      ele.href += '#board';
-    }
-  </script>
+import(
+    &quot;fmt&quot;
+    &quot;os/user&quot;
+)
 
+func main()&#123;
+    if user,err := user.Current(); err != nil&#123;
+        fmt.Println(err)
+    &#125;else&#123;
+        fmt.Printf(&quot;current user&#39;s uid is: %s\n&quot;,user.Uid)
+        fmt.Printf(&quot;current user&#39;s gid is: %s\n&quot;,user.Gid)
+        fmt.Printf(&quot;current user&#39;s username is: %s\n&quot;,user.Username)
+        fmt.Printf(&quot;current user&#39;s name is: %s\n&quot;,user.Name)
+        fmt.Printf(&quot;current user&#39;s homedir is: %s\n&quot;,user.HomeDir)
+    &#125;
+&#125;</code></pre>
+<h3 id="Lookup函数"><a href="#Lookup函数" class="headerlink" title="Lookup函数"></a>Lookup函数</h3><p><code>user.Lookup</code>函数通过用户名获取用户信息</p>
+<p><code>user.Lookup</code>函数原型：<code>func Lookup(username string) (*User, error)</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
 
+import(
+    &quot;fmt&quot;
+    &quot;os/user&quot;
+)
 
+func main()&#123;
+    if user,err := user.Lookup(&quot;root&quot;); err != nil&#123;
+        fmt.Println(err)
+    &#125;else&#123;
+        fmt.Printf(&quot;current user&#39;s uid is: %s\n&quot;,user.Uid)
+        fmt.Printf(&quot;current user&#39;s gid is: %s\n&quot;,user.Gid)
+        fmt.Printf(&quot;current user&#39;s username is: %s\n&quot;,user.Username)
+        fmt.Printf(&quot;current user&#39;s name is: %s\n&quot;,user.Name)
+        fmt.Printf(&quot;current user&#39;s homedir is: %s\n&quot;,user.HomeDir)
+    &#125;
+&#125;</code></pre>
+<h3 id="LookupId函数"><a href="#LookupId函数" class="headerlink" title="LookupId函数"></a>LookupId函数</h3><p><code>user.LookupId</code>函数通过用户id获取用户信息</p>
+<p><code>user.LookupId</code>函数原型：<code>func LookupId(uid string) (*User, error)</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
 
-              </div>
+import(
+    &quot;fmt&quot;
+    &quot;os/user&quot;
+)
+
+func main()&#123;
+    if user,err := user.LookupId(&quot;1&quot;);err != nil&#123;
+        fmt.Println(err)
+    &#125;else&#123;
+        fmt.Printf(&quot;current user&#39;s uid is: %s\n&quot;,user.Uid)
+        fmt.Printf(&quot;current user&#39;s gid is: %s\n&quot;,user.Gid)
+        fmt.Printf(&quot;current user&#39;s username is: %s\n&quot;,user.Username)
+        fmt.Printf(&quot;current user&#39;s name is: %s\n&quot;,user.Name)
+        fmt.Printf(&quot;current user&#39;s homedir is: %s\n&quot;,user.HomeDir)
+    &#125;
+&#125;</code></pre>
+
             </div>
-          </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/golang/">golang</a>
+                    
+                      <a class="hover-with-bg" href="/categories/golang/golang%E6%A0%87%E5%87%86%E5%BA%93/">golang标准库</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/golang/">golang</a>
+                    
+                      <a class="hover-with-bg" href="/tags/golang%E6%A0%87%E5%87%86%E5%BA%93/">golang标准库</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-exec/">
+                        <span class="hidden-mobile">golang标准库之os/exec</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
         </div>
       </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
     
 
     
@@ -379,9 +487,15 @@
 
 
 
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
 
 
 
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
 
 
 

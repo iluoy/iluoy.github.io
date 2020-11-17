@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      706 字
+      707 字
     </span>
   
 
@@ -377,7 +377,7 @@ func main()&#123;
             Age: 11,
         &#125;        
 
-    f,_ := os.OpenFile(&quot;person1.json&quot;,os.CREATE|os.RDWR|os.TRUNC)
+    f,_ := os.OpenFile(&quot;person1.json&quot;,os.CREATE|os.RDWR|os.TRUNC,0666)
     encoder := json.NewEncoder(f)
     encoder.Encoder(person)
 &#125;</code></pre>

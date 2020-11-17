@@ -6,7 +6,7 @@ categories: [golang,golang标准库]
 ---
 
 ### 简介
-golang内置了`encoding/json`用来从解析json,关于json详见[json rfc标准](https://tools.ietf.org/html/rfc4627)
+golang内置了`encoding/json`用来解析json对象，关于json详见[json rfc标准](https://tools.ietf.org/html/rfc4627)
 
 ### Marshal函数
 `json.Marshal`函数通过golang对象返回json字符串

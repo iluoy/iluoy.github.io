@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      707 字
+      755 字
     </span>
   
 
@@ -333,12 +333,12 @@ import(
 )
 
 type Person struct&#123;
-    Name string `json:&quot;name&quot;`,
-    Age  int    `json:&quot;age&quot;`,
+    Name string `json:&quot;name&quot;`
+    Age  int    `json:&quot;age&quot;`
 &#125;
 func main()&#123;
     var person Person
-    f,_ := os.OpenFile(&quot;./person.json&quot;,os.RDONLY,0666)
+    f,_ := os.OpenFile(&quot;./person.json&quot;,os.O_RDONLY,0666)
     decoder := json.NewDecoder(f)
     err := decoder.Decode(&amp;person)
     if err != nil &#123;
@@ -367,8 +367,8 @@ import(
 )
 
 type Person struct&#123;
-    Name string `json:&quot;name&quot;`,
-    Age  int    `json:&quot;age&quot;`,
+    Name string `json:&quot;name&quot;`
+    Age  int    `json:&quot;age&quot;`
 &#125;
 
 func main()&#123;
@@ -380,7 +380,11 @@ func main()&#123;
     f,_ := os.OpenFile(&quot;person1.json&quot;,os.CREATE|os.RDWR|os.TRUNC,0666)
     encoder := json.NewEncoder(f)
     encoder.Encoder(person)
+    f.Close()
 &#125;</code></pre>
+<h3 id="Encode方法"><a href="#Encode方法" class="headerlink" title="Encode方法"></a>Encode方法</h3><p><code>Encoder.Encode</code>方法用来将golang对象解析为json字符串并发送往<code>io.Writer</code>输出流</p>
+<p><code>Encoder.Encoder</code>方法原型：<code>func (enc *Encoder) Encode(v interface&#123;&#125;) error</code></p>
+<p>样例代码如上</p>
 
             </div>
             <hr>

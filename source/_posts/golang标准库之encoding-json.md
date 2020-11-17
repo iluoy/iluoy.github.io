@@ -13,7 +13,7 @@ golang内置了`encoding/json`用来解析json对象，关于json详见[json rfc
 
 `json.Marshal`函数原型: `func Marshal(v interface{}) ([]byte, error)`
 
-代码样例如下：
+样例代码如下：
 
     package main
 

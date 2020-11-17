@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      755 字
+      769 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      11
+      12
        分钟
     </span>
   
@@ -379,8 +379,12 @@ func main()&#123;
 
     f,_ := os.OpenFile(&quot;person1.json&quot;,os.CREATE|os.RDWR|os.TRUNC,0666)
     encoder := json.NewEncoder(f)
-    encoder.Encoder(person)
-    f.Close()
+    if err := encoder.Encoder(person);err != nil&#123;
+        fmt.Println(err)
+        f.Close()
+    &#125;else&#123;
+        f.Close()
+    &#125;
 &#125;</code></pre>
 <h3 id="Encode方法"><a href="#Encode方法" class="headerlink" title="Encode方法"></a>Encode方法</h3><p><code>Encoder.Encode</code>方法用来将golang对象解析为json字符串并发送往<code>io.Writer</code>输出流</p>
 <p><code>Encoder.Encoder</code>方法原型：<code>func (enc *Encoder) Encode(v interface&#123;&#125;) error</code></p>

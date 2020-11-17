@@ -135,3 +135,87 @@ Command函数原型为：`func Command(name string, arg ...string) *Cmd`
         fmt.Println("command exec finished")
         fmt.Println(err)
     }
+
+### Wait方法
+`Cmd.Wait`会阻塞直到命令执行完毕，`Cmd.Wait`的命令必须是被`Cmd.Start`方法开始执行的
+
+`Cmd.Wait`方法原型：`func (c *Cmd) Wait() error`
+
+样例代码见上
+
+### Output方法
+`Cmd.Output`方法执行外部命令并且返回标准输出的切片
+
+`Cmd.Output`方法原型：`func (c *Cmd) Output() ([]byte, error)`
+
+样例代码如下：
+
+    package main
+
+    import(
+        "os/exec"
+        "fmt"
+    )
+
+    func main(){
+        cmd := exec.Command("ls","-a","-l")
+        if b,err := cmd.Output(); err != nil{
+            fmt.Println(err)
+        }else{
+            fmt.Printf("output is %s\n",b)
+        }
+    }
+
+### CombinedOutput方法
+`Cmd.CombinedOutput`方法执行外部命令并且返回标准输出和标准错误输出合并的切片
+
+`Cmd.CombinedOutput`方法原型：`func (c *Cmd) CombinedOutput() ([]byte, error)`
+
+样例代码如下：
+
+    package main
+
+    import(
+        "fmt"
+        "os/exec"
+    )
+
+    func main(){
+        cmd := exec.Command("ls","-al")
+
+        if b,err := cmd.CombinedOutput();err != nil{
+            fmt.Println(err)
+        }else{
+            fmt.Printf("output is %s\n",b)
+        }
+    }
+
+### LookPath函数
+`LookPath`函数从环境变量中搜索可执行文件，如果参数有斜杠，则只在当前目录搜索，返回完整路径或者相对当前目录的相对路径
+
+`LookPath`函数原型: `func LookPath(file string) (string, error)`
+
+样例代码如下：
+
+    package main
+
+    import(
+        "fmt"
+        "os/exec"
+    )
+
+    func main(){
+        if file_path,err := exec.LookPath("ls");err != nil{
+            fmt.Println(err)
+        }else{
+            fmt.Printf("exec file path is: %s\n",file_path)
+        }
+
+        if file_path1,err := exec.LookPath("ls/a.out");err != nil{
+            fmt.Println(err)
+        }else{
+            fmt.Printf("exec file path is: %s\n",file_path1)
+        }
+    }
+
+

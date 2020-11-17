@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="iluoy">
   <meta name="keywords" content="">
-  <title>golang标准库之os/user - iluoy</title>
+  <title>golang标准库之encoding/json - iluoy</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
 
@@ -198,7 +198,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="golang标准库之os/user">
+            <span class="h2" id="subtitle" title="golang标准库之encoding/json">
               
             </span>
 
@@ -208,8 +208,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-11-16 22:44" pubdate>
-        2020年11月16日 晚上
+      <time datetime="2020-11-17 22:05" pubdate>
+        2020年11月17日 晚上
       </time>
     </span>
   
@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      527 字
+      111 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      8
+      1
        分钟
     </span>
   
@@ -260,81 +260,33 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">golang标准库之os/user</h1>
+            <h1 style="display: none">golang标准库之encoding/json</h1>
             
             <div class="markdown-body">
-              <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>golang内置了获取系统用户的模块: <code>os/user</code>,<code>os/user</code>可以通过id获取用户信息，也可以通过用户名获取用户信息</p>
-<h3 id="User结构体"><a href="#User结构体" class="headerlink" title="User结构体"></a>User结构体</h3><p><code>os/user</code>用户信息通过<code>user.User</code>结构体来定义，通常情况下使用<code>user.Current</code>、<code>user.Lookup</code>、<code>user.LookupId</code>这三个函数来初始化<code>user.User</code></p>
-<p><code>user.User</code>结构体原型如下：</p>
-<pre><code>type User struct &#123;
-    Uid      string // 用户ID
-    Gid      string // 初级组ID
-    Username string //用户名
-    Name     string
-    HomeDir  string //用户家目录
-&#125;</code></pre>
-<h3 id="Current函数"><a href="#Current函数" class="headerlink" title="Current函数"></a>Current函数</h3><p><code>user.Current</code>函数用来获取当前用户信息</p>
-<p><code>user.Current</code>函数原型： <code>func Current() (*User, error)</code></p>
-<p>样例代码如下：</p>
+              <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>golang内置了<code>encoding/json</code>用来从解析json,关于json详见<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc4627">json rfc标准</a></p>
+<h3 id="Marshal函数"><a href="#Marshal函数" class="headerlink" title="Marshal函数"></a>Marshal函数</h3><p><code>json.Marshal</code>函数通过golang对象返回json字符串</p>
+<p><code>json.Marshal</code>函数原型: <code>func Marshal(v interface&#123;&#125;) ([]byte, error)</code></p>
+<p>代码样例如下：</p>
 <pre><code>package main
 
 import(
     &quot;fmt&quot;
-    &quot;os/user&quot;
+    &quot;encoding/json&quot;
 )
 
-func main()&#123;
-    if user,err := user.Current(); err != nil&#123;
-        fmt.Println(err)
-    &#125;else&#123;
-        fmt.Printf(&quot;current user&#39;s uid is: %s\n&quot;,user.Uid)
-        fmt.Printf(&quot;current user&#39;s gid is: %s\n&quot;,user.Gid)
-        fmt.Printf(&quot;current user&#39;s username is: %s\n&quot;,user.Username)
-        fmt.Printf(&quot;current user&#39;s name is: %s\n&quot;,user.Name)
-        fmt.Printf(&quot;current user&#39;s homedir is: %s\n&quot;,user.HomeDir)
-    &#125;
-&#125;</code></pre>
-<h3 id="Lookup函数"><a href="#Lookup函数" class="headerlink" title="Lookup函数"></a>Lookup函数</h3><p><code>user.Lookup</code>函数通过用户名获取用户信息</p>
-<p><code>user.Lookup</code>函数原型：<code>func Lookup(username string) (*User, error)</code></p>
-<p>样例代码如下：</p>
-<pre><code>package main
-
-import(
-    &quot;fmt&quot;
-    &quot;os/user&quot;
-)
+type Person struct&#123;
+    Name string `json:&quot;name&quot;`
+    Age  int    `json:&quot;age&quot;`
+&#125;
 
 func main()&#123;
-    if user,err := user.Lookup(&quot;root&quot;); err != nil&#123;
-        fmt.Println(err)
-    &#125;else&#123;
-        fmt.Printf(&quot;current user&#39;s uid is: %s\n&quot;,user.Uid)
-        fmt.Printf(&quot;current user&#39;s gid is: %s\n&quot;,user.Gid)
-        fmt.Printf(&quot;current user&#39;s username is: %s\n&quot;,user.Username)
-        fmt.Printf(&quot;current user&#39;s name is: %s\n&quot;,user.Name)
-        fmt.Printf(&quot;current user&#39;s homedir is: %s\n&quot;,user.HomeDir)
-    &#125;
-&#125;</code></pre>
-<h3 id="LookupId函数"><a href="#LookupId函数" class="headerlink" title="LookupId函数"></a>LookupId函数</h3><p><code>user.LookupId</code>函数通过用户id获取用户信息</p>
-<p><code>user.LookupId</code>函数原型：<code>func LookupId(uid string) (*User, error)</code></p>
-<p>样例代码如下：</p>
-<pre><code>package main
+    person := Person&#123;
+            Name: &quot;iluoy&quot;,
+            Age: 11,
+        &#125;
 
-import(
-    &quot;fmt&quot;
-    &quot;os/user&quot;
-)
-
-func main()&#123;
-    if user,err := user.LookupId(&quot;1&quot;);err != nil&#123;
-        fmt.Println(err)
-    &#125;else&#123;
-        fmt.Printf(&quot;current user&#39;s uid is: %s\n&quot;,user.Uid)
-        fmt.Printf(&quot;current user&#39;s gid is: %s\n&quot;,user.Gid)
-        fmt.Printf(&quot;current user&#39;s username is: %s\n&quot;,user.Username)
-        fmt.Printf(&quot;current user&#39;s name is: %s\n&quot;,user.Name)
-        fmt.Printf(&quot;current user&#39;s homedir is: %s\n&quot;,user.HomeDir)
-    &#125;
+    r,_ := json.Marshal(person)
+    fmt.Printf(&quot;person info is: %s\n&quot;,r)
 &#125;</code></pre>
 
             </div>
@@ -370,18 +322,12 @@ func main()&#123;
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/11/17/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bencoding-json/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">golang标准库之encoding/json</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-exec/">
-                        <span class="hidden-mobile">golang标准库之os/exec</span>
+                      <a href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-user/">
+                        <span class="hidden-mobile">golang标准库之os/user</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

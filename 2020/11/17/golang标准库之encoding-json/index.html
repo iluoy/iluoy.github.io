@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      509 字
+      706 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      8
+      11
        分钟
     </span>
   
@@ -321,7 +321,7 @@ func main()&#123;
 <pre><code>type Decoder struct &#123;
     // 内含隐藏或非导出字段
 &#125;</code></pre>
-<h3 id="NewDecoder函数"><a href="#NewDecoder函数" class="headerlink" title="NewDecoder函数"></a>NewDecoder函数</h3><p><code>json.NewDecoder</code>函数用来从<code>io.Reader</code>输入流生成<code>json.Decoder</code>对象，通常配合<code>Decoder.Decode</code>方法一起使用从而实现从<code>io.Reader</code>输入流将json字符串解析为golang对象</p>
+<h3 id="NewDecoder函数"><a href="#NewDecoder函数" class="headerlink" title="NewDecoder函数"></a>NewDecoder函数</h3><p><code>json.NewDecoder</code>函数用来从<code>io.Reader</code>输入流生成<code>json.Decoder</code>对象，通常配合<code>Decoder.Decode</code>方法一起使用从而实现从<code>io.Reader</code>输入流将json字符串解析为golang对象，例如从json文件中解析json字符串为golang对象</p>
 <p><code>json.NewDecoder</code>函数原型：<code>func NewDecoder(r io.Reader) *Decoder</code></p>
 <p>样例代码如下：</p>
 <pre><code>package main
@@ -351,6 +351,36 @@ func main()&#123;
 <h3 id="Decode方法"><a href="#Decode方法" class="headerlink" title="Decode方法"></a>Decode方法</h3><p><code>Decoder.Decode</code>方法从<code>io.Reader</code>输入流将json字符串转换为golang对象</p>
 <p><code>Decoder.Decode</code>方法原型：<code>func (dec *Decoder) Decode(v interface&#123;&#125;) error</code></p>
 <p>样例代码如上</p>
+<h3 id="Encoder结构体"><a href="#Encoder结构体" class="headerlink" title="Encoder结构体"></a>Encoder结构体</h3><p><code>json.Encoder</code>结构体用于将golang对象通过<code>io.Writer</code>输出流转换为json字符串</p>
+<p><code>json.Encoder</code>结构体原型如下：</p>
+<pre><code>type Encoder struct &#123;
+    // 内含隐藏或非导出字段
+&#125;</code></pre>
+<h3 id="NewEncoder函数"><a href="#NewEncoder函数" class="headerlink" title="NewEncoder函数"></a>NewEncoder函数</h3><p><code>json.NewEncoder</code>函数用来生成<code>json.Encoder</code>对象，通常结合<code>Encoder.Encode</code>方法将golang对象通过<code>io.Writer</code>输出流转换为json字符串，例如：将golang对象转换为json后写入json文件中保存</p>
+<p><code>json.NewEncoder</code>函数原型：<code>func NewEncoder(w io.Writer) *Encoder</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;os&quot;
+    &quot;encoding/json&quot;
+)
+
+type Person struct&#123;
+    Name string `json:&quot;name&quot;`,
+    Age  int    `json:&quot;age&quot;`,
+&#125;
+
+func main()&#123;
+    person := Person&#123;
+            Name: &quot;iluoy&quot;,
+            Age: 11,
+        &#125;        
+
+    f,_ := os.OpenFile(&quot;person1.json&quot;,os.CREATE|os.RDWR|os.TRUNC)
+    encoder := json.NewEncoder(f)
+    encoder.Encoder(person)
+&#125;</code></pre>
 
             </div>
             <hr>

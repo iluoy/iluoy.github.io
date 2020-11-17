@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      228 字
+      254 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3
+      4
        分钟
     </span>
   
@@ -288,6 +288,9 @@ func main()&#123;
     r,_ := json.Marshal(person)
     fmt.Printf(&quot;person info is: %s\n&quot;,r)
 &#125;</code></pre>
+<blockquote>
+<p>注意<code>type:&quot;JSON_FILD&quot;</code>中冒号后面不能有空格</p>
+</blockquote>
 <h3 id="Unmarshal函数"><a href="#Unmarshal函数" class="headerlink" title="Unmarshal函数"></a>Unmarshal函数</h3><p><code>json.Unmarshal</code>函数将json字符串转换为golang对象</p>
 <p><code>json.Unmarshal</code>函数原型：<code>func Unmarshal(data []byte, v interface&#123;&#125;) error</code></p>
 <p>样例代码如下：</p>
@@ -304,10 +307,14 @@ type Person struct&#123;
 &#125;
 func main()&#123;
     var person Person
-    j_str := &quot;&#123;&quot;name&quot;: &quot;yaoyao&quot;,&quot;age&quot;: 11&#125;&quot;
-    _ := json.Unmarshal(j_str,&amp;person)
-    fmt.Printf(&quot;person&#39;s name is: %s\n&quot;,person.Name)
-    fmt.Printf(&quot;person&#39;s age is: %d\n&quot;,person.Age)
+
+    j_str := []byte(`&#123;&quot;name&quot;: &quot;yaoyao&quot;,&quot;age&quot;: 11&#125;`)
+    if err := json.Unmarshal(j_str,&amp;person);err != nil&#123;
+        fmt.Println(err)
+    &#125;else&#123;
+        fmt.Printf(&quot;person&#39;s name is: %s\n&quot;,person.Name)
+        fmt.Printf(&quot;person&#39;s age is: %d\n&quot;,person.Age)
+    &#125;
 &#125;</code></pre>
 
             </div>

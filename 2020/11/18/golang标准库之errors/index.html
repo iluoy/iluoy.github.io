@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      142 字
+      262 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      2
+      3
        分钟
     </span>
   
@@ -291,6 +291,26 @@ func main()&#123;
     if err := t();err != nil&#123;
         fmt.Println(err)
     &#125;
+&#125;</code></pre>
+<h3 id="errors标准库"><a href="#errors标准库" class="headerlink" title="errors标准库"></a>errors标准库</h3><p><code>errors</code>标准库提供了创建错误类型的函数<code>New</code>从而达到十分简便的方式就可以定义各种错误类型了</p>
+<h3 id="New函数"><a href="#New函数" class="headerlink" title="New函数"></a>New函数</h3><p><code>errors.New</code>函数通过接受字符串用来生成错误类型</p>
+<p><code>errors.New</code>函数原型：func New(text string) error</p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;fmt&quot;
+    &quot;errors&quot;
+)
+
+func TestError() error &#123;
+    return errors.New(&quot;this is a error by errors.New&quot;)
+
+&#125;
+func main()&#123;
+    if err := TestError(); err != nil&#123;
+        fmt.Println(err)
+    &#125; 
 &#125;</code></pre>
 
             </div>

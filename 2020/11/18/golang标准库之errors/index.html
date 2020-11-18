@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      142 字
+      144 字
     </span>
   
 
@@ -284,10 +284,7 @@ func (e *MyError) Error() string&#123;
 &#125;
 
 func t() error&#123;
-    my_error := MyError&#123;
-            ErrorMsg: &quot;this is my error msg&quot;,
-        &#125;
-    return my_error
+    return &amp;MyError&#123;&quot;ErrorMsg&quot;: &quot;this is a custom test error&quot;,&#125;
 &#125;
 
 func main()&#123;

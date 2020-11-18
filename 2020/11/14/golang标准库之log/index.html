@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      472 字
+      476 字
     </span>
   
 
@@ -306,7 +306,7 @@ import(
 )
 
 func main()&#123;
-    logger := log.New(os.Stdout)
+    logger := log.New(os.Stdout,&quot;&quot;,log.Ldate)
     logger.Println(&quot;test log&quot;)
     logger.SetFlags(log.Ldate | log.Lmicroseconds)
     logger.Println(&quot;test log&quot;)

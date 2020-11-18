@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      522 字
+      727 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7
+      10
        分钟
     </span>
   
@@ -326,6 +326,24 @@ func main()&#123;
     logger.Println(&quot;test log&quot;)
     logger.SetPrefix(&quot;test prefix&quot;)
     logger.Println(&quot;test log&quot;)
+&#125;</code></pre>
+<h3 id="Logger-Println方法"><a href="#Logger-Println方法" class="headerlink" title="Logger.Println方法"></a>Logger.Println方法</h3><p><code>Logger.Println</code>方法用来输出日志，并且自动在行末添加换行符,类似的还有<code>Logger.Print</code>、<code>Logger.Printf</code>、<code>Logger.Fetalln</code>、<code>Logger.Fetal</code>、<code>Logger.Fetalf</code>、<code>Logger.Panicln</code>、<code>Logger.Panic</code>、<code>Logger.Panicf</code>，使用方法参考<code>fmt</code>模块，其中<code>Fetal</code>类型日志会在记录日志后调用<code>os.Exit(1)</code>推出程序，<code>Panic</code>类型日志会在记录日志后<strong>panic</strong></p>
+<p><code>Logger.Println</code>方法原型为：<code>func (l *Logger) Println(v ...interface&#123;&#125;)</code></p>
+<h3 id="通过默认Logger使用log"><a href="#通过默认Logger使用log" class="headerlink" title="通过默认Logger使用log"></a>通过默认Logger使用log</h3><p>默认<code>log</code>就已经有一个标准的<code>Logger</code>、因此可以直接使用<code>log.SetPrefix</code>、<code>log.SetOutput</code>、<code>log.SetFlags</code>、<code>log.Println</code>、<code>log.Print</code>、<code>log.Printf</code>、<code>log.Fetal</code>、<code>log.Fetalln</code>、<code>log.Fetalf</code>、<code>log.Panic</code>、<code>log.Panicln</code>、<code>log.Panicf</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;os&quot;
+    &quot;log&quot;
+)
+
+func main()&#123;
+    log.Println(&quot;test log&quot;)
+    log.SetPrefix(&quot;test prefix&quot;)
+    log.Println(&quot;test log&quot;)
+    log.SetFlags(log.Ldate | log.Lmicroseconds | log.Llongfile)
+    log.Println(&quot;test log&quot;)
 &#125;</code></pre>
 
             </div>

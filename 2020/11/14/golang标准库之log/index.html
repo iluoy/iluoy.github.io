@@ -353,7 +353,7 @@ import(
 )
 
 func main()&#123;
-    if f,err : os.OpenFile(&quot;test.log&quot;,os.Create | os.TRUNC | os.RDWR,0666);err != nil&#123;
+    if f,err := os.OpenFile(&quot;test.log&quot;,os.O_CREATE | os.O_TRUNC | os.O_RDWR,0666);err != nil&#123;
         log.Fetalln(&quot;open file test.log failed&quot;)
     &#125;else&#123;
         log.SetOutput(f)

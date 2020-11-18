@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      476 字
+      522 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      6
+      7
        分钟
     </span>
   
@@ -313,6 +313,20 @@ func main()&#123;
 &#125;</code></pre>
 <h3 id="SetPrefix"><a href="#SetPrefix" class="headerlink" title="SetPrefix"></a>SetPrefix</h3><p><code>Logger.SetPrefix</code>方法用来设置<code>prefix</code>日志前缀的</p>
 <p><code>Logger.SetPrefix</code>方法原型为：<code>func (l *Logger) SetPrefix(prefix string)</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;os&quot;
+    &quot;log&quot;
+)
+
+func main()&#123;
+    logger := log.New(os.Stdout,&quot;&quot;,log.Ldate)
+    logger.Println(&quot;test log&quot;)
+    logger.SetPrefix(&quot;test prefix&quot;)
+    logger.Println(&quot;test log&quot;)
+&#125;</code></pre>
 
             </div>
             <hr>

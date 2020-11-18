@@ -4,6 +4,35 @@
   
   
   <entry>
+    <title>golang标准库之errors</title>
+    <link href="/2020/11/18/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Berrors/"/>
+    <url>/2020/11/18/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Berrors/</url>
+    
+    <content type="html"><![CDATA[<h3 id="golang错误"><a href="#golang错误" class="headerlink" title="golang错误"></a>golang错误</h3><p>golang内建的<code>error</code>接口用来约定表示错误信息，<code>nil</code>表示没有错误，<code>error</code>接口只有一个<code>Error() string</code>方法，也就是说任何只要实现了<code>Error() string</code>方法的结构体就实现了<code>error</code>结构体</p><p><code>error</code>接口原型如下：</p><pre><code>type error interface &#123;    Error() string&#125;</code></pre><p>自定义错误样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;)type MyError struct &#123;    ErrorMsg string&#125;func (e *MyError) Error() string&#123;    return e.ErrorMsg&#125;func t() error&#123;    my_error := MyError&#123;            ErrorMsg: &quot;this is my error msg&quot;,        &#125;    return my_error&#125;func main()&#123;    if err := t();err != nil&#123;        fmt.Println(err)    &#125;&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang标准库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>golang标准库之encoding/json</title>
     <link href="/2020/11/17/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bencoding-json/"/>
     <url>/2020/11/17/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bencoding-json/</url>

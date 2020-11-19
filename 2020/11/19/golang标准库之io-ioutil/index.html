@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      763 字
+      843 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      12
+      13
        分钟
     </span>
   
@@ -403,6 +403,25 @@ func main()&#123;
         log.Fatalln(err)
     &#125;else&#123;
         log.Println(&quot;create tempfile success&quot;)
+    &#125;
+&#125;</code></pre>
+<h3 id="ReadDir函数"><a href="#ReadDir函数" class="headerlink" title="ReadDir函数"></a>ReadDir函数</h3><p><code>ioutil.ReadDir</code>函数用来获取指定目录的目录信息</p>
+<p><code>ioutil.ReadDir</code>函数原型：<code>func ReadDir(dirname string) ([]os.FileInfo, error)</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;io/ioutil&quot;
+)
+
+func main()&#123;
+    if f,err := ioutil.ReadDir(&quot;/tmp&quot;); err != nil&#123;
+        log.Fatalln(err)
+    &#125;else&#123;
+        for _,file_info := range(f)&#123;
+            log.Println(file_info)
+        &#125;
     &#125;
 &#125;</code></pre>
 

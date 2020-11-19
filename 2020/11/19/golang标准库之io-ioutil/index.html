@@ -284,16 +284,16 @@ type Person struct&#123;
 func main()&#123;
     var person Person
 
-    f,err := os.Openfile(&quot;test.json&quot;,os.O_RDONLY,0666)
+    f,err := os.OpenFile(&quot;test.json&quot;,os.O_RDONLY,0666)
     if err != nil &#123;
         log.Fatalln(err)
     &#125;
     r,err := ioutil.ReadAll(f)
     if err != nil&#123;
-        log.Fetalln(err)
+        log.Fatalln(err)
     &#125;
 
-    if err := json.UnMarshal(r,&amp;person);err != nil&#123;
+    if err := json.Unmarshal(r,&amp;person);err != nil&#123;
         log.Fatalln(err)
     &#125;else&#123;
         log.Printf(&quot;user&#39;s name is: %s&quot;,person.Name)

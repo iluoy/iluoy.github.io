@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      717 字
+      763 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      11
+      12
        分钟
     </span>
   
@@ -353,7 +353,7 @@ func main()&#123;
         log.Println(&quot;write success&quot;)
     &#125;
 &#125;</code></pre>
-<h3 id="TempDir函数"><a href="#TempDir函数" class="headerlink" title="TempDir函数"></a>TempDir函数</h3><p><code>ioutil.TempDir</code>函数用来生成临时目录，但是调用此函数的用户需要自行删除临时目录，而且约定是必须的，否则就不叫临时目录了</p>
+<h3 id="TempDir函数"><a href="#TempDir函数" class="headerlink" title="TempDir函数"></a>TempDir函数</h3><p><code>ioutil.TempDir</code>函数用来生成临时目录，但是调用此函数的用户需要自行删除临时目录，而且约定是必须的，否则就不叫临时目录了，如果<code>dir</code>为空则使用默认临时目录（例如linux、mac为/tmp）：见<code>os.TempDir</code></p>
 <p><code>ioutil.TempDir</code>函数原型：<code>func TempDir(dir, prefix string) (name string, err error)</code></p>
 <p>样例代码如下：</p>
 <pre><code>package main
@@ -370,7 +370,7 @@ func main()&#123;
         log.Printf(&quot;tempdir is: %s&quot;,dir)
     &#125;
 &#125;</code></pre>
-<h3 id="TempFile"><a href="#TempFile" class="headerlink" title="TempFile"></a>TempFile</h3><p><code>ioutil.TempFile</code>用来生成临时文件，但是调用此函数的用户需要自行删除临时文件，而且约定是必须的，否则就不叫临时文件了</p>
+<h3 id="TempFile"><a href="#TempFile" class="headerlink" title="TempFile"></a>TempFile</h3><p><code>ioutil.TempFile</code>用来生成临时文件，但是调用此函数的用户需要自行删除临时文件，而且约定是必须的，否则就不叫临时文件了，如果<code>dir</code>为空则使用默认临时目录（例如linux、mac为/tmp）：见<code>os.TempDir</code></p>
 <p><code>ioutil.TempFile</code>函数原型：<code>func TempFile(dir, prefix string) (f *os.File, err error)</code></p>
 <p>样例代码如下：</p>
 <pre><code>package main

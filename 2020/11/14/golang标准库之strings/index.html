@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      587 字
+      1.2k 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      8
+      17
        分钟
     </span>
   
@@ -340,6 +340,102 @@ func main()&#123;
     log.Println(r)
 &#125;</code></pre>
 <h4 id="FieldsFunc函数"><a href="#FieldsFunc函数" class="headerlink" title="FieldsFunc函数"></a>FieldsFunc函数</h4><p><code>strings.FieldsFunc</code>函数通过指定函数来确定分割符，然后通过此分割符切割字符串并且返回一个字符串类型切片</p>
+<h3 id="字符串修剪"><a href="#字符串修剪" class="headerlink" title="字符串修剪"></a>字符串修剪</h3><h4 id="Trim"><a href="#Trim" class="headerlink" title="Trim"></a>Trim</h4><p><code>strings.Trim</code>函数用来将字符串首尾所有在参数<code>cutset</code>中的每一个字符去掉，返回一个新字符串</p>
+<p><code>strings.Trim</code>函数原型：<code>func Trim(s string, cutset string) string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;   @#! this is a test  !#@&quot;
+    r := strings.Trim(s,&quot; !@#&quot;)
+    log.Println(r)
+&#125;</code></pre>
+<h4 id="TrimLeft函数"><a href="#TrimLeft函数" class="headerlink" title="TrimLeft函数"></a>TrimLeft函数</h4><p><code>strings.TrimLeft</code>函数用来将字符串首部所有在参数<code>cutset</code>字符串中的每一个字符去掉返回一个新的字符串</p>
+<p><code>strings.TrimLeft</code>函数原型：<code>func TrimLeft(s string, cutset string) string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;    ! @ # this is a test string     # @ !@#&quot;
+    r := strings.TrimLeft(s,&quot; !@#&quot;)
+    log.Println(r)
+&#125;</code></pre>
+<h4 id="TrimRight函数"><a href="#TrimRight函数" class="headerlink" title="TrimRight函数"></a>TrimRight函数</h4><p><code>strings.TrimRight</code>函数用来将字符串尾部所有在参数<code>cutset</code>字符串中的每一个字符去掉返回一个新的字符串</p>
+<p><code>strings.TrimRight</code>函数原型：<code>func TrimRight(s string, cutset string) string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;    ! @ # this is a test string     # @ !@#&quot;
+    r := strings.TrimRight(s,&quot; !@#&quot;)
+    log.Println(r)
+&#125;</code></pre>
+<h4 id="TrimPrefix函数"><a href="#TrimPrefix函数" class="headerlink" title="TrimPrefix函数"></a>TrimPrefix函数</h4><p><code>strings.TrimPrefix</code>函数用来去掉一个字符串中的前缀字符串然后返回一个新字符串</p>
+<p><code>strings.TrimPrefix</code>函数原型：<code>func TrimPrefix(s, prefix string) string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;prefix string this is a test string prefix string&quot;
+    r := strings.TrimPrefix(s,&quot;prefix string&quot;)
+    log.Println(r)
+&#125;</code></pre>
+<h4 id="TrimSuffix函数"><a href="#TrimSuffix函数" class="headerlink" title="TrimSuffix函数"></a>TrimSuffix函数</h4><p><code>strings.TrimSuffix</code>函数用来去掉一个字符串中的后缀字符串然后返回一个新的字符串</p>
+<p><code>strings.TrimSuffix</code>函数原型：<code>func TrimSuffix(s, suffix string) string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;suffix string this is a test string suffix string&quot;
+    r := strings.TrimSuffix(s,&quot;suffix string&quot;)
+    log.Println(r)
+&#125;</code></pre>
+<h4 id="TrimSpace函数"><a href="#TrimSpace函数" class="headerlink" title="TrimSpace函数"></a>TrimSpace函数</h4><p><code>strings.TrimSpace</code>函数去掉字符串首尾所有的空白返回一个新的字符串</p>
+<p><code>strings.TrimSpace</code>函数原型：<code>func TrimSpace(s string) string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;  this is a test space      &quot;
+    r := strings.TrimSpace(s)
+    log.Println(r)
+&#125;</code></pre>
+<h4 id="TrimFunc"><a href="#TrimFunc" class="headerlink" title="TrimFunc"></a>TrimFunc</h4><p><code>strings.TrimFunc</code>函数将字符串首尾部所有满足函数的<code>unicode</code>字符去掉</p>
+<p><code>strings.TrimFunc</code>函数原型：<code>func TrimFunc(s string, f func(rune) bool) string</code></p>
+<h4 id="TrimLeftFunc"><a href="#TrimLeftFunc" class="headerlink" title="TrimLeftFunc"></a>TrimLeftFunc</h4><p><code>strings.TrimLeftFunc</code>函数将字符串首部所有满足函数的<code>unicode</code>字符去掉</p>
+<p><code>strings.TrimLeftFunc</code>函数原型：<code>func TrimLeftFunc(s string, f func(rune) bool) string</code></p>
+<h4 id="TrimRightFunc"><a href="#TrimRightFunc" class="headerlink" title="TrimRightFunc"></a>TrimRightFunc</h4><p><code>strings.TrimRight</code>函数将字符串尾部所有满足函数的<code>unicode</code>字符去掉</p>
+<p><code>strings.TrimRightFunc</code>函数原型：<code>func TrimRightFunc(s string, f func(rune) bool) string</code></p>
 
             </div>
             <hr>

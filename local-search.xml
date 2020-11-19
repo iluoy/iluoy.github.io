@@ -240,37 +240,6 @@
   
   
   <entry>
-    <title>golang标准库之ioutil</title>
-    <link href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bioutil/"/>
-    <url>/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bioutil/</url>
-    
-    <content type="html"><![CDATA[]]></content>
-    
-    
-    <categories>
-      
-      <category>golang</category>
-      
-      <category>golang标准库</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>golang</tag>
-      
-      <tag>golang标准库</tag>
-      
-      <tag>golang I/O</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>golang标准库之strings</title>
     <link href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bstrings/"/>
     <url>/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bstrings/</url>

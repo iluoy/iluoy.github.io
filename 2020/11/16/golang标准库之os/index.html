@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1k 字
+      1.2k 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      15
+      19
        分钟
     </span>
   
@@ -444,6 +444,46 @@ import(
 
 func main()&#123;
     os.Exit(1)
+&#125;</code></pre>
+<h3 id="创建目录"><a href="#创建目录" class="headerlink" title="创建目录"></a>创建目录</h3><p><code>os</code>模块提供两种模式创建目录<code>Mkdir</code>、<code>MkdirAll</code></p>
+<h4 id="Mkdir函数"><a href="#Mkdir函数" class="headerlink" title="Mkdir函数"></a>Mkdir函数</h4><p><code>os.Mkdir</code>函数用于创建目录，但是必须其上级目录已存在，否则报错</p>
+<p><code>os.Mkdir</code>函数原型：<code>func Mkdir(name string, perm FileMode) error</code></p>
+<p>代码样例如下：</p>
+<pre><code>package main
+
+import(
+    &quot;os&quot;
+    &quot;log&quot;
+)
+
+func main()&#123;
+    if err := os.Mkdir(&quot;/tmp/test_dir&quot;,0666);err != nil &#123;
+        log.Fatalln(err)
+    &#125;
+    if err := os.Mkdir(&quot;/tmp/parent/child&quot;,0666);err != nil&#123;
+        log.Fatalln(err)
+    &#125;
+&#125;</code></pre>
+<h4 id="MkdirAll函数"><a href="#MkdirAll函数" class="headerlink" title="MkdirAll函数"></a>MkdirAll函数</h4><p><code>os.MkdirAll</code>函数用于创建目录，包括其上级目录，如果目录已经存在，则返回nil</p>
+<p><code>os.MkdirAll</code>函数原型：<code>func MkdirAll(path string, perm FileMode) error</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;os&quot;
+    &quot;log&quot;
+)
+
+func main()&#123;
+    if err := os.MkdirAll(&quot;/tmp/parent/child&quot;,0777);err != nil&#123;
+        log.Fatalln(err)
+    &#125;
+
+    if err := os.MkdirAll(&quot;/tmp/parent/child&quot;,0777);err != nil&#123;
+        log.Fatalln(err)
+    &#125;else&#123;
+        log.Println(&quot;dir exists&quot;)
+    &#125;
 &#125;</code></pre>
 
             </div>

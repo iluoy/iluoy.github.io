@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.5k 字
+      2.6k 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      31
+      34
        分钟
     </span>
   
@@ -417,6 +417,48 @@ func main()&#123;
     body,_ := ioutil.ReadAll(resp.Body)
     log.Println(string(body))
 &#125;</code></pre>
+<h2 id="HTTP-HEADER"><a href="#HTTP-HEADER" class="headerlink" title="HTTP HEADER"></a>HTTP HEADER</h2><p><code>http.Header</code>表示http header</p>
+<p><code>http.Header</code>原型：<code>type Header map[string][]string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;net/http&quot;
+    &quot;net/url&quot;
+    &quot;io/ioutil&quot;
+)
+
+func main()&#123;
+    header := map[string][]string&#123;
+            &quot;Accept-Encoding&quot;: &#123;&quot;gzip, deflate&quot;&#125;,
+            &quot;Accept-Language&quot;: &#123;&quot;en-us&quot;&#125;,
+            &quot;Connection&quot;: &#123;&quot;keep-alive&quot;&#125;,
+        &#125;
+
+    url,_ := url.Parse(&quot;http://httpbin.org/get&quot;)
+
+    http_request := http.Request&#123;
+            Method: &quot;GET&quot;,
+            URL: url,
+            Header: header,
+        &#125;
+
+    http_client := http.Client&#123;&#125;
+    resp,err := http_client.Do(&amp;http_request)
+    if err != nil&#123;
+        log.Println(err)
+    &#125;
+    defer resp.Body.Close()
+
+    body,_ := ioutil.ReadAll(resp.Body)
+    log.Println(string(body))
+
+&#125;</code></pre>
+<h4 id="http-Header-Set"><a href="#http-Header-Set" class="headerlink" title="http.Header.Set"></a>http.Header.Set</h4><p><code>Header.Set</code>方法原型：<code>func (h Header) Set(key, value string)</code></p>
+<h4 id="http-Header-Get"><a href="#http-Header-Get" class="headerlink" title="http.Header.Get"></a>http.Header.Get</h4><p><code>Header.Get</code>方法原型：<code>func (h Header) Get(key string) string</code></p>
+<h4 id="http-Header-Add"><a href="#http-Header-Add" class="headerlink" title="http.Header.Add"></a>http.Header.Add</h4><p><code>Header.Add</code>方法原型：<code>func (h Header) Add(key, value string)</code></p>
+<h4 id="http-Header-Del"><a href="#http-Header-Del" class="headerlink" title="http.Header.Del"></a>http.Header.Del</h4><p><code>Header.Del</code>方法原型：<code>func (h Header) Del(key string)</code></p>
 <h2 id="HTTP客户端"><a href="#HTTP客户端" class="headerlink" title="HTTP客户端"></a>HTTP客户端</h2><p><code>http.Client</code>结构体表示一个客户端</p>
 <p><code>http.Client</code>结构体原型如下：</p>
 <pre><code>type Client struct &#123;

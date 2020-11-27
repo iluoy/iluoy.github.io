@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      28
+      29
        分钟
     </span>
   
@@ -448,7 +448,7 @@ func main()&#123;
 <p>初始化HTTP客户端方式：<code>http_cient := http.Client&#123;xx&#125;</code>,其中零值的<code>http.Client</code>表示一个默认的客户端</p>
 <h3 id="Do方法"><a href="#Do方法" class="headerlink" title="Do方法"></a>Do方法</h3><p><code>Client.Do</code>方法发送指定请求</p>
 <p><code>Client.Do</code>方法原型：<code>func (c *Client) Do(req *Request) (resp *Response, err error)</code></p>
-<h3 id="Head方法"><a href="#Head方法" class="headerlink" title="Head方法"></a>Head方法</h3><p><code>Client.Head</code>方法向指定<code>url</code>发送<code>HEAD</code>请求</p>
+<h3 id="Head方法"><a href="#Head方法" class="headerlink" title="Head方法"></a>Head方法</h3><p><code>Client.Head</code>方法向指定<code>url</code>发送<code>HEAD</code>请求，当<code>Client</code>为零值时候与<code>http.Head</code>函数等价</p>
 <p><code>Client.Head</code>方法原型：<code>func (c *Client) Head(url string) (resp *Response, err error)</code></p>
 <p>样例代码如下：</p>
 <pre><code>package main
@@ -470,11 +470,11 @@ func main()&#123;
     &#125;
 
 &#125;</code></pre>
-<h3 id="Get方法"><a href="#Get方法" class="headerlink" title="Get方法"></a>Get方法</h3><p><code>Client.Get</code>方法向指定<code>url</code>发送<code>GET</code>请求</p>
+<h3 id="Get方法"><a href="#Get方法" class="headerlink" title="Get方法"></a>Get方法</h3><p><code>Client.Get</code>方法向指定<code>url</code>发送<code>GET</code>请求，当<code>Client</code>为零值时候与<code>http.Get</code>函数等价</p>
 <p><code>Client.Get</code>方法原型：<code>func (c *Client) Get(url string) (resp *Response, err error)</code></p>
-<h3 id="Post方法"><a href="#Post方法" class="headerlink" title="Post方法"></a>Post方法</h3><p><code>Client.Post</code>方法向指定<code>url</code>发送<code>POST</code>请求</p>
+<h3 id="Post方法"><a href="#Post方法" class="headerlink" title="Post方法"></a>Post方法</h3><p><code>Client.Post</code>方法向指定<code>url</code>发送<code>POST</code>请求，当<code>Client</code>为零值时候与<code>http.Post</code>函数等价</p>
 <p><code>Client.Post</code>方法原型：<code>func (c *Client) Post(url string, bodyType string, body io.Reader) (resp *Response, err error)</code></p>
-<h3 id="PostForm方法"><a href="#PostForm方法" class="headerlink" title="PostForm方法"></a>PostForm方法</h3><p><code>Client.PostForm</code>方法向指定<code>url</code>发送<code>POST</code>请求，post数据类型为：”application/x-www-form-urlencoded”，数据为：<code>url.Values</code></p>
+<h3 id="PostForm方法"><a href="#PostForm方法" class="headerlink" title="PostForm方法"></a>PostForm方法</h3><p><code>Client.PostForm</code>方法向指定<code>url</code>发送<code>POST</code>请求，post数据类型为：”application/x-www-form-urlencoded”，数据为：<code>url.Values</code>，当<code>Client</code>为零值时候与<code>http.PostForm</code>函数等价</p>
 <p><code>Client.PostForm</code>方法原型：<code>func (c *Client) PostForm(url string, data url.Values) (resp *Response, err error)</code></p>
 
             </div>

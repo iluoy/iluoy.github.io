@@ -418,7 +418,7 @@ func main()&#123;
     log.Println(string(body))
 &#125;</code></pre>
 <h3 id="设置HTTP请求头"><a href="#设置HTTP请求头" class="headerlink" title="设置HTTP请求头"></a>设置HTTP请求头</h3><p><code>net/http</code>提供原生方式以及简便方式添加请求头，原生方式通过<code>http.Header</code>直接创建<code>Header</code>，简便方式通过封装好的<code>Request</code>方法，原生方式自由度高，可定制度强，简便方式就是简便</p>
-<h4 id="添加Authorization头部"><a href="#添加Authorization头部" class="headerlink" title="添加Authorization头部"></a>添加Authorization头部</h4><p><code>Authorization</code>头部用于<code>http basic auth</code></p>
+<h4 id="添加Authorization头部-basic-auth"><a href="#添加Authorization头部-basic-auth" class="headerlink" title="添加Authorization头部(basic auth)"></a>添加Authorization头部(basic auth)</h4><p><code>Authorization</code>头部用于<code>http basic auth</code></p>
 <p>样例代码一如下：</p>
 <pre><code>package main
 

@@ -180,7 +180,7 @@ http请求报文格式如下：
 
 ### 设置HTTP请求头
 `net/http`提供原生方式以及简便方式添加请求头，原生方式通过`http.Header`直接创建`Header`，简便方式通过封装好的`Request`方法，原生方式自由度高，可定制度强，简便方式就是简便
-#### 添加Authorization头部
+#### 添加Authorization头部(basic auth)
 `Authorization`头部用于`http basic auth`
 
 样例代码一如下：
@@ -423,14 +423,168 @@ http请求报文格式如下：
 
 `http.Get`函数原型：`func Get(url string) (resp *Response, err error)`
 ### Post函数
-`http.Get`函数参考`Client.Post`方法
+`http.Post`函数参考`Client.Post`方法
 
 `http.Post`函数原型：`func Post(url string, bodyType string, body io.Reader) (resp *Response, err error)`
+
+#### 发送json数据
+发送json需要设置请求头：`Content-Type: application/json`
+
+样例代码如下：
+
+    package main
+
+    import(
+        "log"
+        "strings"
+        "net/http"
+        "io/ioutil"
+    )
+
+    func main(){
+        data := `{
+                "name": "liuoy",
+                "age": 11
+            }`
+
+        content_type := "applicaion/json"
+
+        resp,err := http.Post("http://httpbin.org/post",content_type,strings.NewReader(data))
+
+        if err != nil {
+            log.Println(err)
+        }
+
+        defer resp.Body.Close()
+
+        b,_ := ioutil.ReadAll(resp.Body)
+
+        log.Println(string(b))
+    }
+
+#### 发送表单数据
+发送表单数据需求设置请求头：`Content-Type: application/x-www-form-urlencoded`
+
+样例代码如下：
+
+    package main
+
+    import(
+        "log"
+        "strings"
+        "net/http"
+        "io/ioutil"
+    )
+
+    func main(){
+        data := `name=iluoy&age=11`
+
+        content_type := "application/x-www-form-urlencoded"
+
+        resp,err := http.Post("http://httpbin.org/post?k1=v1&k2=v2",content_type,strings.NewReader(data))
+
+        if err != nil {
+            log.Println(err)
+        }
+
+        defer resp.Body.Close()
+
+        b,err := ioutil.ReadAll(resp.Body)
+
+        if err != nil {
+            log.Println(err)
+        }
+
+        log.Println(string(b))
+
+    }
+
+#### 发送args数据
+发送args数据需要在url中添加`?k1=v1&k2=v2`类似数据
+
+样例代码如下：
+
+    package main
+
+    import(
+        "log"
+        "strings"
+        "net/http"
+        "io/ioutil"
+    )
+
+    func main(){
+        url := "http://httpbin.org/post?k1=v1&k2=v2"
+
+        content_type := "application/json"
+
+        data := `
+            {
+                "name": "iluoy",
+                "age": 11
+
+            }
+        `
+
+        resp,err := http.Post(url,content_type,strings.NewReader(data))
+
+        if err != nil {
+            log.Println(err)
+        }
+
+        defer resp.Body.Close()
+
+        b,err := ioutil.ReadAll(resp.Body)
+
+        if err != nil {
+            log.Println(err)
+        }
+
+        log.Println(string(b))
+
+    }
+
+#### 发送XML数据
+发送xml数据需要设置请求头为：`Content-Type: application/xml`
+
+样例代码如下：
+
+    package main
+
+    import(
+        "log"
+        "strings"
+        "net/http"
+        "io/ioutil"
+    )
+
+    func main(){
+        data := `
+            <person>
+                <name>iluoy</name>
+                <age>11</age>
+            </person>
+        `
+
+        content_type := "application/xml"
+
+        resp,err := http.Post("http://httpbin.org/post",content_type,strings.NewReader(data))
+
+        if err != nil {
+            log.Println(err)
+        }
+
+        defer resp.Body.Close()
+        b,_ := ioutil.ReadAll(resp.Body)
+
+        log.Println(string(b))
+
+    }
 ### Head函数
-`http.Get`函数参考`Client.Head`方法
+`http.Head`函数参考`Client.Head`方法
 
 `http.Head`函数原型：`func Head(url string) (resp *Response, err error)`
 ### PostForm函数
-`http.Get`函数参考`Client.PostForm`方法
+`http.PostForm`函数参考`Client.PostForm`方法
 
 `http.PostForm`函数原型：`func PostForm(url string, data url.Values) (resp *Response, err error)`

@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.6k 字
+      3k 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      34
+      40
        分钟
     </span>
   
@@ -416,6 +416,104 @@ func main()&#123;
 
     body,_ := ioutil.ReadAll(resp.Body)
     log.Println(string(body))
+&#125;</code></pre>
+<h3 id="设置HTTP请求头"><a href="#设置HTTP请求头" class="headerlink" title="设置HTTP请求头"></a>设置HTTP请求头</h3><p><code>net/http</code>提供原生方式以及简便方式添加请求头，原生方式通过<code>http.Header</code>直接创建<code>Header</code>，简便方式通过封装好的<code>Request</code>方法，原生方式自由度高，可定制度强，简便方式就是简便</p>
+<h4 id="添加Authorization头部"><a href="#添加Authorization头部" class="headerlink" title="添加Authorization头部"></a>添加Authorization头部</h4><p><code>Authorization</code>头部用于<code>http basic auth</code></p>
+<p>样例代码一如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;net/http&quot;
+    &quot;net/url&quot;
+    &quot;io/ioutil&quot;
+)
+
+func main()&#123;
+    header := map[string][]string&#123;
+            &quot;Authorization&quot;: &#123;&quot;YWRtaW46YWRtaW4xMjM=&quot;&#125;,
+        &#125;
+
+    url,_ := url.Parse(&quot;http://httpbin.org/get&quot;)
+
+    http_request := http.Request&#123;
+            Method: &quot;GET&quot;,
+            URL: url,
+            Header: header,
+        &#125;
+
+    http_client := http.Client&#123;&#125;
+
+    resp,_ := http_client.Do(&amp;http_request)
+
+    defer resp.Body.Close()
+
+    body,_ := ioutil.ReadAll(resp.Body)
+
+    log.Println(string(body))
+
+&#125;</code></pre>
+<p>样例代码二如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;net/http&quot;
+    &quot;net/url&quot;
+    &quot;io/ioutil&quot;
+)
+
+func main()&#123;
+    url,_ := url.Parse(&quot;http://httpbin.org/get&quot;)
+    http_request := http.Request&#123;
+            Method: &quot;GET&quot;,
+            URL: url,
+            Header: map[string][]string&#123;&#125;,
+        &#125;
+
+    http_request.SetBasicAuth(&quot;admin&quot;,&quot;admin123&quot;)
+
+    http_client := http.Client&#123;&#125;
+
+    resp,_ := http_client.Do(&amp;http_request)
+
+    defer resp.Body.Close()
+
+    body,_ := ioutil.ReadAll(resp.Body)
+
+    log.Println(string(body))
+
+&#125;</code></pre>
+<p>样例代码三如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;net/http&quot;
+    &quot;net/url&quot;
+    &quot;io/ioutil&quot;
+)
+
+func main()&#123;
+    url,_ := url.Parse(&quot;http://httpbin.org/get&quot;)
+    http_request := http.Request&#123;
+            Method: &quot;GET&quot;,
+            URL: url,
+            Header: map[string][]string&#123;&#125;,
+        &#125;
+
+    http_request.Header.Set(&quot;Authorization&quot;,&quot;YWRtaW46YWRtaW4xMjM=&quot;)
+
+    http_client := http.Client&#123;&#125;
+
+    resp,_ := http_client.Do(&amp;http_request)
+
+    defer resp.Body.Close()
+
+    body,_ := ioutil.ReadAll(resp.Body)
+
+    log.Println(string(body))
+
 &#125;</code></pre>
 <h2 id="HTTP-HEADER"><a href="#HTTP-HEADER" class="headerlink" title="HTTP HEADER"></a>HTTP HEADER</h2><p><code>http.Header</code>表示http header</p>
 <p><code>http.Header</code>原型：<code>type Header map[string][]string</code></p>

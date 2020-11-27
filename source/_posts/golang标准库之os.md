@@ -256,6 +256,58 @@ os模块中提供了操作环境变量的函数，包括替换字符串中的环
         os.Exit(1)
     }
 
+### 创建目录
+`os`模块提供两种模式创建目录`Mkdir`、`MkdirAll`
+
+#### Mkdir函数
+`os.Mkdir`函数用于创建目录，但是必须其上级目录已存在，否则报错
+
+`os.Mkdir`函数原型：`func Mkdir(name string, perm FileMode) error`
+
+代码样例如下：
+
+    package main
+
+    import(
+        "os"
+        "log"
+    )
+
+    func main(){
+        if err := os.Mkdir("/tmp/test_dir",0666);err != nil {
+            log.Fatalln(err)
+        }
+        if err := os.Mkdir("/tmp/parent/child",0666);err != nil{
+            log.Fatalln(err)
+        }
+    }
+
+#### MkdirAll函数
+`os.MkdirAll`函数用于创建目录，包括其上级目录，如果目录已经存在，则返回nil
+
+`os.MkdirAll`函数原型：`func MkdirAll(path string, perm FileMode) error`
+
+样例代码如下：
+
+    package main
+
+    import(
+        "os"
+        "log"
+    )
+
+    func main(){
+        if err := os.MkdirAll("/tmp/parent/child",0777);err != nil{
+            log.Fatalln(err)
+        }
+
+        if err := os.MkdirAll("/tmp/parent/child",0777);err != nil{
+            log.Fatalln(err)
+        }else{
+            log.Println("dir exists")
+        }
+    }
+
 
 
 

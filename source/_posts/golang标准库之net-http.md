@@ -178,6 +178,165 @@ http请求报文格式如下：
         log.Println(string(body))
     }
 
+### 设置HTTP请求头
+`net/http`提供原生方式以及简便方式添加请求头，原生方式通过`http.Header`直接创建`Header`，简便方式通过封装好的`Request`方法，原生方式自由度高，可定制度强，简便方式就是简便
+#### 添加Authorization头部
+`Authorization`头部用于`http basic auth`
+
+样例代码一如下：
+
+    package main
+
+    import(
+        "log"
+        "net/http"
+        "net/url"
+        "io/ioutil"
+    )
+
+    func main(){
+        header := map[string][]string{
+                "Authorization": {"YWRtaW46YWRtaW4xMjM="},
+            }
+
+        url,_ := url.Parse("http://httpbin.org/get")
+
+        http_request := http.Request{
+                Method: "GET",
+                URL: url,
+                Header: header,
+            }
+
+        http_client := http.Client{}
+
+        resp,_ := http_client.Do(&http_request)
+
+        defer resp.Body.Close()
+
+        body,_ := ioutil.ReadAll(resp.Body)
+
+        log.Println(string(body))
+
+    }
+
+样例代码二如下：
+
+    package main
+
+    import(
+        "log"
+        "net/http"
+        "net/url"
+        "io/ioutil"
+    )
+
+    func main(){
+        url,_ := url.Parse("http://httpbin.org/get")
+        http_request := http.Request{
+                Method: "GET",
+                URL: url,
+                Header: map[string][]string{},
+            }
+
+        http_request.SetBasicAuth("admin","admin123")
+
+        http_client := http.Client{}
+
+        resp,_ := http_client.Do(&http_request)
+
+        defer resp.Body.Close()
+
+        body,_ := ioutil.ReadAll(resp.Body)
+
+        log.Println(string(body))
+
+    }
+
+
+样例代码三如下：
+
+    package main
+
+    import(
+        "log"
+        "net/http"
+        "net/url"
+        "io/ioutil"
+    )
+
+    func main(){
+        url,_ := url.Parse("http://httpbin.org/get")
+        http_request := http.Request{
+                Method: "GET",
+                URL: url,
+                Header: map[string][]string{},
+            }
+
+        http_request.Header.Set("Authorization","YWRtaW46YWRtaW4xMjM=")
+
+        http_client := http.Client{}
+
+        resp,_ := http_client.Do(&http_request)
+
+        defer resp.Body.Close()
+
+        body,_ := ioutil.ReadAll(resp.Body)
+
+        log.Println(string(body))
+
+    }
+
+## HTTP HEADER
+`http.Header`表示http header
+
+`http.Header`原型：`type Header map[string][]string`
+
+样例代码如下：
+
+    package main
+
+    import(
+        "log"
+        "net/http"
+        "net/url"
+        "io/ioutil"
+    )
+
+    func main(){
+        header := map[string][]string{
+                "Accept-Encoding": {"gzip, deflate"},
+                "Accept-Language": {"en-us"},
+                "Connection": {"keep-alive"},
+            }
+
+        url,_ := url.Parse("http://httpbin.org/get")
+
+        http_request := http.Request{
+                Method: "GET",
+                URL: url,
+                Header: header,
+            }
+        
+        http_client := http.Client{}
+        resp,err := http_client.Do(&http_request)
+        if err != nil{
+            log.Println(err)
+        }
+        defer resp.Body.Close()
+
+        body,_ := ioutil.ReadAll(resp.Body)
+        log.Println(string(body))
+
+    }
+### http.Header.Set
+`Header.Set`方法原型：`func (h Header) Set(key, value string)`
+### http.Header.Get
+`Header.Get`方法原型：`func (h Header) Get(key string) string`
+### http.Header.Add
+`Header.Add`方法原型：`func (h Header) Add(key, value string)`
+### http.Header.Del
+`Header.Del`方法原型：`func (h Header) Del(key string)`
+
 ## HTTP客户端
 `http.Client`结构体表示一个客户端
 
@@ -218,7 +377,7 @@ http请求报文格式如下：
 `Client.Do`方法原型：`func (c *Client) Do(req *Request) (resp *Response, err error)`
 
 ### Head方法
-`Client.Head`方法向指定`url`发送`HEAD`请求
+`Client.Head`方法向指定`url`发送`HEAD`请求，当`Client`为零值时候与`http.Head`函数等价
 
 `Client.Head`方法原型：`func (c *Client) Head(url string) (resp *Response, err error)`
 
@@ -245,16 +404,33 @@ http请求报文格式如下：
     }
 
 ### Get方法
-`Client.Get`方法向指定`url`发送`GET`请求
+`Client.Get`方法向指定`url`发送`GET`请求，当`Client`为零值时候与`http.Get`函数等价
 
 `Client.Get`方法原型：`func (c *Client) Get(url string) (resp *Response, err error)`
 
 ### Post方法
-`Client.Post`方法向指定`url`发送`POST`请求
+`Client.Post`方法向指定`url`发送`POST`请求，当`Client`为零值时候与`http.Post`函数等价
 
 `Client.Post`方法原型：`func (c *Client) Post(url string, bodyType string, body io.Reader) (resp *Response, err error)`
 
 ### PostForm方法
-`Client.PostForm`方法向指定`url`发送`POST`请求，post数据类型为："application/x-www-form-urlencoded"，数据为：`url.Values`
+`Client.PostForm`方法向指定`url`发送`POST`请求，post数据类型为："application/x-www-form-urlencoded"，数据为：`url.Values`，当`Client`为零值时候与`http.PostForm`函数等价
 
 `Client.PostForm`方法原型：`func (c *Client) PostForm(url string, data url.Values) (resp *Response, err error)`
+
+### Get函数
+`http.Get`函数参考`Client.Get`方法
+
+`http.Get`函数原型：`func Get(url string) (resp *Response, err error)`
+### Post函数
+`http.Get`函数参考`Client.Post`方法
+
+`http.Post`函数原型：`func Post(url string, bodyType string, body io.Reader) (resp *Response, err error)`
+### Head函数
+`http.Get`函数参考`Client.Head`方法
+
+`http.Head`函数原型：`func Head(url string) (resp *Response, err error)`
+### PostForm函数
+`http.Get`函数参考`Client.PostForm`方法
+
+`http.PostForm`函数原型：`func PostForm(url string, data url.Values) (resp *Response, err error)`

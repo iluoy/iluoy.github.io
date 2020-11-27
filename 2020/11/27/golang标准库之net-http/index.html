@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.3k 字
+      2.5k 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      29
+      31
        分钟
     </span>
   
@@ -476,6 +476,14 @@ func main()&#123;
 <p><code>Client.Post</code>方法原型：<code>func (c *Client) Post(url string, bodyType string, body io.Reader) (resp *Response, err error)</code></p>
 <h3 id="PostForm方法"><a href="#PostForm方法" class="headerlink" title="PostForm方法"></a>PostForm方法</h3><p><code>Client.PostForm</code>方法向指定<code>url</code>发送<code>POST</code>请求，post数据类型为：”application/x-www-form-urlencoded”，数据为：<code>url.Values</code>，当<code>Client</code>为零值时候与<code>http.PostForm</code>函数等价</p>
 <p><code>Client.PostForm</code>方法原型：<code>func (c *Client) PostForm(url string, data url.Values) (resp *Response, err error)</code></p>
+<h3 id="Get函数"><a href="#Get函数" class="headerlink" title="Get函数"></a>Get函数</h3><p><code>http.Get</code>函数参考<code>Client.Get</code>方法</p>
+<p><code>http.Get</code>函数原型：<code>func Get(url string) (resp *Response, err error)</code></p>
+<h3 id="Post函数"><a href="#Post函数" class="headerlink" title="Post函数"></a>Post函数</h3><p><code>http.Get</code>函数参考<code>Client.Post</code>方法</p>
+<p><code>http.Post</code>函数原型：<code>func Post(url string, bodyType string, body io.Reader) (resp *Response, err error)</code></p>
+<h3 id="Head函数"><a href="#Head函数" class="headerlink" title="Head函数"></a>Head函数</h3><p><code>http.Get</code>函数参考<code>Client.Head</code>方法</p>
+<p><code>http.Head</code>函数原型：<code>func Head(url string) (resp *Response, err error)</code></p>
+<h3 id="PostForm函数"><a href="#PostForm函数" class="headerlink" title="PostForm函数"></a>PostForm函数</h3><p><code>http.Get</code>函数参考<code>Client.PostForm</code>方法</p>
+<p><code>http.PostForm</code>函数原型：<code>func PostForm(url string, data url.Values) (resp *Response, err error)</code></p>
 
             </div>
             <hr>

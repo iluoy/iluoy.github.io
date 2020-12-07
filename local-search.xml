@@ -4,6 +4,39 @@
   
   
   <entry>
+    <title>echo框架之log</title>
+    <link href="/2020/12/07/echo%E6%A1%86%E6%9E%B6%E4%B9%8Blog/"/>
+    <url>/2020/12/07/echo%E6%A1%86%E6%9E%B6%E4%B9%8Blog/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><code>echo</code>框架自带了日志处理机制，其由作者的<a href="https://github.com/labstack/gommon">labstack log</a>模块具体实现。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>echo框架</category>
+      
+      <category>echo log</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang框架</tag>
+      
+      <tag>golang web</tag>
+      
+      <tag>echo框架</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>golang标准库之net/http</title>
     <link href="/2020/11/27/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bnet-http/"/>
     <url>/2020/11/27/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bnet-http/</url>

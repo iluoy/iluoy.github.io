@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="iluoy">
   <meta name="keywords" content="">
-  <title>echo框架之log - iluoy</title>
+  <title>filebeat之添加自定义fields - iluoy</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
 
@@ -198,7 +198,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="echo框架之log">
+            <span class="h2" id="subtitle" title="filebeat之添加自定义fields">
               
             </span>
 
@@ -208,8 +208,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-12-07 22:04" pubdate>
-        2020年12月7日 晚上
+      <time datetime="2020-12-30 14:29" pubdate>
+        2020年12月30日 下午
       </time>
     </span>
   
@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      27 字
+      988 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1
+      16
        分钟
     </span>
   
@@ -260,10 +260,160 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">echo框架之log</h1>
+            <h1 style="display: none">filebeat之添加自定义fields</h1>
             
             <div class="markdown-body">
-              <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><code>echo</code>框架自带了日志处理机制，其由作者的<a target="_blank" rel="noopener" href="https://github.com/labstack/gommon">labstack log</a>模块具体实现。</p>
+              <h3 id="filebeat-fields简介"><a href="#filebeat-fields简介" class="headerlink" title="filebeat fields简介"></a>filebeat fields简介</h3><p><code>filebeat</code>支持自定义额外日志字段，例如给所有日志添加一个<code>app: jenkins</code>的属性，添加完成后可以通过<code>%&#123;[]&#125;</code>形式使用此自定义字段</p>
+<h3 id="filebeat-input中定义"><a href="#filebeat-input中定义" class="headerlink" title="filebeat input中定义"></a>filebeat input中定义</h3><p>在<code>filebeat input</code>中可以添加<code>fields</code>字段，例如添加<code>app: jenkins</code>的<code>fields</code>，此时添加output之后输出内容包含<code>&quot;fields&quot;: &#123;&quot;app&quot;: &quot;jenkins&quot;&#125;</code>，如下</p>
+<pre><code>filebeat.inputs:
+  - type: log
+    paths:
+      - /root/test.log
+    fields:
+      app: jenkins
+
+
+output.kafka:
+  hosts: [&quot;10.0.9.60:9092&quot;,&quot;10.0.9.30:9092&quot;,&quot;10.0.9.24:9092&quot;]
+  topic: [&quot;test_log&quot;]</code></pre>
+<p>此时获取<code>output</code>如下：</p>
+<pre><code>&#123;
+    &quot;@metadata&quot;: &#123;
+        &quot;beat&quot;: &quot;filebeat&quot;,
+        &quot;type&quot;: &quot;_doc&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;@timestamp&quot;: &quot;2020-12-30T06:51:09.479Z&quot;,
+    &quot;agent&quot;: &#123;
+        &quot;ephemeral_id&quot;: &quot;198069ae-ce06-4051-9ee9-8326596b150f&quot;,
+        &quot;hostname&quot;: &quot;kafka-0&quot;,
+        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,
+        &quot;name&quot;: &quot;kafka-0&quot;,
+        &quot;type&quot;: &quot;filebeat&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;ecs&quot;: &#123;
+        &quot;version&quot;: &quot;1.6.0&quot;
+    &#125;,
+    &quot;fields&quot;: &#123;
+        &quot;app&quot;: &quot;jenkins&quot;
+    &#125;,
+    &quot;host&quot;: &#123;
+        &quot;name&quot;: &quot;kafka-0&quot;
+    &#125;,
+    &quot;input&quot;: &#123;
+        &quot;type&quot;: &quot;log&quot;
+    &#125;,
+    &quot;log&quot;: &#123;
+        &quot;file&quot;: &#123;
+            &quot;path&quot;: &quot;/root/test.log&quot;
+        &#125;,
+        &quot;offset&quot;: 20
+    &#125;,
+    &quot;message&quot;: &quot;d&quot;
+&#125;</code></pre>
+<p>可以发现output中有：</p>
+<pre><code>&quot;fields&quot;: &#123;
+    &quot;app&quot;: &quot;jenkins&quot;
+&#125;</code></pre>
+<p>还有一个额外的<code>fields</code>参数可以控制自定义字段是否在<code>output</code>顶层：<code>fields\_under\_root</code>，如果为<code>true</code>表示为<code>output</code>顶层，为<code>false</code>则为<code>fields</code>字目录下，什么意思？加入添加以下配置</p>
+<pre><code>filebeat.inputs:
+  - type: log
+    paths:
+      - /root/test.log
+    fields:
+      app: jenkins
+    fields_under_root: true
+
+output.kafka:
+  hosts: [&quot;10.0.9.60:9092&quot;,&quot;10.0.9.30:9092&quot;,&quot;10.0.9.24:9092&quot;]
+  topic: &quot;test_log&quot;</code></pre>
+<p>此时<code>output</code>如下</p>
+<pre><code>&#123;
+    &quot;@metadata&quot;: &#123;
+        &quot;beat&quot;: &quot;filebeat&quot;,
+        &quot;type&quot;: &quot;_doc&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;@timestamp&quot;: &quot;2020-12-30T07:01:26.558Z&quot;,
+    &quot;agent&quot;: &#123;
+        &quot;ephemeral_id&quot;: &quot;64269eb1-e03c-4ba9-abba-c8d573b73223&quot;,
+        &quot;hostname&quot;: &quot;kafka-0&quot;,
+        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,
+        &quot;name&quot;: &quot;kafka-0&quot;,
+        &quot;type&quot;: &quot;filebeat&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;app&quot;: &quot;jenkins&quot;,
+    &quot;ecs&quot;: &#123;
+        &quot;version&quot;: &quot;1.6.0&quot;
+    &#125;,
+    &quot;host&quot;: &#123;
+        &quot;name&quot;: &quot;kafka-0&quot;
+    &#125;,
+    &quot;input&quot;: &#123;
+        &quot;type&quot;: &quot;log&quot;
+    &#125;,
+    &quot;log&quot;: &#123;
+        &quot;file&quot;: &#123;
+            &quot;path&quot;: &quot;/root/test.log&quot;
+        &#125;,
+        &quot;offset&quot;: 28
+    &#125;,
+    &quot;message&quot;: &quot;a&quot;
+&#125;</code></pre>
+<blockquote>
+<p>经过测试fields不能是数组结构，但是官方指出可以是标量、数组、字典以及其组合，找时间看看是否是测试方式不对</p>
+</blockquote>
+<h3 id="通用配置fields"><a href="#通用配置fields" class="headerlink" title="通用配置fields"></a>通用配置fields</h3><p>在<code>filebeat.inputs</code>中配置<code>fields</code>只能在其配置的<code>input</code>中生效，使用通用配置可以全局生效，配置方式没有什么区别，只是位置不同，而且不支持<code>fields\_under\_root</code>参数，其值只能在<code>fields</code>子目录中</p>
+<pre><code>fields:
+  app: jenkins
+
+filebeat.inputs:
+  - type: log
+    paths:
+      - /root/test.log
+
+output.kafka:
+  hosts: [&quot;10.0.9.60:9092&quot;,&quot;10.0.9.30:9092&quot;,&quot;10.0.9.24:9092&quot;]
+  topic: &quot;test_log&quot;</code></pre>
+<p><code>output</code>输出为：</p>
+<pre><code>&#123;
+    &quot;@metadata&quot;: &#123;
+        &quot;beat&quot;: &quot;filebeat&quot;,
+        &quot;type&quot;: &quot;_doc&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;@timestamp&quot;: &quot;2020-12-30T07:13:36.879Z&quot;,
+    &quot;agent&quot;: &#123;
+        &quot;ephemeral_id&quot;: &quot;451275ae-796a-4a02-bc85-f7ddd8751dc3&quot;,
+        &quot;hostname&quot;: &quot;kafka-0&quot;,
+        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,
+        &quot;name&quot;: &quot;kafka-0&quot;,
+        &quot;type&quot;: &quot;filebeat&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;ecs&quot;: &#123;
+        &quot;version&quot;: &quot;1.6.0&quot;
+    &#125;,
+    &quot;fields&quot;: &#123;
+        &quot;app&quot;: &quot;jenkins&quot;
+    &#125;,
+    &quot;host&quot;: &#123;
+        &quot;name&quot;: &quot;kafka-0&quot;
+    &#125;,
+    &quot;input&quot;: &#123;
+        &quot;type&quot;: &quot;log&quot;
+    &#125;,
+    &quot;log&quot;: &#123;
+        &quot;file&quot;: &#123;
+            &quot;path&quot;: &quot;/root/test.log&quot;
+        &#125;,
+        &quot;offset&quot;: 40
+    &#125;,
+    &quot;message&quot;: &quot;a&quot;
+&#125;</code></pre>
+<h3 id="使用fields"><a href="#使用fields" class="headerlink" title="使用fields"></a>使用fields</h3><p><code>output</code>输出中的字段都可以被引用，例如<code>&#39;%&#123;[host.name]&#125;&#39;</code>表示<code>kafka-0</code>，<code>&#39;%&#123;[fields.app]&#125;&#39;</code>表示<code>jenkins</code>，所以是否使用顶层fields决定了输出，也决定了引用，如果为顶层输出<code>&#39;&#123;%&#123;[app]&#125;&#125;&#39;</code>表示<code>jenkins</code></p>
 
             </div>
             <hr>
@@ -273,11 +423,9 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/golang/">golang</a>
+                      <a class="hover-with-bg" href="/categories/EFK/">EFK</a>
                     
-                      <a class="hover-with-bg" href="/categories/golang/echo%E6%A1%86%E6%9E%B6/">echo框架</a>
-                    
-                      <a class="hover-with-bg" href="/categories/golang/echo%E6%A1%86%E6%9E%B6/echo-log/">echo log</a>
+                      <a class="hover-with-bg" href="/categories/EFK/filebeat/">filebeat</a>
                     
                   </div>
                 
@@ -285,11 +433,11 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/golang%E6%A1%86%E6%9E%B6/">golang框架</a>
+                      <a class="hover-with-bg" href="/tags/EFK/">EFK</a>
                     
-                      <a class="hover-with-bg" href="/tags/golang-web/">golang web</a>
+                      <a class="hover-with-bg" href="/tags/filebeat/">filebeat</a>
                     
-                      <a class="hover-with-bg" href="/tags/echo%E6%A1%86%E6%9E%B6/">echo框架</a>
+                      <a class="hover-with-bg" href="/tags/%E6%97%A5%E5%BF%97/">日志</a>
                     
                   </div>
                 
@@ -302,18 +450,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/12/30/filebeat%E4%B9%8Bkafka%E9%85%8D%E7%BD%AE/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">filebeat之kafka配置</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/11/27/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bnet-http/">
-                        <span class="hidden-mobile">golang标准库之net/http</span>
+                      <a href="/2020/12/30/filebeat%E4%B9%8Bkafka%E9%85%8D%E7%BD%AE/">
+                        <span class="hidden-mobile">filebeat之kafka配置</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

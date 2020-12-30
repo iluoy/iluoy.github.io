@@ -4,6 +4,68 @@
   
   
   <entry>
+    <title>filebeat之添加自定义fields</title>
+    <link href="/2020/12/30/filebeat%E4%B9%8B%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89fields/"/>
+    <url>/2020/12/30/filebeat%E4%B9%8B%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89fields/</url>
+    
+    <content type="html"><![CDATA[<h3 id="filebeat-fields简介"><a href="#filebeat-fields简介" class="headerlink" title="filebeat fields简介"></a>filebeat fields简介</h3><p><code>filebeat</code>支持自定义额外日志字段，例如给所有日志添加一个<code>app: jenkins</code>的属性，添加完成后可以通过<code>%&#123;[]&#125;</code>形式使用此自定义字段</p><h3 id="filebeat-input中定义"><a href="#filebeat-input中定义" class="headerlink" title="filebeat input中定义"></a>filebeat input中定义</h3><p>在<code>filebeat input</code>中可以添加<code>fields</code>字段，例如添加<code>app: jenkins</code>的<code>fields</code>，此时添加output之后输出内容包含<code>&quot;fields&quot;: &#123;&quot;app&quot;: &quot;jenkins&quot;&#125;</code>，如下</p><pre><code>filebeat.inputs:  - type: log    paths:      - /root/test.log    fields:      app: jenkinsoutput.kafka:  hosts: [&quot;10.0.9.60:9092&quot;,&quot;10.0.9.30:9092&quot;,&quot;10.0.9.24:9092&quot;]  topic: [&quot;test_log&quot;]</code></pre><p>此时获取<code>output</code>如下：</p><pre><code>&#123;    &quot;@metadata&quot;: &#123;        &quot;beat&quot;: &quot;filebeat&quot;,        &quot;type&quot;: &quot;_doc&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;@timestamp&quot;: &quot;2020-12-30T06:51:09.479Z&quot;,    &quot;agent&quot;: &#123;        &quot;ephemeral_id&quot;: &quot;198069ae-ce06-4051-9ee9-8326596b150f&quot;,        &quot;hostname&quot;: &quot;kafka-0&quot;,        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,        &quot;name&quot;: &quot;kafka-0&quot;,        &quot;type&quot;: &quot;filebeat&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;ecs&quot;: &#123;        &quot;version&quot;: &quot;1.6.0&quot;    &#125;,    &quot;fields&quot;: &#123;        &quot;app&quot;: &quot;jenkins&quot;    &#125;,    &quot;host&quot;: &#123;        &quot;name&quot;: &quot;kafka-0&quot;    &#125;,    &quot;input&quot;: &#123;        &quot;type&quot;: &quot;log&quot;    &#125;,    &quot;log&quot;: &#123;        &quot;file&quot;: &#123;            &quot;path&quot;: &quot;/root/test.log&quot;        &#125;,        &quot;offset&quot;: 20    &#125;,    &quot;message&quot;: &quot;d&quot;&#125;</code></pre><p>可以发现output中有：</p><pre><code>&quot;fields&quot;: &#123;    &quot;app&quot;: &quot;jenkins&quot;&#125;</code></pre><p>还有一个额外的<code>fields</code>参数可以控制自定义字段是否在<code>output</code>顶层：<code>fields\_under\_root</code>，如果为<code>true</code>表示为<code>output</code>顶层，为<code>false</code>则为<code>fields</code>字目录下，什么意思？加入添加以下配置</p><pre><code>filebeat.inputs:  - type: log    paths:      - /root/test.log    fields:      app: jenkins    fields_under_root: trueoutput.kafka:  hosts: [&quot;10.0.9.60:9092&quot;,&quot;10.0.9.30:9092&quot;,&quot;10.0.9.24:9092&quot;]  topic: &quot;test_log&quot;</code></pre><p>此时<code>output</code>如下</p><pre><code>&#123;    &quot;@metadata&quot;: &#123;        &quot;beat&quot;: &quot;filebeat&quot;,        &quot;type&quot;: &quot;_doc&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;@timestamp&quot;: &quot;2020-12-30T07:01:26.558Z&quot;,    &quot;agent&quot;: &#123;        &quot;ephemeral_id&quot;: &quot;64269eb1-e03c-4ba9-abba-c8d573b73223&quot;,        &quot;hostname&quot;: &quot;kafka-0&quot;,        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,        &quot;name&quot;: &quot;kafka-0&quot;,        &quot;type&quot;: &quot;filebeat&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;app&quot;: &quot;jenkins&quot;,    &quot;ecs&quot;: &#123;        &quot;version&quot;: &quot;1.6.0&quot;    &#125;,    &quot;host&quot;: &#123;        &quot;name&quot;: &quot;kafka-0&quot;    &#125;,    &quot;input&quot;: &#123;        &quot;type&quot;: &quot;log&quot;    &#125;,    &quot;log&quot;: &#123;        &quot;file&quot;: &#123;            &quot;path&quot;: &quot;/root/test.log&quot;        &#125;,        &quot;offset&quot;: 28    &#125;,    &quot;message&quot;: &quot;a&quot;&#125;</code></pre><blockquote><p>经过测试fields不能是数组结构，但是官方指出可以是标量、数组、字典以及其组合，找时间看看是否是测试方式不对</p></blockquote><h3 id="通用配置fields"><a href="#通用配置fields" class="headerlink" title="通用配置fields"></a>通用配置fields</h3><p>在<code>filebeat.inputs</code>中配置<code>fields</code>只能在其配置的<code>input</code>中生效，使用通用配置可以全局生效，配置方式没有什么区别，只是位置不同，而且不支持<code>fields\_under\_root</code>参数，其值只能在<code>fields</code>子目录中</p><pre><code>fields:  app: jenkinsfilebeat.inputs:  - type: log    paths:      - /root/test.logoutput.kafka:  hosts: [&quot;10.0.9.60:9092&quot;,&quot;10.0.9.30:9092&quot;,&quot;10.0.9.24:9092&quot;]  topic: &quot;test_log&quot;</code></pre><p><code>output</code>输出为：</p><pre><code>&#123;    &quot;@metadata&quot;: &#123;        &quot;beat&quot;: &quot;filebeat&quot;,        &quot;type&quot;: &quot;_doc&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;@timestamp&quot;: &quot;2020-12-30T07:13:36.879Z&quot;,    &quot;agent&quot;: &#123;        &quot;ephemeral_id&quot;: &quot;451275ae-796a-4a02-bc85-f7ddd8751dc3&quot;,        &quot;hostname&quot;: &quot;kafka-0&quot;,        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,        &quot;name&quot;: &quot;kafka-0&quot;,        &quot;type&quot;: &quot;filebeat&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;ecs&quot;: &#123;        &quot;version&quot;: &quot;1.6.0&quot;    &#125;,    &quot;fields&quot;: &#123;        &quot;app&quot;: &quot;jenkins&quot;    &#125;,    &quot;host&quot;: &#123;        &quot;name&quot;: &quot;kafka-0&quot;    &#125;,    &quot;input&quot;: &#123;        &quot;type&quot;: &quot;log&quot;    &#125;,    &quot;log&quot;: &#123;        &quot;file&quot;: &#123;            &quot;path&quot;: &quot;/root/test.log&quot;        &#125;,        &quot;offset&quot;: 40    &#125;,    &quot;message&quot;: &quot;a&quot;&#125;</code></pre><h3 id="使用fields"><a href="#使用fields" class="headerlink" title="使用fields"></a>使用fields</h3><p><code>output</code>输出中的字段都可以被引用，例如<code>&#39;%&#123;[host.name]&#125;&#39;</code>表示<code>kafka-0</code>，<code>&#39;%&#123;[fields.app]&#125;&#39;</code>表示<code>jenkins</code>，所以是否使用顶层fields决定了输出，也决定了引用，如果为顶层输出<code>&#39;&#123;%&#123;[app]&#125;&#125;&#39;</code>表示<code>jenkins</code></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>EFK</category>
+      
+      <category>filebeat</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>EFK</tag>
+      
+      <tag>filebeat</tag>
+      
+      <tag>日志</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>filebeat之kafka配置</title>
+    <link href="/2020/12/30/filebeat%E4%B9%8Bkafka%E9%85%8D%E7%BD%AE/"/>
+    <url>/2020/12/30/filebeat%E4%B9%8Bkafka%E9%85%8D%E7%BD%AE/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><code>filebeat</code>支持将日志输出到<code>kafka</code>高性能消息中间件中</p><h3 id="kafka-output配置"><a href="#kafka-output配置" class="headerlink" title="kafka output配置"></a>kafka output配置</h3><ul><li>enabled： 为<code>true</code>表示启用此<code>output</code>，为<code>false</code>表示禁用此<code>output</code></li><li>hosts：kafka broker列表，例如：[“kafka-0:9092”,”kafka-1:9092”,”kafka-2:9092”]</li><li>username：连接<code>kafka</code>的用户名，如果配置了此参数，则<code>password</code>也是必须的</li><li>password：连接<code>kafka</code>的密码，与<code>username</code>一起</li><li>topic：发送消息的<code>topic</code>名字，需要注意<code>kafka</code>在与<code>filebeat</code>使用时候不要关闭自动创建<code>topic</code>的功能</li><li>topics</li><li>key</li><li>partition</li><li>client_id</li><li>worker</li><li>codec</li><li>metadata</li></ul><h3 id="动态topic名字"><a href="#动态topic名字" class="headerlink" title="动态topic名字"></a>动态topic名字</h3><p>动态topic可以通过所有output输出字段中获取，其中自定义output字段可以通过fields来进行配置，如下所示，配置的自定义fields为log_topic，那么动态topic名字可以使用’%{[host.name]}’、’%{[fields.log_topic]}’等</p><pre><code>&#123;    &quot;@metadata&quot;: &#123;        &quot;beat&quot;: &quot;filebeat&quot;,        &quot;type&quot;: &quot;_doc&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;@timestamp&quot;: &quot;2020-12-30T06:36:20.922Z&quot;,    &quot;agent&quot;: &#123;        &quot;ephemeral_id&quot;: &quot;3b070191-4c60-4bca-b4e4-793276a0f621&quot;,        &quot;hostname&quot;: &quot;kafka-0&quot;,        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,        &quot;name&quot;: &quot;kafka-0&quot;,        &quot;type&quot;: &quot;filebeat&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;ecs&quot;: &#123;        &quot;version&quot;: &quot;1.6.0&quot;    &#125;,    &quot;fields&quot;: &#123;        &quot;log_topic&quot;: &quot;a&quot;    &#125;,    &quot;host&quot;: &#123;        &quot;name&quot;: &quot;kafka-0&quot;    &#125;,    &quot;input&quot;: &#123;        &quot;type&quot;: &quot;log&quot;    &#125;,    &quot;log&quot;: &#123;        &quot;file&quot;: &#123;            &quot;path&quot;: &quot;/root/test.log&quot;        &#125;,        &quot;offset&quot;: 16    &#125;,    &quot;message&quot;: &quot;d&quot;&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>EFK</category>
+      
+      <category>filebeat</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>EFK</tag>
+      
+      <tag>filebeat</tag>
+      
+      <tag>日志收集</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>echo框架之log</title>
     <link href="/2020/12/07/echo%E6%A1%86%E6%9E%B6%E4%B9%8Blog/"/>
     <url>/2020/12/07/echo%E6%A1%86%E6%9E%B6%E4%B9%8Blog/</url>

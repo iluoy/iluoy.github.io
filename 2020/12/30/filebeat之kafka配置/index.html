@@ -17,9 +17,25 @@
   <meta name="description" content="">
   <meta name="author" content="iluoy">
   <meta name="keywords" content="">
-  <title>标签 - iluoy</title>
+  <title>filebeat之kafka配置 - iluoy</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
 
 
 
@@ -47,7 +63,7 @@
 
 
 <body>
-  <header style="height: 80vh;">
+  <header style="height: 70vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -182,9 +198,46 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="标签">
+            <span class="h2" id="subtitle" title="filebeat之kafka配置">
               
             </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-30 14:06" pubdate>
+        2020年12月30日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      358 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      5
+       分钟
+    </span>
+  
+
+  
+  
+</div>
 
             
           </div>
@@ -197,24 +250,147 @@
 
   <main>
     
-      <div class="container nopadding-md">
-        <div class="py-5" id="board"
-          >
-          
-          <div class="container">
-            <div class="row">
-              <div class="col-12 col-md-10 m-auto">
-                
+      
 
-<div class="text-center tagcloud">
-  <a href="/tags/EFK/" style="font-size: 18.75px; color: #99abe0">EFK</a> <a href="/tags/chrome/" style="font-size: 15px; color: #bbe">chrome</a> <a href="/tags/chrome-extension/" style="font-size: 15px; color: #bbe">chrome-extension</a> <a href="/tags/echo%E6%A1%86%E6%9E%B6/" style="font-size: 15px; color: #bbe">echo框架</a> <a href="/tags/filebeat/" style="font-size: 18.75px; color: #99abe0">filebeat</a> <a href="/tags/firefox/" style="font-size: 15px; color: #bbe">firefox</a> <a href="/tags/firefox-extension/" style="font-size: 15px; color: #bbe">firefox-extension</a> <a href="/tags/font/" style="font-size: 15px; color: #bbe">font</a> <a href="/tags/golang/" style="font-size: 30px; color: #337ab7">golang</a> <a href="/tags/golang-web/" style="font-size: 15px; color: #bbe">golang web</a> <a href="/tags/golang%E5%91%BD%E4%BB%A4%E8%A1%8C/" style="font-size: 22.5px; color: #779bd3">golang命令行</a> <a href="/tags/golang%E5%AD%97%E7%AC%A6%E4%B8%B2/" style="font-size: 15px; color: #bbe">golang字符串</a> <a href="/tags/golang%E6%97%A5%E5%BF%97/" style="font-size: 18.75px; color: #99abe0">golang日志</a> <a href="/tags/golang%E6%A0%87%E5%87%86%E5%BA%93/" style="font-size: 26.25px; color: #558ac5">golang标准库</a> <a href="/tags/golang%E6%A1%86%E6%9E%B6/" style="font-size: 15px; color: #bbe">golang框架</a> <a href="/tags/http/" style="font-size: 15px; color: #bbe">http</a> <a href="/tags/jenkins/" style="font-size: 15px; color: #bbe">jenkins</a> <a href="/tags/kubernetes/" style="font-size: 15px; color: #bbe">kubernetes</a> <a href="/tags/%E5%AD%97%E4%BD%93/" style="font-size: 15px; color: #bbe">字体</a> <a href="/tags/%E6%97%A5%E5%BF%97/" style="font-size: 15px; color: #bbe">日志</a> <a href="/tags/%E6%97%A5%E5%BF%97%E6%94%B6%E9%9B%86/" style="font-size: 15px; color: #bbe">日志收集</a>
-</div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">filebeat之kafka配置</h1>
+            
+            <div class="markdown-body">
+              <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><code>filebeat</code>支持将日志输出到<code>kafka</code>高性能消息中间件中</p>
+<h3 id="kafka-output配置"><a href="#kafka-output配置" class="headerlink" title="kafka output配置"></a>kafka output配置</h3><ul>
+<li>enabled： 为<code>true</code>表示启用此<code>output</code>，为<code>false</code>表示禁用此<code>output</code></li>
+<li>hosts：kafka broker列表，例如：[“kafka-0:9092”,”kafka-1:9092”,”kafka-2:9092”]</li>
+<li>username：连接<code>kafka</code>的用户名，如果配置了此参数，则<code>password</code>也是必须的</li>
+<li>password：连接<code>kafka</code>的密码，与<code>username</code>一起</li>
+<li>topic：发送消息的<code>topic</code>名字，需要注意<code>kafka</code>在与<code>filebeat</code>使用时候不要关闭自动创建<code>topic</code>的功能</li>
+<li>topics</li>
+<li>key</li>
+<li>partition</li>
+<li>client_id</li>
+<li>worker</li>
+<li>codec</li>
+<li>metadata</li>
+</ul>
+<h3 id="动态topic名字"><a href="#动态topic名字" class="headerlink" title="动态topic名字"></a>动态topic名字</h3><p>动态topic可以通过所有output输出字段中获取，其中自定义output字段可以通过fields来进行配置，如下所示，配置的自定义fields为log_topic，那么动态topic名字可以使用’%{[host.name]}’、’%{[fields.log_topic]}’等</p>
+<pre><code>&#123;
+    &quot;@metadata&quot;: &#123;
+        &quot;beat&quot;: &quot;filebeat&quot;,
+        &quot;type&quot;: &quot;_doc&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;@timestamp&quot;: &quot;2020-12-30T06:36:20.922Z&quot;,
+    &quot;agent&quot;: &#123;
+        &quot;ephemeral_id&quot;: &quot;3b070191-4c60-4bca-b4e4-793276a0f621&quot;,
+        &quot;hostname&quot;: &quot;kafka-0&quot;,
+        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,
+        &quot;name&quot;: &quot;kafka-0&quot;,
+        &quot;type&quot;: &quot;filebeat&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;ecs&quot;: &#123;
+        &quot;version&quot;: &quot;1.6.0&quot;
+    &#125;,
+    &quot;fields&quot;: &#123;
+        &quot;log_topic&quot;: &quot;a&quot;
+    &#125;,
+    &quot;host&quot;: &#123;
+        &quot;name&quot;: &quot;kafka-0&quot;
+    &#125;,
+    &quot;input&quot;: &#123;
+        &quot;type&quot;: &quot;log&quot;
+    &#125;,
+    &quot;log&quot;: &#123;
+        &quot;file&quot;: &#123;
+            &quot;path&quot;: &quot;/root/test.log&quot;
+        &#125;,
+        &quot;offset&quot;: 16
+    &#125;,
+    &quot;message&quot;: &quot;d&quot;
+&#125;</code></pre>
 
-              </div>
             </div>
-          </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/EFK/">EFK</a>
+                    
+                      <a class="hover-with-bg" href="/categories/EFK/filebeat/">filebeat</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/EFK/">EFK</a>
+                    
+                      <a class="hover-with-bg" href="/tags/filebeat/">filebeat</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%97%A5%E5%BF%97%E6%94%B6%E9%9B%86/">日志收集</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/12/30/filebeat%E4%B9%8B%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89fields/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">filebeat之添加自定义fields</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/12/07/echo%E6%A1%86%E6%9E%B6%E4%B9%8Blog/">
+                        <span class="hidden-mobile">echo框架之log</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
         </div>
       </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
     
 
     
@@ -297,9 +473,15 @@
 
 
 
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
 
 
 
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
 
 
 

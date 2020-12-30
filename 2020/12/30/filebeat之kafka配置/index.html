@@ -220,7 +220,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      358 字
+      456 字
     </span>
   
 
@@ -230,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5
+      6
        分钟
     </span>
   
@@ -270,14 +270,17 @@
 <li>username：连接<code>kafka</code>的用户名，如果配置了此参数，则<code>password</code>也是必须的</li>
 <li>password：连接<code>kafka</code>的密码，与<code>username</code>一起</li>
 <li>topic：发送消息的<code>topic</code>名字，需要注意<code>kafka</code>在与<code>filebeat</code>使用时候不要关闭自动创建<code>topic</code>的功能</li>
-<li>topics</li>
-<li>key</li>
-<li>partition</li>
-<li>client_id</li>
-<li>worker</li>
-<li>codec</li>
-<li>metadata</li>
+<li>topics：topic数组，支持条件匹配，也就是可以将满足条件的日志输出到对应到topic中</li>
+<li>key：设置消息key</li>
+<li>partition：设置消息传入的partition，默认是传入所有partition</li>
+<li>client_id：设置客户端id</li>
+<li>worker：设置output worker个数</li>
+<li>codec：codec配置</li>
+<li>metadata：kafaka元数据配置，例如配置最大消息大小：max_message_bytes</li>
 </ul>
+<blockquote>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.elastic.co/guide/en/beats/filebeat/master/kafka-output.html#_configuration_options_19">https://www.elastic.co/guide/en/beats/filebeat/master/kafka-output.html#_configuration_options_19</a></p>
+</blockquote>
 <h3 id="动态topic名字"><a href="#动态topic名字" class="headerlink" title="动态topic名字"></a>动态topic名字</h3><p>动态topic可以通过所有output输出字段中获取，其中自定义output字段可以通过fields来进行配置，如下所示，配置的自定义fields为log_topic，那么动态topic名字可以使用’%{[host.name]}’、’%{[fields.log_topic]}’等</p>
 <pre><code>&#123;
     &quot;@metadata&quot;: &#123;

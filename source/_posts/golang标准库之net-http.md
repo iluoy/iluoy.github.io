@@ -588,3 +588,52 @@ http请求报文格式如下：
 `http.PostForm`函数参考`Client.PostForm`方法
 
 `http.PostForm`函数原型：`func PostForm(url string, data url.Values) (resp *Response, err error)`
+
+## http响应报文
+http响应报文格式如下
+
+    HTTP_VERSION STATUS_CODE STATUS_MSG
+    HTTP_HEADERS
+
+    HTTP_BODY
+
+### Handler
+`http.Handler`结构体对象注册到http服务端用于为匹配到路径提供服务
+
+`http.Handler`原型：
+    
+    type Handler interface {
+        ServeHTTP(ResponseWriter, *Request)
+    }
+
+### ServeMux
+`http.ServeMux`用于注册路径与handler对应关系
+
+### http服务端
+`http.Server`结构体表示`http`服务端
+
+`http.Server`结构体原型：
+
+    type Server struct {
+        Addr           string        // 监听的TCP地址，如果为空字符串会使用":http"
+        Handler        Handler       // 调用的处理器，如为nil会调用http.DefaultServeMux
+        ReadTimeout    time.Duration // 请求的读取操作在超时前的最大持续时间
+        WriteTimeout   time.Duration // 回复的写入操作在超时前的最大持续时间
+        MaxHeaderBytes int           // 请求的头域最大长度，如为0则用DefaultMaxHeaderBytes
+        TLSConfig      *tls.Config   // 可选的TLS配置，用于ListenAndServeTLS方法
+        // TLSNextProto（可选地）指定一个函数来在一个NPN型协议升级出现时接管TLS连接的所有权。
+        // 映射的键为商谈的协议名；映射的值为函数，该函数的Handler参数应处理HTTP请求，
+        // 并且初始化Handler.ServeHTTP的*Request参数的TLS和RemoteAddr字段（如果未设置）。
+        // 连接在函数返回时会自动关闭。
+        TLSNextProto map[string]func(*Server, *tls.Conn, Handler)
+        // ConnState字段指定一个可选的回调函数，该函数会在一个与客户端的连接改变状态时被调用。
+        // 参见ConnState类型和相关常数获取细节。
+        ConnState func(net.Conn, ConnState)
+        // ErrorLog指定一个可选的日志记录器，用于记录接收连接时的错误和处理器不正常的行为。
+        // 如果本字段为nil，日志会通过log包的标准日志记录器写入os.Stderr。
+        ErrorLog *log.Logger
+        // 内含隐藏或非导出字段
+    }
+
+
+

@@ -1,0 +1,641 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="iluoy">
+  <meta name="keywords" content="">
+  <title>filebeat之添加自定义fields - iluoy</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"iluoy.github.io","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>iluoy</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/books/">
+                <i class="iconfont icon-book"></i>
+                书籍
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/movies/">
+                <i class="iconfont icon-youtube-fill"></i>
+                电影
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/musics/">
+                <i class="iconfont icon-music"></i>
+                音乐
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="filebeat之添加自定义fields">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-12-30 14:29" pubdate>
+        2020年12月30日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      988 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">filebeat之添加自定义fields</h1>
+            
+            <div class="markdown-body">
+              <h3 id="filebeat-fields简介"><a href="#filebeat-fields简介" class="headerlink" title="filebeat fields简介"></a>filebeat fields简介</h3><p><code>filebeat</code>支持自定义额外日志字段，例如给所有日志添加一个<code>app: jenkins</code>的属性，添加完成后可以通过<code>%&#123;[]&#125;</code>形式使用此自定义字段</p>
+<h3 id="filebeat-input中定义"><a href="#filebeat-input中定义" class="headerlink" title="filebeat input中定义"></a>filebeat input中定义</h3><p>在<code>filebeat input</code>中可以添加<code>fields</code>字段，例如添加<code>app: jenkins</code>的<code>fields</code>，此时添加output之后输出内容包含<code>&quot;fields&quot;: &#123;&quot;app&quot;: &quot;jenkins&quot;&#125;</code>，如下</p>
+<pre><code>filebeat.inputs:
+  - type: log
+    paths:
+      - /root/test.log
+    fields:
+      app: jenkins
+
+
+output.kafka:
+  hosts: [&quot;10.0.9.60:9092&quot;,&quot;10.0.9.30:9092&quot;,&quot;10.0.9.24:9092&quot;]
+  topic: [&quot;test_log&quot;]
+</code></pre>
+<p>此时获取<code>output</code>如下：</p>
+<pre><code>&#123;
+    &quot;@metadata&quot;: &#123;
+        &quot;beat&quot;: &quot;filebeat&quot;,
+        &quot;type&quot;: &quot;_doc&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;@timestamp&quot;: &quot;2020-12-30T06:51:09.479Z&quot;,
+    &quot;agent&quot;: &#123;
+        &quot;ephemeral_id&quot;: &quot;198069ae-ce06-4051-9ee9-8326596b150f&quot;,
+        &quot;hostname&quot;: &quot;kafka-0&quot;,
+        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,
+        &quot;name&quot;: &quot;kafka-0&quot;,
+        &quot;type&quot;: &quot;filebeat&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;ecs&quot;: &#123;
+        &quot;version&quot;: &quot;1.6.0&quot;
+    &#125;,
+    &quot;fields&quot;: &#123;
+        &quot;app&quot;: &quot;jenkins&quot;
+    &#125;,
+    &quot;host&quot;: &#123;
+        &quot;name&quot;: &quot;kafka-0&quot;
+    &#125;,
+    &quot;input&quot;: &#123;
+        &quot;type&quot;: &quot;log&quot;
+    &#125;,
+    &quot;log&quot;: &#123;
+        &quot;file&quot;: &#123;
+            &quot;path&quot;: &quot;/root/test.log&quot;
+        &#125;,
+        &quot;offset&quot;: 20
+    &#125;,
+    &quot;message&quot;: &quot;d&quot;
+&#125;
+</code></pre>
+<p>可以发现output中有：</p>
+<pre><code>&quot;fields&quot;: &#123;
+    &quot;app&quot;: &quot;jenkins&quot;
+&#125;
+</code></pre>
+<p>还有一个额外的<code>fields</code>参数可以控制自定义字段是否在<code>output</code>顶层：<code>fields\_under\_root</code>，如果为<code>true</code>表示为<code>output</code>顶层，为<code>false</code>则为<code>fields</code>字目录下，什么意思？加入添加以下配置</p>
+<pre><code>filebeat.inputs:
+  - type: log
+    paths:
+      - /root/test.log
+    fields:
+      app: jenkins
+    fields_under_root: true
+
+output.kafka:
+  hosts: [&quot;10.0.9.60:9092&quot;,&quot;10.0.9.30:9092&quot;,&quot;10.0.9.24:9092&quot;]
+  topic: &quot;test_log&quot;
+</code></pre>
+<p>此时<code>output</code>如下</p>
+<pre><code>&#123;
+    &quot;@metadata&quot;: &#123;
+        &quot;beat&quot;: &quot;filebeat&quot;,
+        &quot;type&quot;: &quot;_doc&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;@timestamp&quot;: &quot;2020-12-30T07:01:26.558Z&quot;,
+    &quot;agent&quot;: &#123;
+        &quot;ephemeral_id&quot;: &quot;64269eb1-e03c-4ba9-abba-c8d573b73223&quot;,
+        &quot;hostname&quot;: &quot;kafka-0&quot;,
+        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,
+        &quot;name&quot;: &quot;kafka-0&quot;,
+        &quot;type&quot;: &quot;filebeat&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;app&quot;: &quot;jenkins&quot;,
+    &quot;ecs&quot;: &#123;
+        &quot;version&quot;: &quot;1.6.0&quot;
+    &#125;,
+    &quot;host&quot;: &#123;
+        &quot;name&quot;: &quot;kafka-0&quot;
+    &#125;,
+    &quot;input&quot;: &#123;
+        &quot;type&quot;: &quot;log&quot;
+    &#125;,
+    &quot;log&quot;: &#123;
+        &quot;file&quot;: &#123;
+            &quot;path&quot;: &quot;/root/test.log&quot;
+        &#125;,
+        &quot;offset&quot;: 28
+    &#125;,
+    &quot;message&quot;: &quot;a&quot;
+&#125;
+      
+</code></pre>
+<blockquote>
+<p>经过测试fields不能是数组结构，但是官方指出可以是标量、数组、字典以及其组合，找时间看看是否是测试方式不对</p>
+</blockquote>
+<h3 id="通用配置fields"><a href="#通用配置fields" class="headerlink" title="通用配置fields"></a>通用配置fields</h3><p>在<code>filebeat.inputs</code>中配置<code>fields</code>只能在其配置的<code>input</code>中生效，使用通用配置可以全局生效，配置方式没有什么区别，只是位置不同，而且不支持<code>fields\_under\_root</code>参数，其值只能在<code>fields</code>子目录中</p>
+<pre><code>fields:
+  app: jenkins
+
+filebeat.inputs:
+  - type: log
+    paths:
+      - /root/test.log
+
+output.kafka:
+  hosts: [&quot;10.0.9.60:9092&quot;,&quot;10.0.9.30:9092&quot;,&quot;10.0.9.24:9092&quot;]
+  topic: &quot;test_log&quot;
+</code></pre>
+<p><code>output</code>输出为：</p>
+<pre><code>&#123;
+    &quot;@metadata&quot;: &#123;
+        &quot;beat&quot;: &quot;filebeat&quot;,
+        &quot;type&quot;: &quot;_doc&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;@timestamp&quot;: &quot;2020-12-30T07:13:36.879Z&quot;,
+    &quot;agent&quot;: &#123;
+        &quot;ephemeral_id&quot;: &quot;451275ae-796a-4a02-bc85-f7ddd8751dc3&quot;,
+        &quot;hostname&quot;: &quot;kafka-0&quot;,
+        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,
+        &quot;name&quot;: &quot;kafka-0&quot;,
+        &quot;type&quot;: &quot;filebeat&quot;,
+        &quot;version&quot;: &quot;7.10.1&quot;
+    &#125;,
+    &quot;ecs&quot;: &#123;
+        &quot;version&quot;: &quot;1.6.0&quot;
+    &#125;,
+    &quot;fields&quot;: &#123;
+        &quot;app&quot;: &quot;jenkins&quot;
+    &#125;,
+    &quot;host&quot;: &#123;
+        &quot;name&quot;: &quot;kafka-0&quot;
+    &#125;,
+    &quot;input&quot;: &#123;
+        &quot;type&quot;: &quot;log&quot;
+    &#125;,
+    &quot;log&quot;: &#123;
+        &quot;file&quot;: &#123;
+            &quot;path&quot;: &quot;/root/test.log&quot;
+        &#125;,
+        &quot;offset&quot;: 40
+    &#125;,
+    &quot;message&quot;: &quot;a&quot;
+&#125;
+</code></pre>
+<h3 id="使用fields"><a href="#使用fields" class="headerlink" title="使用fields"></a>使用fields</h3><p><code>output</code>输出中的字段都可以被引用，例如<code>&#39;%&#123;[host.name]&#125;&#39;</code>表示<code>kafka-0</code>，<code>&#39;%&#123;[fields.app]&#125;&#39;</code>表示<code>jenkins</code>，所以是否使用顶层fields决定了输出，也决定了引用，如果为顶层输出<code>&#39;&#123;%&#123;[app]&#125;&#125;&#39;</code>表示<code>jenkins</code></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/EFK/">EFK</a>
+                    
+                      <a class="hover-with-bg" href="/categories/EFK/filebeat/">filebeat</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/EFK/">EFK</a>
+                    
+                      <a class="hover-with-bg" href="/tags/filebeat/">filebeat</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%97%A5%E5%BF%97/">日志</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/12/30/filebeat%E4%B9%8Bkafka%E9%85%8D%E7%BD%AE/">
+                        <span class="hidden-mobile">filebeat之kafka配置</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

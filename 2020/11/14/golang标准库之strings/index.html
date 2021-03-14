@@ -1,0 +1,672 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="iluoy">
+  <meta name="keywords" content="">
+  <title>golang标准库之strings - iluoy</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"iluoy.github.io","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>iluoy</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/books/">
+                <i class="iconfont icon-book"></i>
+                书籍
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/movies/">
+                <i class="iconfont icon-youtube-fill"></i>
+                电影
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/musics/">
+                <i class="iconfont icon-music"></i>
+                音乐
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="golang标准库之strings">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-11-14 23:22" pubdate>
+        2020年11月14日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      17
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">golang标准库之strings</h1>
+            
+            <div class="markdown-body">
+              <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>golang的<code>strings</code>模块提供了大量的处理字符串的函数</p>
+<h3 id="字符串分割"><a href="#字符串分割" class="headerlink" title="字符串分割"></a>字符串分割</h3><h4 id="Split函数"><a href="#Split函数" class="headerlink" title="Split函数"></a>Split函数</h4><p><code>strings.Split</code>函数通过指定分割符号分割字符串返回一个字符串类型切片，如果分割符为空字符，则会将字符串分割为一个个的<code>Unocode</code>字符</p>
+<p><code>strings.Split</code>函数原型：<code>func Split(s, sep string) []string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;this is a test string&quot;
+    r := strings.Split(s,&quot; &quot;)
+    log.Println(r)
+&#125;
+</code></pre>
+<h4 id="SplitN函数"><a href="#SplitN函数" class="headerlink" title="SplitN函数"></a>SplitN函数</h4><p><code>strings.SplitN</code>函数通过指定分割符分割字符串并且返回一个字符串类型切片，其中参数<code>n</code>用来控制生成的切片个数，如果分割符为空字符，则会将字符串分割为一个个的<code>Unocode</code>字符</p>
+<p><code>strings.SplitN</code>函数原型：<code>func SplitN(s, sep string, n int) []string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;this/is/a/test/string&quot;
+    r := strings.SplitN(s,&quot;/&quot;,2)
+    log.Println(r)
+&#125;
+</code></pre>
+<h4 id="SplitAfter函数"><a href="#SplitAfter函数" class="headerlink" title="SplitAfter函数"></a>SplitAfter函数</h4><p><code>strings.SplitAfter</code>函数通过指定分割符分割字符串并且返回一个字符串类型切片，其与<code>strings.Split</code>的区别是返回结果中会带上分割符</p>
+<p><code>strings.SplitAfter</code>函数原型：<code>func SplitAfter(s, sep string) []string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;this/is/a/test/string&quot;
+    r := strings.SplitAfter(s,&quot;/&quot;)
+    log.Println(r)
+&#125;
+</code></pre>
+<h4 id="SplitAfterN"><a href="#SplitAfterN" class="headerlink" title="SplitAfterN"></a>SplitAfterN</h4><p><code>strings.SplitAfter</code>函数通过指定分割符分割字符串并且返回一个字符串切片，其与<code>strings.SplitAfter</code>区别是返回结果中会带上分割符</p>
+<p><code>strings.SplitAfterN</code>函数原型：<code>func SplitAfterN(s, sep string, n int) []string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;this/is/a/test/string&quot;
+    r := strings.SplitAfterN(s,&quot;/&quot;,2) 
+    log.Println(r)
+&#125;
+</code></pre>
+<h4 id="Fields函数"><a href="#Fields函数" class="headerlink" title="Fields函数"></a>Fields函数</h4><p><code>strings.Fields</code>函数以空白分割字符串串并且返回一个字符串类型切片，其中空白用<code>unicode.IsSpace</code>来确定（可以是一个到多个连续的空白字符）</p>
+<p><code>strings.Fields</code>函数原型：<code>func Fields(s string) []string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;this    is a       test           string&quot;
+    r := strings.Fields(s)
+    log.Println(r)
+&#125;
+</code></pre>
+<h4 id="FieldsFunc函数"><a href="#FieldsFunc函数" class="headerlink" title="FieldsFunc函数"></a>FieldsFunc函数</h4><p><code>strings.FieldsFunc</code>函数通过指定函数来确定分割符，然后通过此分割符切割字符串并且返回一个字符串类型切片</p>
+<h3 id="字符串修剪"><a href="#字符串修剪" class="headerlink" title="字符串修剪"></a>字符串修剪</h3><h4 id="Trim"><a href="#Trim" class="headerlink" title="Trim"></a>Trim</h4><p><code>strings.Trim</code>函数用来将字符串首尾所有在参数<code>cutset</code>中的每一个字符去掉，返回一个新字符串</p>
+<p><code>strings.Trim</code>函数原型：<code>func Trim(s string, cutset string) string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;   @#! this is a test  !#@&quot;
+    r := strings.Trim(s,&quot; !@#&quot;)
+    log.Println(r)
+&#125;
+</code></pre>
+<h4 id="TrimLeft函数"><a href="#TrimLeft函数" class="headerlink" title="TrimLeft函数"></a>TrimLeft函数</h4><p><code>strings.TrimLeft</code>函数用来将字符串首部所有在参数<code>cutset</code>字符串中的每一个字符去掉返回一个新的字符串</p>
+<p><code>strings.TrimLeft</code>函数原型：<code>func TrimLeft(s string, cutset string) string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;    ! @ # this is a test string     # @ !@#&quot;
+    r := strings.TrimLeft(s,&quot; !@#&quot;)
+    log.Println(r)
+&#125;
+</code></pre>
+<h4 id="TrimRight函数"><a href="#TrimRight函数" class="headerlink" title="TrimRight函数"></a>TrimRight函数</h4><p><code>strings.TrimRight</code>函数用来将字符串尾部所有在参数<code>cutset</code>字符串中的每一个字符去掉返回一个新的字符串</p>
+<p><code>strings.TrimRight</code>函数原型：<code>func TrimRight(s string, cutset string) string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;    ! @ # this is a test string     # @ !@#&quot;
+    r := strings.TrimRight(s,&quot; !@#&quot;)
+    log.Println(r)
+&#125;
+</code></pre>
+<h4 id="TrimPrefix函数"><a href="#TrimPrefix函数" class="headerlink" title="TrimPrefix函数"></a>TrimPrefix函数</h4><p><code>strings.TrimPrefix</code>函数用来去掉一个字符串中的前缀字符串然后返回一个新字符串</p>
+<p><code>strings.TrimPrefix</code>函数原型：<code>func TrimPrefix(s, prefix string) string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;prefix string this is a test string prefix string&quot;
+    r := strings.TrimPrefix(s,&quot;prefix string&quot;)
+    log.Println(r)
+&#125;
+</code></pre>
+<h4 id="TrimSuffix函数"><a href="#TrimSuffix函数" class="headerlink" title="TrimSuffix函数"></a>TrimSuffix函数</h4><p><code>strings.TrimSuffix</code>函数用来去掉一个字符串中的后缀字符串然后返回一个新的字符串</p>
+<p><code>strings.TrimSuffix</code>函数原型：<code>func TrimSuffix(s, suffix string) string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;suffix string this is a test string suffix string&quot;
+    r := strings.TrimSuffix(s,&quot;suffix string&quot;)
+    log.Println(r)
+&#125;
+</code></pre>
+<h4 id="TrimSpace函数"><a href="#TrimSpace函数" class="headerlink" title="TrimSpace函数"></a>TrimSpace函数</h4><p><code>strings.TrimSpace</code>函数去掉字符串首尾所有的空白返回一个新的字符串</p>
+<p><code>strings.TrimSpace</code>函数原型：<code>func TrimSpace(s string) string</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;log&quot;
+    &quot;strings&quot;
+)
+
+func main()&#123;
+    s := &quot;  this is a test space      &quot;
+    r := strings.TrimSpace(s)
+    log.Println(r)
+&#125;
+</code></pre>
+<h4 id="TrimFunc"><a href="#TrimFunc" class="headerlink" title="TrimFunc"></a>TrimFunc</h4><p><code>strings.TrimFunc</code>函数将字符串首尾部所有满足函数的<code>unicode</code>字符去掉</p>
+<p><code>strings.TrimFunc</code>函数原型：<code>func TrimFunc(s string, f func(rune) bool) string</code></p>
+<h4 id="TrimLeftFunc"><a href="#TrimLeftFunc" class="headerlink" title="TrimLeftFunc"></a>TrimLeftFunc</h4><p><code>strings.TrimLeftFunc</code>函数将字符串首部所有满足函数的<code>unicode</code>字符去掉</p>
+<p><code>strings.TrimLeftFunc</code>函数原型：<code>func TrimLeftFunc(s string, f func(rune) bool) string</code></p>
+<h4 id="TrimRightFunc"><a href="#TrimRightFunc" class="headerlink" title="TrimRightFunc"></a>TrimRightFunc</h4><p><code>strings.TrimRight</code>函数将字符串尾部所有满足函数的<code>unicode</code>字符去掉</p>
+<p><code>strings.TrimRightFunc</code>函数原型：<code>func TrimRightFunc(s string, f func(rune) bool) string</code></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/golang/">golang</a>
+                    
+                      <a class="hover-with-bg" href="/categories/golang/golang%E6%A0%87%E5%87%86%E5%BA%93/">golang标准库</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/golang/">golang</a>
+                    
+                      <a class="hover-with-bg" href="/tags/golang%E6%A0%87%E5%87%86%E5%BA%93/">golang标准库</a>
+                    
+                      <a class="hover-with-bg" href="/tags/golang%E5%AD%97%E7%AC%A6%E4%B8%B2/">golang字符串</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/11/15/%E4%BD%BF%E7%94%A8chrome%E8%8E%B7%E5%8F%96%E7%BD%91%E7%AB%99%E4%B8%8A%E7%94%A8%E7%9A%84%E5%AD%97%E4%BD%93/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">使用chrome获取网站上用的字体</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bcobra/">
+                        <span class="hidden-mobile">golang命令行之cobra</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

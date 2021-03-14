@@ -1,0 +1,607 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>filebeat之添加自定义fields</title>
+    <link href="/2020/12/30/filebeat%E4%B9%8B%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89fields/"/>
+    <url>/2020/12/30/filebeat%E4%B9%8B%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89fields/</url>
+    
+    <content type="html"><![CDATA[<h3 id="filebeat-fields简介"><a href="#filebeat-fields简介" class="headerlink" title="filebeat fields简介"></a>filebeat fields简介</h3><p><code>filebeat</code>支持自定义额外日志字段，例如给所有日志添加一个<code>app: jenkins</code>的属性，添加完成后可以通过<code>%&#123;[]&#125;</code>形式使用此自定义字段</p><h3 id="filebeat-input中定义"><a href="#filebeat-input中定义" class="headerlink" title="filebeat input中定义"></a>filebeat input中定义</h3><p>在<code>filebeat input</code>中可以添加<code>fields</code>字段，例如添加<code>app: jenkins</code>的<code>fields</code>，此时添加output之后输出内容包含<code>&quot;fields&quot;: &#123;&quot;app&quot;: &quot;jenkins&quot;&#125;</code>，如下</p><pre><code>filebeat.inputs:  - type: log    paths:      - /root/test.log    fields:      app: jenkinsoutput.kafka:  hosts: [&quot;10.0.9.60:9092&quot;,&quot;10.0.9.30:9092&quot;,&quot;10.0.9.24:9092&quot;]  topic: [&quot;test_log&quot;]</code></pre><p>此时获取<code>output</code>如下：</p><pre><code>&#123;    &quot;@metadata&quot;: &#123;        &quot;beat&quot;: &quot;filebeat&quot;,        &quot;type&quot;: &quot;_doc&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;@timestamp&quot;: &quot;2020-12-30T06:51:09.479Z&quot;,    &quot;agent&quot;: &#123;        &quot;ephemeral_id&quot;: &quot;198069ae-ce06-4051-9ee9-8326596b150f&quot;,        &quot;hostname&quot;: &quot;kafka-0&quot;,        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,        &quot;name&quot;: &quot;kafka-0&quot;,        &quot;type&quot;: &quot;filebeat&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;ecs&quot;: &#123;        &quot;version&quot;: &quot;1.6.0&quot;    &#125;,    &quot;fields&quot;: &#123;        &quot;app&quot;: &quot;jenkins&quot;    &#125;,    &quot;host&quot;: &#123;        &quot;name&quot;: &quot;kafka-0&quot;    &#125;,    &quot;input&quot;: &#123;        &quot;type&quot;: &quot;log&quot;    &#125;,    &quot;log&quot;: &#123;        &quot;file&quot;: &#123;            &quot;path&quot;: &quot;/root/test.log&quot;        &#125;,        &quot;offset&quot;: 20    &#125;,    &quot;message&quot;: &quot;d&quot;&#125;</code></pre><p>可以发现output中有：</p><pre><code>&quot;fields&quot;: &#123;    &quot;app&quot;: &quot;jenkins&quot;&#125;</code></pre><p>还有一个额外的<code>fields</code>参数可以控制自定义字段是否在<code>output</code>顶层：<code>fields\_under\_root</code>，如果为<code>true</code>表示为<code>output</code>顶层，为<code>false</code>则为<code>fields</code>字目录下，什么意思？加入添加以下配置</p><pre><code>filebeat.inputs:  - type: log    paths:      - /root/test.log    fields:      app: jenkins    fields_under_root: trueoutput.kafka:  hosts: [&quot;10.0.9.60:9092&quot;,&quot;10.0.9.30:9092&quot;,&quot;10.0.9.24:9092&quot;]  topic: &quot;test_log&quot;</code></pre><p>此时<code>output</code>如下</p><pre><code>&#123;    &quot;@metadata&quot;: &#123;        &quot;beat&quot;: &quot;filebeat&quot;,        &quot;type&quot;: &quot;_doc&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;@timestamp&quot;: &quot;2020-12-30T07:01:26.558Z&quot;,    &quot;agent&quot;: &#123;        &quot;ephemeral_id&quot;: &quot;64269eb1-e03c-4ba9-abba-c8d573b73223&quot;,        &quot;hostname&quot;: &quot;kafka-0&quot;,        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,        &quot;name&quot;: &quot;kafka-0&quot;,        &quot;type&quot;: &quot;filebeat&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;app&quot;: &quot;jenkins&quot;,    &quot;ecs&quot;: &#123;        &quot;version&quot;: &quot;1.6.0&quot;    &#125;,    &quot;host&quot;: &#123;        &quot;name&quot;: &quot;kafka-0&quot;    &#125;,    &quot;input&quot;: &#123;        &quot;type&quot;: &quot;log&quot;    &#125;,    &quot;log&quot;: &#123;        &quot;file&quot;: &#123;            &quot;path&quot;: &quot;/root/test.log&quot;        &#125;,        &quot;offset&quot;: 28    &#125;,    &quot;message&quot;: &quot;a&quot;&#125;      </code></pre><blockquote><p>经过测试fields不能是数组结构，但是官方指出可以是标量、数组、字典以及其组合，找时间看看是否是测试方式不对</p></blockquote><h3 id="通用配置fields"><a href="#通用配置fields" class="headerlink" title="通用配置fields"></a>通用配置fields</h3><p>在<code>filebeat.inputs</code>中配置<code>fields</code>只能在其配置的<code>input</code>中生效，使用通用配置可以全局生效，配置方式没有什么区别，只是位置不同，而且不支持<code>fields\_under\_root</code>参数，其值只能在<code>fields</code>子目录中</p><pre><code>fields:  app: jenkinsfilebeat.inputs:  - type: log    paths:      - /root/test.logoutput.kafka:  hosts: [&quot;10.0.9.60:9092&quot;,&quot;10.0.9.30:9092&quot;,&quot;10.0.9.24:9092&quot;]  topic: &quot;test_log&quot;</code></pre><p><code>output</code>输出为：</p><pre><code>&#123;    &quot;@metadata&quot;: &#123;        &quot;beat&quot;: &quot;filebeat&quot;,        &quot;type&quot;: &quot;_doc&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;@timestamp&quot;: &quot;2020-12-30T07:13:36.879Z&quot;,    &quot;agent&quot;: &#123;        &quot;ephemeral_id&quot;: &quot;451275ae-796a-4a02-bc85-f7ddd8751dc3&quot;,        &quot;hostname&quot;: &quot;kafka-0&quot;,        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,        &quot;name&quot;: &quot;kafka-0&quot;,        &quot;type&quot;: &quot;filebeat&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;ecs&quot;: &#123;        &quot;version&quot;: &quot;1.6.0&quot;    &#125;,    &quot;fields&quot;: &#123;        &quot;app&quot;: &quot;jenkins&quot;    &#125;,    &quot;host&quot;: &#123;        &quot;name&quot;: &quot;kafka-0&quot;    &#125;,    &quot;input&quot;: &#123;        &quot;type&quot;: &quot;log&quot;    &#125;,    &quot;log&quot;: &#123;        &quot;file&quot;: &#123;            &quot;path&quot;: &quot;/root/test.log&quot;        &#125;,        &quot;offset&quot;: 40    &#125;,    &quot;message&quot;: &quot;a&quot;&#125;</code></pre><h3 id="使用fields"><a href="#使用fields" class="headerlink" title="使用fields"></a>使用fields</h3><p><code>output</code>输出中的字段都可以被引用，例如<code>&#39;%&#123;[host.name]&#125;&#39;</code>表示<code>kafka-0</code>，<code>&#39;%&#123;[fields.app]&#125;&#39;</code>表示<code>jenkins</code>，所以是否使用顶层fields决定了输出，也决定了引用，如果为顶层输出<code>&#39;&#123;%&#123;[app]&#125;&#125;&#39;</code>表示<code>jenkins</code></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>EFK</category>
+      
+      <category>filebeat</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>EFK</tag>
+      
+      <tag>filebeat</tag>
+      
+      <tag>日志</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>filebeat之kafka配置</title>
+    <link href="/2020/12/30/filebeat%E4%B9%8Bkafka%E9%85%8D%E7%BD%AE/"/>
+    <url>/2020/12/30/filebeat%E4%B9%8Bkafka%E9%85%8D%E7%BD%AE/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><code>filebeat</code>支持将日志输出到<code>kafka</code>高性能消息中间件中</p><h3 id="kafka-output配置"><a href="#kafka-output配置" class="headerlink" title="kafka output配置"></a>kafka output配置</h3><ul><li>enabled： 为<code>true</code>表示启用此<code>output</code>，为<code>false</code>表示禁用此<code>output</code></li><li>hosts：kafka broker列表，例如：[“kafka-0:9092”,”kafka-1:9092”,”kafka-2:9092”]</li><li>username：连接<code>kafka</code>的用户名，如果配置了此参数，则<code>password</code>也是必须的</li><li>password：连接<code>kafka</code>的密码，与<code>username</code>一起</li><li>topic：发送消息的<code>topic</code>名字，需要注意<code>kafka</code>在与<code>filebeat</code>使用时候不要关闭自动创建<code>topic</code>的功能</li><li>topics：topic数组，支持条件匹配，也就是可以将满足条件的日志输出到对应到topic中</li><li>key：设置消息key</li><li>partition：设置消息传入的partition，默认是传入所有partition</li><li>client_id：设置客户端id</li><li>worker：设置output worker个数</li><li>codec：codec配置</li><li>metadata：kafaka元数据配置，例如配置最大消息大小：max_message_bytes</li></ul><blockquote><p>参考：<a href="https://www.elastic.co/guide/en/beats/filebeat/master/kafka-output.html#_configuration_options_19">https://www.elastic.co/guide/en/beats/filebeat/master/kafka-output.html#_configuration_options_19</a></p></blockquote><h3 id="动态topic名字"><a href="#动态topic名字" class="headerlink" title="动态topic名字"></a>动态topic名字</h3><p>动态topic可以通过所有output输出字段中获取，其中自定义output字段可以通过fields来进行配置，如下所示，配置的自定义fields为log_topic，那么动态topic名字可以使用’%{[host.name]}’、’%{[fields.log_topic]}’等</p><pre><code>&#123;    &quot;@metadata&quot;: &#123;        &quot;beat&quot;: &quot;filebeat&quot;,        &quot;type&quot;: &quot;_doc&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;@timestamp&quot;: &quot;2020-12-30T06:36:20.922Z&quot;,    &quot;agent&quot;: &#123;        &quot;ephemeral_id&quot;: &quot;3b070191-4c60-4bca-b4e4-793276a0f621&quot;,        &quot;hostname&quot;: &quot;kafka-0&quot;,        &quot;id&quot;: &quot;a20616d8-9c87-4bc9-bc85-3825a9e3145f&quot;,        &quot;name&quot;: &quot;kafka-0&quot;,        &quot;type&quot;: &quot;filebeat&quot;,        &quot;version&quot;: &quot;7.10.1&quot;    &#125;,    &quot;ecs&quot;: &#123;        &quot;version&quot;: &quot;1.6.0&quot;    &#125;,    &quot;fields&quot;: &#123;        &quot;log_topic&quot;: &quot;a&quot;    &#125;,    &quot;host&quot;: &#123;        &quot;name&quot;: &quot;kafka-0&quot;    &#125;,    &quot;input&quot;: &#123;        &quot;type&quot;: &quot;log&quot;    &#125;,    &quot;log&quot;: &#123;        &quot;file&quot;: &#123;            &quot;path&quot;: &quot;/root/test.log&quot;        &#125;,        &quot;offset&quot;: 16    &#125;,    &quot;message&quot;: &quot;d&quot;&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>EFK</category>
+      
+      <category>filebeat</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>EFK</tag>
+      
+      <tag>filebeat</tag>
+      
+      <tag>日志收集</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>echo框架之log</title>
+    <link href="/2020/12/07/echo%E6%A1%86%E6%9E%B6%E4%B9%8Blog/"/>
+    <url>/2020/12/07/echo%E6%A1%86%E6%9E%B6%E4%B9%8Blog/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><code>echo</code>框架自带了日志处理机制，其由作者的<a href="https://github.com/labstack/gommon">labstack log</a>模块具体实现。</p><p>测试</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>echo框架</category>
+      
+      <category>echo log</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang框架</tag>
+      
+      <tag>golang web</tag>
+      
+      <tag>echo框架</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang标准库之net/http</title>
+    <link href="/2020/11/27/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bnet-http/"/>
+    <url>/2020/11/27/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bnet-http/</url>
+    
+    <content type="html"><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>golang内置了很强大的<code>http</code>模块：<code>net/http</code>，包括了客户端和服务端实现</p><h2 id="http请求报文"><a href="#http请求报文" class="headerlink" title="http请求报文"></a>http请求报文</h2><p>http请求报文格式如下：</p><pre><code>HTTP-METHOD URL HTTP-VERSIONHTTP-REQUEST-HEADERHTTP-REQUEST_BODY</code></pre><h3 id="Request结构体"><a href="#Request结构体" class="headerlink" title="Request结构体"></a>Request结构体</h3><p><code>http.Request</code>结构体代表一个<code>HTTP请求</code></p><p><code>http.Request</code>结构体原型：</p><pre><code>type Request struct &#123;    // Method指定HTTP方法（GET、POST、PUT等）。对客户端，&quot;&quot;代表GET。    Method string    // URL在服务端表示被请求的URI，在客户端表示要访问的URL。    //    // 在服务端，URL字段是解析请求行的URI（保存在RequestURI字段）得到的，    // 对大多数请求来说，除了Path和RawQuery之外的字段都是空字符串。    // （参见RFC 2616, Section 5.1.2）    //    // 在客户端，URL的Host字段指定了要连接的服务器，    // 而Request的Host字段（可选地）指定要发送的HTTP请求的Host头的值。    URL *url.URL    // 接收到的请求的协议版本。本包生产的Request总是使用HTTP/1.1    Proto      string // &quot;HTTP/1.0&quot;    ProtoMajor int    // 1    ProtoMinor int    // 0    // Header字段用来表示HTTP请求的头域。如果头域（多行键值对格式）为：    //    accept-encoding: gzip, deflate    //    Accept-Language: en-us    //    Connection: keep-alive    // 则：    //    Header = map[string][]string&#123;    //        &quot;Accept-Encoding&quot;: &#123;&quot;gzip, deflate&quot;&#125;,    //        &quot;Accept-Language&quot;: &#123;&quot;en-us&quot;&#125;,    //        &quot;Connection&quot;: &#123;&quot;keep-alive&quot;&#125;,    //    &#125;    // HTTP规定头域的键名（头名）是大小写敏感的，请求的解析器通过规范化头域的键名来实现这点。    // 在客户端的请求，可能会被自动添加或重写Header中的特定的头，参见Request.Write方法。    Header Header    // Body是请求的主体。    //    // 在客户端，如果Body是nil表示该请求没有主体买入GET请求。    // Client的Transport字段会负责调用Body的Close方法。    //    // 在服务端，Body字段总是非nil的；但在没有主体时，读取Body会立刻返回EOF。    // Server会关闭请求的主体，ServeHTTP处理器不需要关闭Body字段。    Body io.ReadCloser    // ContentLength记录相关内容的长度。    // 如果为-1，表示长度未知，如果&gt;=0，表示可以从Body字段读取ContentLength字节数据。    // 在客户端，如果Body非nil而该字段为0，表示不知道Body的长度。    ContentLength int64    // TransferEncoding按从最外到最里的顺序列出传输编码，空切片表示&quot;identity&quot;编码。    // 本字段一般会被忽略。当发送或接受请求时，会自动添加或移除&quot;chunked&quot;传输编码。    TransferEncoding []string    // Close在服务端指定是否在回复请求后关闭连接，在客户端指定是否在发送请求后关闭连接。    Close bool    // 在服务端，Host指定URL会在其上寻找资源的主机。    // 根据RFC 2616，该值可以是Host头的值，或者URL自身提供的主机名。    // Host的格式可以是&quot;host:port&quot;。    //    // 在客户端，请求的Host字段（可选地）用来重写请求的Host头。    // 如过该字段为&quot;&quot;，Request.Write方法会使用URL字段的Host。    Host string    // Form是解析好的表单数据，包括URL字段的query参数和POST或PUT的表单数据。    // 本字段只有在调用ParseForm后才有效。在客户端，会忽略请求中的本字段而使用Body替代。    Form url.Values    // PostForm是解析好的POST或PUT的表单数据。    // 本字段只有在调用ParseForm后才有效。在客户端，会忽略请求中的本字段而使用Body替代。    PostForm url.Values    // MultipartForm是解析好的多部件表单，包括上传的文件。    // 本字段只有在调用ParseMultipartForm后才有效。    // 在客户端，会忽略请求中的本字段而使用Body替代。    MultipartForm *multipart.Form    // Trailer指定了会在请求主体之后发送的额外的头域。    //    // 在服务端，Trailer字段必须初始化为只有trailer键，所有键都对应nil值。    // （客户端会声明哪些trailer会发送）    // 在处理器从Body读取时，不能使用本字段。    // 在从Body的读取返回EOF后，Trailer字段会被更新完毕并包含非nil的值。    // （如果客户端发送了这些键值对），此时才可以访问本字段。    //    // 在客户端，Trail必须初始化为一个包含将要发送的键值对的映射。（值可以是nil或其终值）    // ContentLength字段必须是0或-1，以启用&quot;chunked&quot;传输编码发送请求。    // 在开始发送请求后，Trailer可以在读取请求主体期间被修改，    // 一旦请求主体返回EOF，调用者就不可再修改Trailer。    //    // 很少有HTTP客户端、服务端或代理支持HTTP trailer。    Trailer Header    // RemoteAddr允许HTTP服务器和其他软件记录该请求的来源地址，一般用于日志。    // 本字段不是ReadRequest函数填写的，也没有定义格式。    // 本包的HTTP服务器会在调用处理器之前设置RemoteAddr为&quot;IP:port&quot;格式的地址。    // 客户端会忽略请求中的RemoteAddr字段。    RemoteAddr string    // RequestURI是被客户端发送到服务端的请求的请求行中未修改的请求URI    // （参见RFC 2616, Section 5.1）    // 一般应使用URI字段，在客户端设置请求的本字段会导致错误。    RequestURI string    // TLS字段允许HTTP服务器和其他软件记录接收到该请求的TLS连接的信息    // 本字段不是ReadRequest函数填写的。    // 对启用了TLS的连接，本包的HTTP服务器会在调用处理器之前设置TLS字段，否则将设TLS为nil。    // 客户端会忽略请求中的TLS字段。    TLS *tls.ConnectionState&#125;</code></pre><h4 id="初始化HTTP请求"><a href="#初始化HTTP请求" class="headerlink" title="初始化HTTP请求"></a>初始化HTTP请求</h4><p><code>net/http</code>模块提供来两种方式初始化http请求，注意仅仅是初始化请求，并未发送此请求，如同在<code>Postman</code>中配置好了http请求的各种参数，如果需要发送请求还需要配合<code>http.Client</code></p><h5 id="通过Request结构体初始化HTTP请求"><a href="#通过Request结构体初始化HTTP请求" class="headerlink" title="通过Request结构体初始化HTTP请求"></a>通过Request结构体初始化HTTP请求</h5><p>由于<code>http.Request</code>代表一个http请求，因此可以直接初始化<code>http.Request</code>结构体来实现初始化一个http请求</p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;net/http&quot;    &quot;net/url&quot;    &quot;io/ioutil&quot;)func main()&#123;    url,_ := url.Parse(&quot;http://httpbin.org/get&quot;)    http_request := http.Request&#123;            Method: &quot;GET&quot;,            URL: url,        &#125;    http_client := http.Client&#123;&#125;    resp,err := http_client.Do(&amp;http_request)    if err != nil &#123;        log.Println(err)    &#125;    defer resp.Body.Close()    body,_ := ioutil.ReadAll(resp.Body)    log.Println(string(body))&#125;</code></pre><h5 id="NewRequest函数初始化HTTP请求"><a href="#NewRequest函数初始化HTTP请求" class="headerlink" title="NewRequest函数初始化HTTP请求"></a>NewRequest函数初始化HTTP请求</h5><p><code>http.NewRequest</code>函数能够初始化一个HTTP请求，返回<code>*Request</code>和<code>error</code></p><p><code>http.NewRequest</code>函数原型：<code>func NewRequest(method, urlStr string, body io.Reader) (*Request, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;net/http&quot;    &quot;io/ioutil&quot;)func main()&#123;    http_request,_ := http.NewRequest(&quot;GET&quot;,&quot;http://httpbin.org/get&quot;,nil)    http_client := http.Client&#123;&#125;    resp,err := http_client.Do(http_request)    if err != nil &#123;        log.Println(err)    &#125;    defer resp.Body.Close()    body,_ := ioutil.ReadAll(resp.Body)    log.Println(string(body))&#125;</code></pre><h3 id="设置HTTP请求头"><a href="#设置HTTP请求头" class="headerlink" title="设置HTTP请求头"></a>设置HTTP请求头</h3><p><code>net/http</code>提供原生方式以及简便方式添加请求头，原生方式通过<code>http.Header</code>直接创建<code>Header</code>，简便方式通过封装好的<code>Request</code>方法，原生方式自由度高，可定制度强，简便方式就是简便</p><h4 id="添加Authorization头部-basic-auth"><a href="#添加Authorization头部-basic-auth" class="headerlink" title="添加Authorization头部(basic auth)"></a>添加Authorization头部(basic auth)</h4><p><code>Authorization</code>头部用于<code>http basic auth</code></p><p>样例代码一如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;net/http&quot;    &quot;net/url&quot;    &quot;io/ioutil&quot;)func main()&#123;    header := map[string][]string&#123;            &quot;Authorization&quot;: &#123;&quot;YWRtaW46YWRtaW4xMjM=&quot;&#125;,        &#125;    url,_ := url.Parse(&quot;http://httpbin.org/get&quot;)    http_request := http.Request&#123;            Method: &quot;GET&quot;,            URL: url,            Header: header,        &#125;    http_client := http.Client&#123;&#125;    resp,_ := http_client.Do(&amp;http_request)    defer resp.Body.Close()    body,_ := ioutil.ReadAll(resp.Body)    log.Println(string(body))&#125;</code></pre><p>样例代码二如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;net/http&quot;    &quot;net/url&quot;    &quot;io/ioutil&quot;)func main()&#123;    url,_ := url.Parse(&quot;http://httpbin.org/get&quot;)    http_request := http.Request&#123;            Method: &quot;GET&quot;,            URL: url,            Header: map[string][]string&#123;&#125;,        &#125;    http_request.SetBasicAuth(&quot;admin&quot;,&quot;admin123&quot;)    http_client := http.Client&#123;&#125;    resp,_ := http_client.Do(&amp;http_request)    defer resp.Body.Close()    body,_ := ioutil.ReadAll(resp.Body)    log.Println(string(body))&#125;</code></pre><p>样例代码三如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;net/http&quot;    &quot;net/url&quot;    &quot;io/ioutil&quot;)func main()&#123;    url,_ := url.Parse(&quot;http://httpbin.org/get&quot;)    http_request := http.Request&#123;            Method: &quot;GET&quot;,            URL: url,            Header: map[string][]string&#123;&#125;,        &#125;    http_request.Header.Set(&quot;Authorization&quot;,&quot;YWRtaW46YWRtaW4xMjM=&quot;)    http_client := http.Client&#123;&#125;    resp,_ := http_client.Do(&amp;http_request)    defer resp.Body.Close()    body,_ := ioutil.ReadAll(resp.Body)    log.Println(string(body))&#125;</code></pre><h2 id="HTTP-HEADER"><a href="#HTTP-HEADER" class="headerlink" title="HTTP HEADER"></a>HTTP HEADER</h2><p><code>http.Header</code>表示http header</p><p><code>http.Header</code>原型：<code>type Header map[string][]string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;net/http&quot;    &quot;net/url&quot;    &quot;io/ioutil&quot;)func main()&#123;    header := map[string][]string&#123;            &quot;Accept-Encoding&quot;: &#123;&quot;gzip, deflate&quot;&#125;,            &quot;Accept-Language&quot;: &#123;&quot;en-us&quot;&#125;,            &quot;Connection&quot;: &#123;&quot;keep-alive&quot;&#125;,        &#125;    url,_ := url.Parse(&quot;http://httpbin.org/get&quot;)    http_request := http.Request&#123;            Method: &quot;GET&quot;,            URL: url,            Header: header,        &#125;        http_client := http.Client&#123;&#125;    resp,err := http_client.Do(&amp;http_request)    if err != nil&#123;        log.Println(err)    &#125;    defer resp.Body.Close()    body,_ := ioutil.ReadAll(resp.Body)    log.Println(string(body))&#125;</code></pre><h3 id="http-Header-Set"><a href="#http-Header-Set" class="headerlink" title="http.Header.Set"></a>http.Header.Set</h3><p><code>Header.Set</code>方法原型：<code>func (h Header) Set(key, value string)</code></p><h3 id="http-Header-Get"><a href="#http-Header-Get" class="headerlink" title="http.Header.Get"></a>http.Header.Get</h3><p><code>Header.Get</code>方法原型：<code>func (h Header) Get(key string) string</code></p><h3 id="http-Header-Add"><a href="#http-Header-Add" class="headerlink" title="http.Header.Add"></a>http.Header.Add</h3><p><code>Header.Add</code>方法原型：<code>func (h Header) Add(key, value string)</code></p><h3 id="http-Header-Del"><a href="#http-Header-Del" class="headerlink" title="http.Header.Del"></a>http.Header.Del</h3><p><code>Header.Del</code>方法原型：<code>func (h Header) Del(key string)</code></p><h2 id="HTTP客户端"><a href="#HTTP客户端" class="headerlink" title="HTTP客户端"></a>HTTP客户端</h2><p><code>http.Client</code>结构体表示一个客户端</p><p><code>http.Client</code>结构体原型如下：</p><pre><code>type Client struct &#123;    // Transport指定执行独立、单次HTTP请求的机制。    // 如果Transport为nil，则使用DefaultTransport。    Transport RoundTripper    // CheckRedirect指定处理重定向的策略。    // 如果CheckRedirect不为nil，客户端会在执行重定向之前调用本函数字段。    // 参数req和via是将要执行的请求和已经执行的请求（切片，越新的请求越靠后）。    // 如果CheckRedirect返回一个错误，本类型的Get方法不会发送请求req，    // 而是返回之前得到的最后一个回复和该错误。（包装进url.Error类型里）    //    // 如果CheckRedirect为nil，会采用默认策略：连续10此请求后停止。    CheckRedirect func(req *Request, via []*Request) error    // Jar指定cookie管理器。    // 如果Jar为nil，请求中不会发送cookie，回复中的cookie会被忽略。    Jar CookieJar    // Timeout指定本类型的值执行请求的时间限制。    // 该超时限制包括连接时间、重定向和读取回复主体的时间。    // 计时器会在Head、Get、Post或Do方法返回后继续运作并在超时后中断回复主体的读取。    //    // Timeout为零值表示不设置超时。    //    // Client实例的Transport字段必须支持CancelRequest方法，    // 否则Client会在试图用Head、Get、Post或Do方法执行请求时返回错误。    // 本类型的Transport字段默认值（DefaultTransport）支持CancelRequest方法。    Timeout time.Duration&#125;</code></pre><p>初始化HTTP客户端方式：<code>http_cient := http.Client&#123;xx&#125;</code>,其中零值的<code>http.Client</code>表示一个默认的客户端</p><h3 id="Do方法"><a href="#Do方法" class="headerlink" title="Do方法"></a>Do方法</h3><p><code>Client.Do</code>方法发送指定请求</p><p><code>Client.Do</code>方法原型：<code>func (c *Client) Do(req *Request) (resp *Response, err error)</code></p><h3 id="Head方法"><a href="#Head方法" class="headerlink" title="Head方法"></a>Head方法</h3><p><code>Client.Head</code>方法向指定<code>url</code>发送<code>HEAD</code>请求，当<code>Client</code>为零值时候与<code>http.Head</code>函数等价</p><p><code>Client.Head</code>方法原型：<code>func (c *Client) Head(url string) (resp *Response, err error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;net/http&quot;)func main()&#123;    http_client := http.Client&#123;&#125;    resp,_ := http_client.Head(&quot;http://www.baidu.com&quot;)    defer resp.Body.Close()    for h_k,h_v := range(resp.Header)&#123;        log.Printf(&quot;%s=&gt;%s&quot;,h_k,h_v)    &#125;&#125;</code></pre><h3 id="Get方法"><a href="#Get方法" class="headerlink" title="Get方法"></a>Get方法</h3><p><code>Client.Get</code>方法向指定<code>url</code>发送<code>GET</code>请求，当<code>Client</code>为零值时候与<code>http.Get</code>函数等价</p><p><code>Client.Get</code>方法原型：<code>func (c *Client) Get(url string) (resp *Response, err error)</code></p><h3 id="Post方法"><a href="#Post方法" class="headerlink" title="Post方法"></a>Post方法</h3><p><code>Client.Post</code>方法向指定<code>url</code>发送<code>POST</code>请求，当<code>Client</code>为零值时候与<code>http.Post</code>函数等价</p><p><code>Client.Post</code>方法原型：<code>func (c *Client) Post(url string, bodyType string, body io.Reader) (resp *Response, err error)</code></p><h3 id="PostForm方法"><a href="#PostForm方法" class="headerlink" title="PostForm方法"></a>PostForm方法</h3><p><code>Client.PostForm</code>方法向指定<code>url</code>发送<code>POST</code>请求，post数据类型为：”application/x-www-form-urlencoded”，数据为：<code>url.Values</code>，当<code>Client</code>为零值时候与<code>http.PostForm</code>函数等价</p><p><code>Client.PostForm</code>方法原型：<code>func (c *Client) PostForm(url string, data url.Values) (resp *Response, err error)</code></p><h3 id="Get函数"><a href="#Get函数" class="headerlink" title="Get函数"></a>Get函数</h3><p><code>http.Get</code>函数参考<code>Client.Get</code>方法</p><p><code>http.Get</code>函数原型：<code>func Get(url string) (resp *Response, err error)</code></p><h3 id="Post函数"><a href="#Post函数" class="headerlink" title="Post函数"></a>Post函数</h3><p><code>http.Post</code>函数参考<code>Client.Post</code>方法</p><p><code>http.Post</code>函数原型：<code>func Post(url string, bodyType string, body io.Reader) (resp *Response, err error)</code></p><h4 id="发送json数据"><a href="#发送json数据" class="headerlink" title="发送json数据"></a>发送json数据</h4><p>发送json需要设置请求头：<code>Content-Type: application/json</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;    &quot;net/http&quot;    &quot;io/ioutil&quot;)func main()&#123;    data := `&#123;            &quot;name&quot;: &quot;liuoy&quot;,            &quot;age&quot;: 11        &#125;`    content_type := &quot;applicaion/json&quot;    resp,err := http.Post(&quot;http://httpbin.org/post&quot;,content_type,strings.NewReader(data))    if err != nil &#123;        log.Println(err)    &#125;    defer resp.Body.Close()    b,_ := ioutil.ReadAll(resp.Body)    log.Println(string(b))&#125;</code></pre><h4 id="发送表单数据"><a href="#发送表单数据" class="headerlink" title="发送表单数据"></a>发送表单数据</h4><p>发送表单数据需求设置请求头：<code>Content-Type: application/x-www-form-urlencoded</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;    &quot;net/http&quot;    &quot;io/ioutil&quot;)func main()&#123;    data := `name=iluoy&amp;age=11`    content_type := &quot;application/x-www-form-urlencoded&quot;    resp,err := http.Post(&quot;http://httpbin.org/post?k1=v1&amp;k2=v2&quot;,content_type,strings.NewReader(data))    if err != nil &#123;        log.Println(err)    &#125;    defer resp.Body.Close()    b,err := ioutil.ReadAll(resp.Body)    if err != nil &#123;        log.Println(err)    &#125;    log.Println(string(b))&#125;</code></pre><h4 id="发送args数据"><a href="#发送args数据" class="headerlink" title="发送args数据"></a>发送args数据</h4><p>发送args数据需要在url中添加<code>?k1=v1&amp;k2=v2</code>类似数据</p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;    &quot;net/http&quot;    &quot;io/ioutil&quot;)func main()&#123;    url := &quot;http://httpbin.org/post?k1=v1&amp;k2=v2&quot;    content_type := &quot;application/json&quot;    data := `        &#123;            &quot;name&quot;: &quot;iluoy&quot;,            &quot;age&quot;: 11        &#125;    `    resp,err := http.Post(url,content_type,strings.NewReader(data))    if err != nil &#123;        log.Println(err)    &#125;    defer resp.Body.Close()    b,err := ioutil.ReadAll(resp.Body)    if err != nil &#123;        log.Println(err)    &#125;    log.Println(string(b))&#125;</code></pre><h4 id="发送XML数据"><a href="#发送XML数据" class="headerlink" title="发送XML数据"></a>发送XML数据</h4><p>发送xml数据需要设置请求头为：<code>Content-Type: application/xml</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;    &quot;net/http&quot;    &quot;io/ioutil&quot;)func main()&#123;    data := `        &lt;person&gt;            &lt;name&gt;iluoy&lt;/name&gt;            &lt;age&gt;11&lt;/age&gt;        &lt;/person&gt;    `    content_type := &quot;application/xml&quot;    resp,err := http.Post(&quot;http://httpbin.org/post&quot;,content_type,strings.NewReader(data))    if err != nil &#123;        log.Println(err)    &#125;    defer resp.Body.Close()    b,_ := ioutil.ReadAll(resp.Body)    log.Println(string(b))&#125;</code></pre><h3 id="Head函数"><a href="#Head函数" class="headerlink" title="Head函数"></a>Head函数</h3><p><code>http.Head</code>函数参考<code>Client.Head</code>方法</p><p><code>http.Head</code>函数原型：<code>func Head(url string) (resp *Response, err error)</code></p><h3 id="PostForm函数"><a href="#PostForm函数" class="headerlink" title="PostForm函数"></a>PostForm函数</h3><p><code>http.PostForm</code>函数参考<code>Client.PostForm</code>方法</p><p><code>http.PostForm</code>函数原型：<code>func PostForm(url string, data url.Values) (resp *Response, err error)</code></p><h2 id="http响应报文"><a href="#http响应报文" class="headerlink" title="http响应报文"></a>http响应报文</h2><p>http响应报文格式如下</p><pre><code>HTTP_VERSION STATUS_CODE STATUS_MSGHTTP_HEADERSHTTP_BODY</code></pre><h3 id="Handler"><a href="#Handler" class="headerlink" title="Handler"></a>Handler</h3><p><code>http.Handler</code>结构体对象注册到http服务端用于为匹配到路径提供服务</p><p><code>http.Handler</code>原型：</p><pre><code>type Handler interface &#123;    ServeHTTP(ResponseWriter, *Request)&#125;</code></pre><h3 id="ServeMux"><a href="#ServeMux" class="headerlink" title="ServeMux"></a>ServeMux</h3><p><code>http.ServeMux</code>用于注册路径与handler对应关系</p><h3 id="http服务端"><a href="#http服务端" class="headerlink" title="http服务端"></a>http服务端</h3><p><code>http.Server</code>结构体表示<code>http</code>服务端</p><p><code>http.Server</code>结构体原型：</p><pre><code>type Server struct &#123;    Addr           string        // 监听的TCP地址，如果为空字符串会使用&quot;:http&quot;    Handler        Handler       // 调用的处理器，如为nil会调用http.DefaultServeMux    ReadTimeout    time.Duration // 请求的读取操作在超时前的最大持续时间    WriteTimeout   time.Duration // 回复的写入操作在超时前的最大持续时间    MaxHeaderBytes int           // 请求的头域最大长度，如为0则用DefaultMaxHeaderBytes    TLSConfig      *tls.Config   // 可选的TLS配置，用于ListenAndServeTLS方法    // TLSNextProto（可选地）指定一个函数来在一个NPN型协议升级出现时接管TLS连接的所有权。    // 映射的键为商谈的协议名；映射的值为函数，该函数的Handler参数应处理HTTP请求，    // 并且初始化Handler.ServeHTTP的*Request参数的TLS和RemoteAddr字段（如果未设置）。    // 连接在函数返回时会自动关闭。    TLSNextProto map[string]func(*Server, *tls.Conn, Handler)    // ConnState字段指定一个可选的回调函数，该函数会在一个与客户端的连接改变状态时被调用。    // 参见ConnState类型和相关常数获取细节。    ConnState func(net.Conn, ConnState)    // ErrorLog指定一个可选的日志记录器，用于记录接收连接时的错误和处理器不正常的行为。    // 如果本字段为nil，日志会通过log包的标准日志记录器写入os.Stderr。    ErrorLog *log.Logger    // 内含隐藏或非导出字段&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang标准库</tag>
+      
+      <tag>http</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang标准库之io/ioutil</title>
+    <link href="/2020/11/19/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bio-ioutil/"/>
+    <url>/2020/11/19/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bio-ioutil/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p><code>io/ioutil</code>标准库提供了很多有用的有关<code>io</code>的函数</p><h3 id="ReadAll函数"><a href="#ReadAll函数" class="headerlink" title="ReadAll函数"></a>ReadAll函数</h3><p><code>ioutil.ReadAll</code>函数从<code>io.Reader</code>中读取内容直到<code>EOF</code>或者<code>error</code>，读取成功后返回的<code>err</code>为<code>nil</code></p><p><code>ioutil.ReadAll</code>函数原型：<code>func ReadAll(r io.Reader) ([]byte, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;os&quot;    &quot;log&quot;    &quot;io/ioutil&quot;    &quot;encoding/json&quot;)type Person struct&#123;    Name string `json:&quot;name&quot;`    Age  int    `json:&quot;age&quot;`&#125;func main()&#123;    var person Person    f,err := os.OpenFile(&quot;test.json&quot;,os.O_RDONLY,0666)    if err != nil &#123;        log.Fatalln(err)    &#125;    r,err := ioutil.ReadAll(f)    if err != nil&#123;        log.Fatalln(err)    &#125;    if err := json.Unmarshal(r,&amp;person);err != nil&#123;        log.Fatalln(err)    &#125;else&#123;        log.Printf(&quot;user&#39;s name is: %s&quot;,person.Name)        log.Printf(&quot;user&#39;s age is: %d&quot;,person.Age)    &#125;&#125;</code></pre><h3 id="ReadFile函数"><a href="#ReadFile函数" class="headerlink" title="ReadFile函数"></a>ReadFile函数</h3><p><code>ioutil.ReadFile</code>函数从指定文件读取内容直到<code>EOF</code>或者<code>error</code>，读取成功后<code>err</code>为<code>nil</code></p><p><code>ioutil.ReadFile</code>函数原型为：<code>func ReadFile(filename string) ([]byte, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;io/ioutil&quot;    &quot;encoding/json&quot;)type Person struct&#123;    Name string `json:&quot;name&quot;`    Age  int    `json:&quot;age&quot;`&#125;func main()&#123;    var person Person    r,err := ioutil.ReadFile(&quot;test.json&quot;)    if err != nil &#123;        log.Fatalln(err)    &#125;    if err := json.Unmarshal(r,&amp;person);err != nil&#123;        log.Fatalln(err)    &#125;else&#123;        log.Printf(&quot;user&#39;s name is: %s&quot;,person.Name)        log.Printf(&quot;user&#39;s age is: %d&quot;,person.Age)    &#125;&#125;</code></pre><h3 id="WriteFile函数"><a href="#WriteFile函数" class="headerlink" title="WriteFile函数"></a>WriteFile函数</h3><p><code>ioutil.WriteFile</code>函数向指定文件写入内容，如果文件不存在则按照指定权限创建文件，否则写入文件前清空内容</p><p><code>ioutil.WriteFile</code>函数原型为： func WriteFile(filename string, data []byte, perm os.FileMode) error</p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;io/ioutil&quot;)func main()&#123;    data := []byte(`&#123;&quot;name&quot;: &quot;yao&quot;,&quot;age&quot;: 11&#125;`)    if err := ioutil.WriteFile(&quot;test1.json&quot;,data,0666);err != nil&#123;        log.Fatalln(err)    &#125;else&#123;        log.Println(&quot;write success&quot;)    &#125;&#125;</code></pre><h3 id="TempDir函数"><a href="#TempDir函数" class="headerlink" title="TempDir函数"></a>TempDir函数</h3><p><code>ioutil.TempDir</code>函数用来生成临时目录，但是调用此函数的用户需要自行删除临时目录，而且约定是必须的，否则就不叫临时目录了，如果<code>dir</code>为空则使用默认临时目录（例如linux、mac为/tmp）：见<code>os.TempDir</code></p><p><code>ioutil.TempDir</code>函数原型：<code>func TempDir(dir, prefix string) (name string, err error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;io/ioutil&quot;)func main()&#123;    if dir,err := ioutil.TempDir(&quot;/tmp&quot;,&quot;tmpdir&quot;);err != nil&#123;        log.Fatalln(err)    &#125;else&#123;        log.Printf(&quot;tempdir is: %s&quot;,dir)    &#125;&#125;</code></pre><h3 id="TempFile"><a href="#TempFile" class="headerlink" title="TempFile"></a>TempFile</h3><p><code>ioutil.TempFile</code>用来生成临时文件，但是调用此函数的用户需要自行删除临时文件，而且约定是必须的，否则就不叫临时文件了，如果<code>dir</code>为空则使用默认临时目录（例如linux、mac为/tmp）：见<code>os.TempDir</code></p><p><code>ioutil.TempFile</code>函数原型：<code>func TempFile(dir, prefix string) (f *os.File, err error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;io/ioutil&quot;    &quot;encoding/json&quot;)type Person struct&#123;    Name string `json:&quot;name&quot;`    Age  int    `json:&quot;age&quot;`&#125;func main()&#123;    person := Person&#123;            Name: &quot;iluoy&quot;,            Age: 11,        &#125;    f,err := ioutil.TempFile(&quot;/tmp&quot;,&quot;tempfile&quot;)    if err != nil&#123;        log.Fatalln(err)    &#125;    encoder := json.NewEncoder(f)    if err := encoder.Encode(&amp;person); err != nil&#123;        log.Fatalln(err)    &#125;else&#123;        log.Println(&quot;create tempfile success&quot;)    &#125;&#125;</code></pre><h3 id="ReadDir函数"><a href="#ReadDir函数" class="headerlink" title="ReadDir函数"></a>ReadDir函数</h3><p><code>ioutil.ReadDir</code>函数用来获取指定目录的目录信息</p><p><code>ioutil.ReadDir</code>函数原型：<code>func ReadDir(dirname string) ([]os.FileInfo, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;io/ioutil&quot;)func main()&#123;    if f,err := ioutil.ReadDir(&quot;/tmp&quot;); err != nil&#123;        log.Fatalln(err)    &#125;else&#123;        for _,file_info := range(f)&#123;            log.Println(file_info.Name())        &#125;    &#125;&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang标准库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang标准库之errors</title>
+    <link href="/2020/11/18/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Berrors/"/>
+    <url>/2020/11/18/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Berrors/</url>
+    
+    <content type="html"><![CDATA[<h3 id="golang错误"><a href="#golang错误" class="headerlink" title="golang错误"></a>golang错误</h3><p>golang内建的<code>error</code>接口用来约定表示错误信息，<code>nil</code>表示没有错误，<code>error</code>接口只有一个<code>Error() string</code>方法，也就是说任何只要实现了<code>Error() string</code>方法的结构体就实现了<code>error</code>接口</p><p><code>error</code>接口原型如下：</p><pre><code>type error interface &#123;    Error() string&#125;</code></pre><p>自定义错误样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;)type MyError struct &#123;    ErrorMsg string&#125;func (e *MyError) Error() string&#123;    return e.ErrorMsg&#125;func t() error&#123;    return &amp;MyError&#123;ErrorMsg: &quot;this is a custom test error&quot;,&#125;&#125;func main()&#123;    if err := t();err != nil&#123;        fmt.Println(err)    &#125;&#125;</code></pre><h3 id="errors标准库"><a href="#errors标准库" class="headerlink" title="errors标准库"></a>errors标准库</h3><p><code>errors</code>标准库提供了创建错误类型的函数<code>New</code>从而达到十分简便的方式就可以定义各种错误类型了</p><h3 id="New函数"><a href="#New函数" class="headerlink" title="New函数"></a>New函数</h3><p><code>errors.New</code>函数通过接受字符串用来生成错误类型</p><p><code>errors.New</code>函数原型：func New(text string) error</p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;    &quot;errors&quot;)func TestError() error &#123;    return errors.New(&quot;this is a error by errors.New&quot;)&#125;func main()&#123;    if err := TestError(); err != nil&#123;        fmt.Println(err)    &#125; &#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang标准库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang标准库之encoding/json</title>
+    <link href="/2020/11/17/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bencoding-json/"/>
+    <url>/2020/11/17/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bencoding-json/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>golang内置了<code>encoding/json</code>用来解析json对象，关于json详见<a href="https://tools.ietf.org/html/rfc4627">json rfc标准</a></p><h3 id="Marshal函数"><a href="#Marshal函数" class="headerlink" title="Marshal函数"></a>Marshal函数</h3><p><code>json.Marshal</code>函数通过golang对象返回json字符串</p><p><code>json.Marshal</code>函数原型: <code>func Marshal(v interface&#123;&#125;) ([]byte, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;    &quot;encoding/json&quot;)type Person struct&#123;    Name string `json:&quot;name&quot;`    Age  int    `json:&quot;age&quot;`&#125;func main()&#123;    person := Person&#123;            Name: &quot;iluoy&quot;,            Age: 11,        &#125;        r,_ := json.Marshal(person)    fmt.Printf(&quot;person info is: %s\n&quot;,r)&#125;</code></pre><blockquote><p>注意<code>type:&quot;JSON_FILD&quot;</code>中冒号后面不能有空格</p></blockquote><h3 id="Unmarshal函数"><a href="#Unmarshal函数" class="headerlink" title="Unmarshal函数"></a>Unmarshal函数</h3><p><code>json.Unmarshal</code>函数将json字符串转换为golang对象</p><p><code>json.Unmarshal</code>函数原型：<code>func Unmarshal(data []byte, v interface&#123;&#125;) error</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;    &quot;encoding/json&quot;)type Person struct&#123;    Name string `json:&quot;name&quot;`    Age  int    `json:&quot;age&quot;`&#125;func main()&#123;    var person Person    j_str := []byte(`&#123;&quot;name&quot;: &quot;yaoyao&quot;,&quot;age&quot;: 11&#125;`)    if err := json.Unmarshal(j_str,&amp;person);err != nil&#123;        fmt.Println(err)    &#125;else&#123;        fmt.Printf(&quot;person&#39;s name is: %s\n&quot;,person.Name)        fmt.Printf(&quot;person&#39;s age is: %d\n&quot;,person.Age)    &#125;&#125;</code></pre><h3 id="Decoder结构体"><a href="#Decoder结构体" class="headerlink" title="Decoder结构体"></a>Decoder结构体</h3><p><code>json.Decoder</code>结构体用于从<code>io.Reader</code>将json字符串转换为golang对象，通常使用<code>json.NewDecoder</code>函数生成<code>json.Decoder</code></p><p><code>json.Decoder</code>结构体原型：</p><pre><code>type Decoder struct &#123;    // 内含隐藏或非导出字段&#125;</code></pre><h3 id="NewDecoder函数"><a href="#NewDecoder函数" class="headerlink" title="NewDecoder函数"></a>NewDecoder函数</h3><p><code>json.NewDecoder</code>函数用来从<code>io.Reader</code>输入流生成<code>json.Decoder</code>对象，通常配合<code>Decoder.Decode</code>方法一起使用从而实现从<code>io.Reader</code>输入流将json字符串解析为golang对象，例如从json文件中解析json字符串为golang对象</p><p><code>json.NewDecoder</code>函数原型：<code>func NewDecoder(r io.Reader) *Decoder</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;    &quot;os&quot;    &quot;encoding/json&quot;)type Person struct&#123;    Name string `json:&quot;name&quot;`    Age  int    `json:&quot;age&quot;`&#125;func main()&#123;    var person Person    f,_ := os.OpenFile(&quot;./person.json&quot;,os.O_RDONLY,0666)    decoder := json.NewDecoder(f)    err := decoder.Decode(&amp;person)    if err != nil &#123;        fmt.Println(err)    &#125;else&#123;        fmt.Printf(&quot;person&#39;s name is: %s\n&quot;,person.Name)        fmt.Printf(&quot;person&#39;s age is: %d\n&quot;,person.Age)    &#125;&#125;</code></pre><h3 id="Decode方法"><a href="#Decode方法" class="headerlink" title="Decode方法"></a>Decode方法</h3><p><code>Decoder.Decode</code>方法从<code>io.Reader</code>输入流将json字符串转换为golang对象</p><p><code>Decoder.Decode</code>方法原型：<code>func (dec *Decoder) Decode(v interface&#123;&#125;) error</code></p><p>样例代码如上</p><h3 id="Encoder结构体"><a href="#Encoder结构体" class="headerlink" title="Encoder结构体"></a>Encoder结构体</h3><p><code>json.Encoder</code>结构体用于将golang对象通过<code>io.Writer</code>输出流转换为json字符串</p><p><code>json.Encoder</code>结构体原型如下：</p><pre><code>type Encoder struct &#123;    // 内含隐藏或非导出字段&#125;</code></pre><h3 id="NewEncoder函数"><a href="#NewEncoder函数" class="headerlink" title="NewEncoder函数"></a>NewEncoder函数</h3><p><code>json.NewEncoder</code>函数用来生成<code>json.Encoder</code>对象，通常结合<code>Encoder.Encode</code>方法将golang对象通过<code>io.Writer</code>输出流转换为json字符串，例如：将golang对象转换为json后写入json文件中保存</p><p><code>json.NewEncoder</code>函数原型：<code>func NewEncoder(w io.Writer) *Encoder</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;os&quot;    &quot;fmt&quot;    &quot;encoding/json&quot;)type Person struct&#123;    Name string `json:&quot;name&quot;`    Age  int    `json:&quot;age&quot;`&#125;func main()&#123;    person := Person&#123;            Name: &quot;iluoy&quot;,            Age: 11,        &#125;            f,_ := os.OpenFile(&quot;person1.json&quot;,os.O_CREATE|os.O_RDWR|os.O_TRUNC,0666)    encoder := json.NewEncoder(f)    if err := encoder.Encode(person);err != nil&#123;        fmt.Println(err)        f.Close()    &#125;else&#123;        f.Close()    &#125;&#125;</code></pre><h3 id="Encode方法"><a href="#Encode方法" class="headerlink" title="Encode方法"></a>Encode方法</h3><p><code>Encoder.Encode</code>方法用来将golang对象解析为json字符串并发送往<code>io.Writer</code>输出流</p><p><code>Encoder.Encode</code>方法原型：<code>func (enc *Encoder) Encode(v interface&#123;&#125;) error</code></p><p>样例代码如上</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang标准库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang标准库之os/user</title>
+    <link href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-user/"/>
+    <url>/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-user/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>golang内置了获取系统用户的模块: <code>os/user</code>,<code>os/user</code>可以通过id获取用户信息，也可以通过用户名获取用户信息</p><h3 id="User结构体"><a href="#User结构体" class="headerlink" title="User结构体"></a>User结构体</h3><p><code>os/user</code>用户信息通过<code>user.User</code>结构体来定义，通常情况下使用<code>user.Current</code>、<code>user.Lookup</code>、<code>user.LookupId</code>这三个函数来初始化<code>user.User</code></p><p><code>user.User</code>结构体原型如下：</p><pre><code>type User struct &#123;    Uid      string // 用户ID    Gid      string // 初级组ID    Username string //用户名    Name     string    HomeDir  string //用户家目录&#125;</code></pre><h3 id="Current函数"><a href="#Current函数" class="headerlink" title="Current函数"></a>Current函数</h3><p><code>user.Current</code>函数用来获取当前用户信息</p><p><code>user.Current</code>函数原型： <code>func Current() (*User, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;    &quot;os/user&quot;)func main()&#123;    if user,err := user.Current(); err != nil&#123;        fmt.Println(err)    &#125;else&#123;        fmt.Printf(&quot;current user&#39;s uid is: %s\n&quot;,user.Uid)        fmt.Printf(&quot;current user&#39;s gid is: %s\n&quot;,user.Gid)        fmt.Printf(&quot;current user&#39;s username is: %s\n&quot;,user.Username)        fmt.Printf(&quot;current user&#39;s name is: %s\n&quot;,user.Name)        fmt.Printf(&quot;current user&#39;s homedir is: %s\n&quot;,user.HomeDir)    &#125;&#125;</code></pre><h3 id="Lookup函数"><a href="#Lookup函数" class="headerlink" title="Lookup函数"></a>Lookup函数</h3><p><code>user.Lookup</code>函数通过用户名获取用户信息</p><p><code>user.Lookup</code>函数原型：<code>func Lookup(username string) (*User, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;    &quot;os/user&quot;)func main()&#123;    if user,err := user.Lookup(&quot;root&quot;); err != nil&#123;        fmt.Println(err)    &#125;else&#123;        fmt.Printf(&quot;current user&#39;s uid is: %s\n&quot;,user.Uid)        fmt.Printf(&quot;current user&#39;s gid is: %s\n&quot;,user.Gid)        fmt.Printf(&quot;current user&#39;s username is: %s\n&quot;,user.Username)        fmt.Printf(&quot;current user&#39;s name is: %s\n&quot;,user.Name)        fmt.Printf(&quot;current user&#39;s homedir is: %s\n&quot;,user.HomeDir)    &#125;&#125;</code></pre><h3 id="LookupId函数"><a href="#LookupId函数" class="headerlink" title="LookupId函数"></a>LookupId函数</h3><p><code>user.LookupId</code>函数通过用户id获取用户信息</p><p><code>user.LookupId</code>函数原型：<code>func LookupId(uid string) (*User, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;    &quot;os/user&quot;)func main()&#123;    if user,err := user.LookupId(&quot;1&quot;);err != nil&#123;        fmt.Println(err)    &#125;else&#123;        fmt.Printf(&quot;current user&#39;s uid is: %s\n&quot;,user.Uid)        fmt.Printf(&quot;current user&#39;s gid is: %s\n&quot;,user.Gid)        fmt.Printf(&quot;current user&#39;s username is: %s\n&quot;,user.Username)        fmt.Printf(&quot;current user&#39;s name is: %s\n&quot;,user.Name)        fmt.Printf(&quot;current user&#39;s homedir is: %s\n&quot;,user.HomeDir)    &#125;&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang标准库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang标准库之os/exec</title>
+    <link href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-exec/"/>
+    <url>/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-exec/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>很多时候我们都通过直接调用外部系统命令以减少工作量,golang已内置了<code>os/exec</code>用来执行外部命令,<code>os/exec</code>模块主要通过<code>Cmd结构体</code>来实现执行外部命令,具体可见：<a href="https://studygolang.com/pkgdoc">os/exec</a></p><h3 id="Cmd结构体"><a href="#Cmd结构体" class="headerlink" title="Cmd结构体"></a>Cmd结构体</h3><p><code>Cmd</code>表示一个准备执行或者正在执行中的外部命令,其中<code>Cmd结构体</code>中使用最多的字段有：<code>Path</code>、<code>Args</code>、<code>Dir</code>、<code>Stdio</code>、<code>Stdout</code>、<code>Stderr</code>其结构体原型如下：</p><pre><code>type Cmd struct &#123;    // Path是将要执行的命令的路径。    //    // 该字段不能为空，如为相对路径会相对于Dir字段。    Path string    // Args保管命令的参数，包括命令名作为第一个参数；如果为空切片或者nil，相当于无参数命令。    //    // 典型用法下，Path和Args都应被Command函数设定。    Args []string    // Env指定进程的环境，如为nil，则是在当前进程的环境下执行。    Env []string    // Dir指定命令的工作目录。如为空字符串，会在调用者的进程当前目录下执行。    Dir string    // Stdin指定进程的标准输入，如为nil，进程会从空设备读取（os.DevNull）    Stdin io.Reader    // Stdout和Stderr指定进程的标准输出和标准错误输出。    //    // 如果任一个为nil，Run方法会将对应的文件描述符关联到空设备（os.DevNull）    //    // 如果两个字段相同，同一时间最多有一个线程可以写入。    Stdout io.Writer    Stderr io.Writer    // ExtraFiles指定额外被新进程继承的已打开文件流，不包括标准输入、标准输出、标准错误输出。    // 如果本字段非nil，entry i会变成文件描述符3+i。    //    // BUG: 在OS X 10.6系统中，子进程可能会继承不期望的文件描述符。    // http://golang.org/issue/2603    ExtraFiles []*os.File    // SysProcAttr保管可选的、各操作系统特定的sys执行属性。    // Run方法会将它作为os.ProcAttr的Sys字段传递给os.StartProcess函数。    SysProcAttr *syscall.SysProcAttr    // Process是底层的，只执行一次的进程。    Process *os.Process    // ProcessState包含一个已经存在的进程的信息，只有在调用Wait或Run后才可用。    ProcessState *os.ProcessState    // 内含隐藏或非导出字段&#125;</code></pre><h3 id="Command函数"><a href="#Command函数" class="headerlink" title="Command函数"></a>Command函数</h3><p>一般而言都是通过<code>os.Command</code>函数来实现Cmd初始化,<code>os.Command</code>仅仅设定了<code>Cmd</code>的<code>Path</code>和<code>Args</code>字段,因此在使用<code>os.Command</code>初始化<code>Cmd</code>后使用其返回值来配置<code>Stdin</code>、<code>Stdout</code>、<code>Stderr</code>等属性</p><p>Command函数原型为：<code>func Command(name string, arg ...string) *Cmd</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;os&quot;    &quot;os/exec&quot;    &quot;fmt&quot;)func main()&#123;    // 执行ls -al命令    cmd := exec.Command(&quot;ls&quot;,&quot;-al&quot;)    // 设置执行ls -al命令时候标准输入、标准输出、标准错误输出输出,os.Stdin、os.Stdout、os.Stderr是os模块的变量    cmd.Stdin = os.Stdin    cmd.Stdout = os.Stdout    cmd.Stderr = os.Stderr    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Wait    if err := cmd.Run();err != nil&#123;        fmt.Println(err)    &#125;&#125;</code></pre><h3 id="Run方法"><a href="#Run方法" class="headerlink" title="Run方法"></a>Run方法</h3><p>如上述，<code>Cmd.run</code>方法执行外部命令并且会阻塞直至外部命令执行完成</p><p><code>Cmd.Run</code>方法原型: <code>func (c *Cmd) Run() error</code></p><p>样例代码如下:</p><pre><code>package mainimport(    &quot;os&quot;    &quot;os/exec&quot;    &quot;fmt&quot;)func main()&#123;    // 执行sleep命令,睡眠10s    cmd := exec.Command(&quot;sleep&quot;,&quot;10&quot;)    // 设置执行sleep 10命令时候标准输入、标准输出、标准错误输出输出,os.Stdin、os.Stdout、os.Stderr是os模块的变量    cmd.Stdin = os.Stdin    cmd.Stdout = os.Stdout    cmd.Stderr = os.Stderr    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Wait    err := cmd.Run()    fmt.Println(err)    fmt.Println(&quot;command exec finished&quot;)&#125;</code></pre><h3 id="Start方法"><a href="#Start方法" class="headerlink" title="Start方法"></a>Start方法</h3><p>如上述，<code>Cmd.Start</code>方法执行外部命令并且不会阻塞,通常<code>Cmd.Start</code>配合<code>Cmd.Wait</code>、<code>Cmd.StdinPipe</code>、<code>Cmd.StdoutPipe</code>、<code>Cmd.StderrPipe</code>一起使用</p><p><code>Cmd.Run</code>方法原型: <code>func (c *Cmd) Start() error</code></p><p>样例代码如下:</p><pre><code>package mainimport(    &quot;os/exec&quot;    &quot;fmt&quot;)func main()&#123;    // 执行sleep命令,睡眠10s    cmd := exec.Command(&quot;sleep&quot;,&quot;10&quot;)    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Wait    err := cmd.Start()    fmt.Println(&quot;command exec not finished&quot;)    cmd.Wait()    fmt.Println(&quot;command exec finished&quot;)    fmt.Println(err)&#125;</code></pre><h3 id="Wait方法"><a href="#Wait方法" class="headerlink" title="Wait方法"></a>Wait方法</h3><p><code>Cmd.Wait</code>会阻塞直到命令执行完毕，<code>Cmd.Wait</code>的命令必须是被<code>Cmd.Start</code>方法开始执行的</p><p><code>Cmd.Wait</code>方法原型：<code>func (c *Cmd) Wait() error</code></p><p>样例代码见上</p><h3 id="Output方法"><a href="#Output方法" class="headerlink" title="Output方法"></a>Output方法</h3><p><code>Cmd.Output</code>方法执行外部命令并且返回标准输出的切片</p><p><code>Cmd.Output</code>方法原型：<code>func (c *Cmd) Output() ([]byte, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;os/exec&quot;    &quot;fmt&quot;)func main()&#123;    cmd := exec.Command(&quot;ls&quot;,&quot;-a&quot;,&quot;-l&quot;)    if b,err := cmd.Output(); err != nil&#123;        fmt.Println(err)    &#125;else&#123;        fmt.Printf(&quot;output is %s\n&quot;,b)    &#125;&#125;</code></pre><h3 id="CombinedOutput方法"><a href="#CombinedOutput方法" class="headerlink" title="CombinedOutput方法"></a>CombinedOutput方法</h3><p><code>Cmd.CombinedOutput</code>方法执行外部命令并且返回标准输出和标准错误输出合并的切片</p><p><code>Cmd.CombinedOutput</code>方法原型：<code>func (c *Cmd) CombinedOutput() ([]byte, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;    &quot;os/exec&quot;)func main()&#123;    cmd := exec.Command(&quot;ls&quot;,&quot;-al&quot;)    if b,err := cmd.CombinedOutput();err != nil&#123;        fmt.Println(err)    &#125;else&#123;        fmt.Printf(&quot;output is %s\n&quot;,b)    &#125;&#125;</code></pre><h3 id="LookPath函数"><a href="#LookPath函数" class="headerlink" title="LookPath函数"></a>LookPath函数</h3><p><code>LookPath</code>函数从环境变量中搜索可执行文件，如果参数有斜杠，则只在当前目录搜索，返回完整路径或者相对当前目录的相对路径</p><p><code>LookPath</code>函数原型: <code>func LookPath(file string) (string, error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;fmt&quot;    &quot;os/exec&quot;)func main()&#123;    if file_path,err := exec.LookPath(&quot;ls&quot;);err != nil&#123;        fmt.Println(err)    &#125;else&#123;        fmt.Printf(&quot;exec file path is: %s\n&quot;,file_path)    &#125;    if file_path1,err := exec.LookPath(&quot;ls/a.out&quot;);err != nil&#123;        fmt.Println(err)    &#125;else&#123;        fmt.Printf(&quot;exec file path is: %s\n&quot;,file_path1)    &#125;&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang标准库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang标准库之os</title>
+    <link href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos/"/>
+    <url>/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos/</url>
+    
+    <content type="html"><![CDATA[<h3 id="os简介"><a href="#os简介" class="headerlink" title="os简介"></a>os简介</h3><p>golang内置了跨平台的操作系统相关的模块：<strong>os</strong></p><h3 id="Hostname函数"><a href="#Hostname函数" class="headerlink" title="Hostname函数"></a>Hostname函数</h3><p><code>os.Hostname</code>用于获取主机名</p><p><code>os.Hostname</code>函数原型：<code>func Hostname() (name string, err error)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;os&quot;    &quot;log&quot;)func main()&#123;    hostname,err := os.Hostname()    if err != nil &#123;        log.Fatalln(err)    &#125;else&#123;        log.Printf(&quot;your computer&#39;s hostname is: %s&quot;,hostname)    &#125;&#125;</code></pre><h3 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h3><p>os模块中提供了操作环境变量的函数，包括替换字符串中的环境变量</p><h4 id="Getenv函数"><a href="#Getenv函数" class="headerlink" title="Getenv函数"></a>Getenv函数</h4><p><code>os.Getenv</code>函数获取环境变量的值，如果该环境变量不存在则返回空字符串</p><p><code>os.Getenv</code>函数原型：<code>func Getenv(key string) string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;os&quot;)func main()&#123;    env_path := os.Getenv(&quot;PATH&quot;)    log.Printf(&quot;the value of PATH env is: %s&quot;,env_path)    env_ := os.Getenv(&quot;abc&quot;)    log.Printf(&quot;the value of abc env is: %s&quot;,env_)&#125;</code></pre><h4 id="Setenv函数"><a href="#Setenv函数" class="headerlink" title="Setenv函数"></a>Setenv函数</h4><p><code>os.Setenv</code>函数用于设置环境变量，如果出错返回<code>error</code></p><p><code>os.Setenv</code>函数原型：<code>func Setenv(key, value string) error</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;os&quot;)func main()&#123;    err := os.Setenv(&quot;abc&quot;,&quot;abc&quot;)    if err != nil&#123;        log.Fatalln(err)    &#125;    env_abc := os.Getenv(&quot;abc&quot;)    log.Printf(&quot;the value os abc env is: %s&quot;,env_abc)    err_new := os.Setenv(&quot;abc&quot;,&quot;abc-new&quot;)    if err_new != nil&#123;        log.Fatalln(err_new)    &#125;    env_abc_new := os.Getenv(&quot;abc&quot;)    log.Printf(&quot;the value os abc env is: %s&quot;,env_abc_new)&#125;</code></pre><h4 id="Environ函数"><a href="#Environ函数" class="headerlink" title="Environ函数"></a>Environ函数</h4><p><code>os.Environ</code>函数用于获取所有环境变量，返回字符串切片，其中每一个字符串切片格式为：<code>key=value</code></p><p><code>os.Environ</code>函数原型为：<code>func Environ() []string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;os&quot;    &quot;strings&quot;)func main()&#123;    env_s := os.Environ()    log.Println(env_s)    for _,v := range(env_s)&#123;        env_k := strings.Split(v,&quot;=&quot;)[0]        env_v := strings.Split(v,&quot;=&quot;)[1]        log.Printf(&quot;%s: %s&quot;,env_k,env_v)    &#125;&#125;</code></pre><h4 id="Clearenv函数"><a href="#Clearenv函数" class="headerlink" title="Clearenv函数"></a>Clearenv函数</h4><p><code>os.Clearenv</code>函数删除所有环境变量</p><p><code>os.Clearenv</code>函数原型为：<code>func Clearenv()</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;os&quot;)func main()&#123;    os.Clearenv()    env_s := os.Environ()    log.Printf(&quot;env list is: %v&quot;,env_s)&#125;</code></pre><h4 id="ExpandEnv"><a href="#ExpandEnv" class="headerlink" title="ExpandEnv"></a>ExpandEnv</h4><p><code>os.ExpandEnv</code>将字符串中<code>$&#123;var&#125;</code>或者<code>$var</code>替换为环境变量<code>var</code>的值</p><p><code>os.ExpandEnv</code>函数原型为：<code>func ExpandEnv(s string) string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;os&quot;    &quot;log&quot;)func main()&#123;    p := &quot;path env is: $&#123;PATH&#125;&quot;    g := &quot;goroot env is: $GOROOT&quot;    h := &quot;h env is: $&#123;h&#125;&quot;    p_n := os.ExpandEnv(p)    g_n := os.ExpandEnv(g)    h_n := os.ExpandEnv(h)    log.Println(p_n)    log.Println(g_n)    log.Println(h_n)&#125;</code></pre><h3 id="程序调用者身份"><a href="#程序调用者身份" class="headerlink" title="程序调用者身份"></a>程序调用者身份</h3><p>有时候需要获取运行程序的用户身份，因此<code>os</code>模块也提供了对应的函数</p><h4 id="Getuid函数"><a href="#Getuid函数" class="headerlink" title="Getuid函数"></a>Getuid函数</h4><p><code>os.Getuid</code>函数返回调用程序的<code>用户uid</code></p><p><code>os.Getuid</code>函数原型：<code>func Getuid() int</code></p><h4 id="Geteuid函数"><a href="#Geteuid函数" class="headerlink" title="Geteuid函数"></a>Geteuid函数</h4><p><code>os.Geteuid</code>函数返回调用程序的<code>有效用户uid</code></p><p><code>os.Geteuid</code>函数原型：<code>func Getegid() int</code></p><h4 id="Getgid函数"><a href="#Getgid函数" class="headerlink" title="Getgid函数"></a>Getgid函数</h4><p><code>os.Getgid</code>函数返回调用程序的<code>用户gid</code></p><p><code>os.Getgid</code>函数原型：<code>func Getgid() int</code></p><h4 id="Getegid函数"><a href="#Getegid函数" class="headerlink" title="Getegid函数"></a>Getegid函数</h4><p><code>os.Getegid</code>函数返回调用程序的<code>有效用户gid</code></p><p><code>os.Getegid</code>函数原型：<code>func Getegid() int</code></p><h4 id="Getgroups函数"><a href="#Getgroups函数" class="headerlink" title="Getgroups函数"></a>Getgroups函数</h4><p><code>os.Getgroups</code>函数返回调用程序的<code>用户所属的所有组id</code></p><p><code>os.Getgroups</code>函数原型：<code>func Getgroups() ([]int, error)</code></p><h4 id="样例代码"><a href="#样例代码" class="headerlink" title="样例代码"></a>样例代码</h4><pre><code>package mainimport(    &quot;os&quot;    &quot;log&quot;)func main()&#123;    u_uid := os.Getuid()    u_gid := os.Getgid()    u_euid := os.Geteuid()    u_egid := os.Getegid()    u_groups,_ := os.Getgroups()    log.Printf(&quot;your uid is: %d&quot;,u_uid)    log.Printf(&quot;your euid is: %d&quot;,u_euid)    log.Printf(&quot;your gid is: %d&quot;,u_gid)    log.Printf(&quot;your egid is: %d&quot;,u_egid)    log.Printf(&quot;your groups is: %v&quot;,u_groups)&#125;</code></pre><h3 id="程序id"><a href="#程序id" class="headerlink" title="程序id"></a>程序id</h3><p><code>os</code>模块提供了获取进程的<code>pid</code>以及父进程的<code>pid</code></p><h4 id="Getpid函数"><a href="#Getpid函数" class="headerlink" title="Getpid函数"></a>Getpid函数</h4><p><code>os.Getpid</code>函数返回进程的<code>pid</code></p><p><code>os.Getpid</code>函数原型：<code>func Getpid() int</code></p><h4 id="Getppid函数"><a href="#Getppid函数" class="headerlink" title="Getppid函数"></a>Getppid函数</h4><p><code>os.Getppid</code>函数返回父进程的<code>pid</code></p><p><code>os.Getppid</code>函数原型：<code>func Getppid() int</code></p><h4 id="样例代码-1"><a href="#样例代码-1" class="headerlink" title="样例代码"></a>样例代码</h4><pre><code>package mainimport(    &quot;os&quot;    &quot;log&quot;)func main()&#123;    pid := os.Getpid()    ppid := os.Getppid()    log.Printf(&quot;the process pid is: %d\nthe process&#39;s father pid is: %d&quot;,pid,ppid)&#125;</code></pre><h3 id="Exit函数"><a href="#Exit函数" class="headerlink" title="Exit函数"></a>Exit函数</h3><p><code>os.Exit</code>函数用于以指定状态码退出程序，按照惯例<code>0</code>表示成功，<code>非0</code>表示失败，并且<code>defer</code>不会运行</p><p><code>os.Exit</code>函数原型：<code>func Exit(code int)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;os&quot;)func main()&#123;    os.Exit(1)&#125;</code></pre><h3 id="创建目录"><a href="#创建目录" class="headerlink" title="创建目录"></a>创建目录</h3><p><code>os</code>模块提供两种模式创建目录<code>Mkdir</code>、<code>MkdirAll</code></p><h4 id="Mkdir函数"><a href="#Mkdir函数" class="headerlink" title="Mkdir函数"></a>Mkdir函数</h4><p><code>os.Mkdir</code>函数用于创建目录，但是必须其上级目录已存在，否则报错</p><p><code>os.Mkdir</code>函数原型：<code>func Mkdir(name string, perm FileMode) error</code></p><p>代码样例如下：</p><pre><code>package mainimport(    &quot;os&quot;    &quot;log&quot;)func main()&#123;    if err := os.Mkdir(&quot;/tmp/test_dir&quot;,0666);err != nil &#123;        log.Fatalln(err)    &#125;    if err := os.Mkdir(&quot;/tmp/parent/child&quot;,0666);err != nil&#123;        log.Fatalln(err)    &#125;&#125;</code></pre><h4 id="MkdirAll函数"><a href="#MkdirAll函数" class="headerlink" title="MkdirAll函数"></a>MkdirAll函数</h4><p><code>os.MkdirAll</code>函数用于创建目录，包括其上级目录，如果目录已经存在，则返回nil</p><p><code>os.MkdirAll</code>函数原型：<code>func MkdirAll(path string, perm FileMode) error</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;os&quot;    &quot;log&quot;)func main()&#123;    if err := os.MkdirAll(&quot;/tmp/parent/child&quot;,0777);err != nil&#123;        log.Fatalln(err)    &#125;    if err := os.MkdirAll(&quot;/tmp/parent/child&quot;,0777);err != nil&#123;        log.Fatalln(err)    &#125;else&#123;        log.Println(&quot;dir exists&quot;)    &#125;&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang标准库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>使用firefox获取网站上的字体</title>
+    <link href="/2020/11/15/%E4%BD%BF%E7%94%A8firefox%E8%8E%B7%E5%8F%96%E7%BD%91%E7%AB%99%E4%B8%8A%E7%9A%84%E5%AD%97%E4%BD%93/"/>
+    <url>/2020/11/15/%E4%BD%BF%E7%94%A8firefox%E8%8E%B7%E5%8F%96%E7%BD%91%E7%AB%99%E4%B8%8A%E7%9A%84%E5%AD%97%E4%BD%93/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简言"><a href="#简言" class="headerlink" title="简言"></a>简言</h3><p>网站上使用font-family指定使用的字体,优先级从左到右边依次降低,如何确定自己电脑访问网站时候生效的字体?可以使用firefox扩展插件: <strong>What Font</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>firefox</category>
+      
+      <category>firefox-extension</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>firefox</tag>
+      
+      <tag>firefox-extension</tag>
+      
+      <tag>font</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>使用chrome获取网站上用的字体</title>
+    <link href="/2020/11/15/%E4%BD%BF%E7%94%A8chrome%E8%8E%B7%E5%8F%96%E7%BD%91%E7%AB%99%E4%B8%8A%E7%94%A8%E7%9A%84%E5%AD%97%E4%BD%93/"/>
+    <url>/2020/11/15/%E4%BD%BF%E7%94%A8chrome%E8%8E%B7%E5%8F%96%E7%BD%91%E7%AB%99%E4%B8%8A%E7%94%A8%E7%9A%84%E5%AD%97%E4%BD%93/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简言"><a href="#简言" class="headerlink" title="简言"></a>简言</h3><p>网站上使用font-family指定使用的字体,优先级从左到右边依次降低,如何确定自己电脑访问网站时候生效的字体?可以使用chrome扩展插件: <strong>What Font - find font</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>chrome</category>
+      
+      <category>chrome-extension</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>chrome</tag>
+      
+      <tag>chrome-extension</tag>
+      
+      <tag>字体</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang标准库之strings</title>
+    <link href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bstrings/"/>
+    <url>/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bstrings/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>golang的<code>strings</code>模块提供了大量的处理字符串的函数</p><h3 id="字符串分割"><a href="#字符串分割" class="headerlink" title="字符串分割"></a>字符串分割</h3><h4 id="Split函数"><a href="#Split函数" class="headerlink" title="Split函数"></a>Split函数</h4><p><code>strings.Split</code>函数通过指定分割符号分割字符串返回一个字符串类型切片，如果分割符为空字符，则会将字符串分割为一个个的<code>Unocode</code>字符</p><p><code>strings.Split</code>函数原型：<code>func Split(s, sep string) []string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;)func main()&#123;    s := &quot;this is a test string&quot;    r := strings.Split(s,&quot; &quot;)    log.Println(r)&#125;</code></pre><h4 id="SplitN函数"><a href="#SplitN函数" class="headerlink" title="SplitN函数"></a>SplitN函数</h4><p><code>strings.SplitN</code>函数通过指定分割符分割字符串并且返回一个字符串类型切片，其中参数<code>n</code>用来控制生成的切片个数，如果分割符为空字符，则会将字符串分割为一个个的<code>Unocode</code>字符</p><p><code>strings.SplitN</code>函数原型：<code>func SplitN(s, sep string, n int) []string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;)func main()&#123;    s := &quot;this/is/a/test/string&quot;    r := strings.SplitN(s,&quot;/&quot;,2)    log.Println(r)&#125;</code></pre><h4 id="SplitAfter函数"><a href="#SplitAfter函数" class="headerlink" title="SplitAfter函数"></a>SplitAfter函数</h4><p><code>strings.SplitAfter</code>函数通过指定分割符分割字符串并且返回一个字符串类型切片，其与<code>strings.Split</code>的区别是返回结果中会带上分割符</p><p><code>strings.SplitAfter</code>函数原型：<code>func SplitAfter(s, sep string) []string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;)func main()&#123;    s := &quot;this/is/a/test/string&quot;    r := strings.SplitAfter(s,&quot;/&quot;)    log.Println(r)&#125;</code></pre><h4 id="SplitAfterN"><a href="#SplitAfterN" class="headerlink" title="SplitAfterN"></a>SplitAfterN</h4><p><code>strings.SplitAfter</code>函数通过指定分割符分割字符串并且返回一个字符串切片，其与<code>strings.SplitAfter</code>区别是返回结果中会带上分割符</p><p><code>strings.SplitAfterN</code>函数原型：<code>func SplitAfterN(s, sep string, n int) []string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;)func main()&#123;    s := &quot;this/is/a/test/string&quot;    r := strings.SplitAfterN(s,&quot;/&quot;,2)     log.Println(r)&#125;</code></pre><h4 id="Fields函数"><a href="#Fields函数" class="headerlink" title="Fields函数"></a>Fields函数</h4><p><code>strings.Fields</code>函数以空白分割字符串串并且返回一个字符串类型切片，其中空白用<code>unicode.IsSpace</code>来确定（可以是一个到多个连续的空白字符）</p><p><code>strings.Fields</code>函数原型：<code>func Fields(s string) []string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;)func main()&#123;    s := &quot;this    is a       test           string&quot;    r := strings.Fields(s)    log.Println(r)&#125;</code></pre><h4 id="FieldsFunc函数"><a href="#FieldsFunc函数" class="headerlink" title="FieldsFunc函数"></a>FieldsFunc函数</h4><p><code>strings.FieldsFunc</code>函数通过指定函数来确定分割符，然后通过此分割符切割字符串并且返回一个字符串类型切片</p><h3 id="字符串修剪"><a href="#字符串修剪" class="headerlink" title="字符串修剪"></a>字符串修剪</h3><h4 id="Trim"><a href="#Trim" class="headerlink" title="Trim"></a>Trim</h4><p><code>strings.Trim</code>函数用来将字符串首尾所有在参数<code>cutset</code>中的每一个字符去掉，返回一个新字符串</p><p><code>strings.Trim</code>函数原型：<code>func Trim(s string, cutset string) string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;)func main()&#123;    s := &quot;   @#! this is a test  !#@&quot;    r := strings.Trim(s,&quot; !@#&quot;)    log.Println(r)&#125;</code></pre><h4 id="TrimLeft函数"><a href="#TrimLeft函数" class="headerlink" title="TrimLeft函数"></a>TrimLeft函数</h4><p><code>strings.TrimLeft</code>函数用来将字符串首部所有在参数<code>cutset</code>字符串中的每一个字符去掉返回一个新的字符串</p><p><code>strings.TrimLeft</code>函数原型：<code>func TrimLeft(s string, cutset string) string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;)func main()&#123;    s := &quot;    ! @ # this is a test string     # @ !@#&quot;    r := strings.TrimLeft(s,&quot; !@#&quot;)    log.Println(r)&#125;</code></pre><h4 id="TrimRight函数"><a href="#TrimRight函数" class="headerlink" title="TrimRight函数"></a>TrimRight函数</h4><p><code>strings.TrimRight</code>函数用来将字符串尾部所有在参数<code>cutset</code>字符串中的每一个字符去掉返回一个新的字符串</p><p><code>strings.TrimRight</code>函数原型：<code>func TrimRight(s string, cutset string) string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;)func main()&#123;    s := &quot;    ! @ # this is a test string     # @ !@#&quot;    r := strings.TrimRight(s,&quot; !@#&quot;)    log.Println(r)&#125;</code></pre><h4 id="TrimPrefix函数"><a href="#TrimPrefix函数" class="headerlink" title="TrimPrefix函数"></a>TrimPrefix函数</h4><p><code>strings.TrimPrefix</code>函数用来去掉一个字符串中的前缀字符串然后返回一个新字符串</p><p><code>strings.TrimPrefix</code>函数原型：<code>func TrimPrefix(s, prefix string) string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;)func main()&#123;    s := &quot;prefix string this is a test string prefix string&quot;    r := strings.TrimPrefix(s,&quot;prefix string&quot;)    log.Println(r)&#125;</code></pre><h4 id="TrimSuffix函数"><a href="#TrimSuffix函数" class="headerlink" title="TrimSuffix函数"></a>TrimSuffix函数</h4><p><code>strings.TrimSuffix</code>函数用来去掉一个字符串中的后缀字符串然后返回一个新的字符串</p><p><code>strings.TrimSuffix</code>函数原型：<code>func TrimSuffix(s, suffix string) string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;)func main()&#123;    s := &quot;suffix string this is a test string suffix string&quot;    r := strings.TrimSuffix(s,&quot;suffix string&quot;)    log.Println(r)&#125;</code></pre><h4 id="TrimSpace函数"><a href="#TrimSpace函数" class="headerlink" title="TrimSpace函数"></a>TrimSpace函数</h4><p><code>strings.TrimSpace</code>函数去掉字符串首尾所有的空白返回一个新的字符串</p><p><code>strings.TrimSpace</code>函数原型：<code>func TrimSpace(s string) string</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;log&quot;    &quot;strings&quot;)func main()&#123;    s := &quot;  this is a test space      &quot;    r := strings.TrimSpace(s)    log.Println(r)&#125;</code></pre><h4 id="TrimFunc"><a href="#TrimFunc" class="headerlink" title="TrimFunc"></a>TrimFunc</h4><p><code>strings.TrimFunc</code>函数将字符串首尾部所有满足函数的<code>unicode</code>字符去掉</p><p><code>strings.TrimFunc</code>函数原型：<code>func TrimFunc(s string, f func(rune) bool) string</code></p><h4 id="TrimLeftFunc"><a href="#TrimLeftFunc" class="headerlink" title="TrimLeftFunc"></a>TrimLeftFunc</h4><p><code>strings.TrimLeftFunc</code>函数将字符串首部所有满足函数的<code>unicode</code>字符去掉</p><p><code>strings.TrimLeftFunc</code>函数原型：<code>func TrimLeftFunc(s string, f func(rune) bool) string</code></p><h4 id="TrimRightFunc"><a href="#TrimRightFunc" class="headerlink" title="TrimRightFunc"></a>TrimRightFunc</h4><p><code>strings.TrimRight</code>函数将字符串尾部所有满足函数的<code>unicode</code>字符去掉</p><p><code>strings.TrimRightFunc</code>函数原型：<code>func TrimRightFunc(s string, f func(rune) bool) string</code></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang标准库</tag>
+      
+      <tag>golang字符串</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang命令行之cobra</title>
+    <link href="/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bcobra/"/>
+    <url>/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bcobra/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang命令行</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang命令行</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang命令行之cli</title>
+    <link href="/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bcli/"/>
+    <url>/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bcli/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang命令行</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang命令行</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang命令行之pflag</title>
+    <link href="/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bpflag/"/>
+    <url>/2020/11/14/golang%E5%91%BD%E4%BB%A4%E8%A1%8C%E4%B9%8Bpflag/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang命令行</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang命令行</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang日志之logrus</title>
+    <link href="/2020/11/14/golang%E6%97%A5%E5%BF%97%E4%B9%8Blogrus/"/>
+    <url>/2020/11/14/golang%E6%97%A5%E5%BF%97%E4%B9%8Blogrus/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang日志</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang日志</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang标准库之log</title>
+    <link href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Blog/"/>
+    <url>/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Blog/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>日志记录在日常开发中可谓必不可少的，golang内置的<code>log</code>模块可以提供简单的日志记录</p><h3 id="log模块的日志flag"><a href="#log模块的日志flag" class="headerlink" title="log模块的日志flag"></a>log模块的日志flag</h3><p><code>log</code>模块通过<code>flag</code>标识位设置日志输出的字段，目前只支持以下几种：<code>Ldata</code>、<code>Ltime</code>、<code>Lmicroseconds</code>、<code>Llongfile</code>、<code>Lshortfile</code></p><pre><code>const (    // 字位共同控制输出日志信息的细节。不能控制输出的顺序和格式。    // 在所有项目后会有一个冒号：2009/01/23 01:23:23.123123 /a/b/c/d.go:23: message    Ldate         = 1 &lt;&lt; iota     // 日期：2009/01/23    Ltime                         // 时间：01:23:23    Lmicroseconds                 // 微秒分辨率：01:23:23.123123（用于增强Ltime位）    Llongfile                     // 文件全路径名+行号： /a/b/c/d.go:23    Lshortfile                    // 文件无路径名+行号：d.go:23（会覆盖掉Llongfile）    LstdFlags     = Ldate | Ltime // 标准logger的初始值)</code></pre><h3 id="Logger结构体"><a href="#Logger结构体" class="headerlink" title="Logger结构体"></a>Logger结构体</h3><p><code>log.Logger</code>结构体是一个日志记录的对象，一般配合<code>log.New()</code>函数生成<code>log.Logger</code>对象</p><p><code>log.Logger</code>结构体原型如下：</p><pre><code>type Logger struct &#123;    // contains filtered or unexported fields&#125;</code></pre><h3 id="New方法"><a href="#New方法" class="headerlink" title="New方法"></a>New方法</h3><p><code>log.New</code>方法用来生成<code>log.Logger</code>对象，其<code>out io.Writer</code>表示输出到实现了<code>io.Writer</code>的输出流上，<code>prefix</code>表示在每条日志前自动添加的前缀，<code>flag</code>是上述<code>Ldata</code>之类的用来控制日志输出字段的标志</p><p><code>log.New</code>方法原型为：<code>func New(out io.Writer, prefix string, flag int) *Logger</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;os&quot;    &quot;log&quot;)func main()&#123;    logger := log.New(os.Stdout,&quot;test prefix&quot;,log.Ldate | log.Ltime | log.Llongfile)    logger.Println(&quot;test log&quot;)&#125;</code></pre><h3 id="SetFlags方法"><a href="#SetFlags方法" class="headerlink" title="SetFlags方法"></a>SetFlags方法</h3><p><code>Logger.SetFlags</code>方法用来设置<code>flag</code>日志输出字段的</p><p><code>Logger.SetFlags</code>方法原型：<code>func (l *Logger) SetFlags(flag int)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;os&quot;    &quot;log&quot;)func main()&#123;    logger := log.New(os.Stdout,&quot;&quot;,log.Ldate)    logger.Println(&quot;test log&quot;)    logger.SetFlags(log.Ldate | log.Lmicroseconds)    logger.Println(&quot;test log&quot;)&#125;</code></pre><h3 id="SetPrefix"><a href="#SetPrefix" class="headerlink" title="SetPrefix"></a>SetPrefix</h3><p><code>Logger.SetPrefix</code>方法用来设置<code>prefix</code>日志前缀的</p><p><code>Logger.SetPrefix</code>方法原型为：<code>func (l *Logger) SetPrefix(prefix string)</code></p><p>样例代码如下：</p><pre><code>package mainimport(    &quot;os&quot;    &quot;log&quot;)func main()&#123;    logger := log.New(os.Stdout,&quot;&quot;,log.Ldate)    logger.Println(&quot;test log&quot;)    logger.SetPrefix(&quot;test prefix&quot;)    logger.Println(&quot;test log&quot;)&#125;</code></pre><h3 id="Logger-Println方法"><a href="#Logger-Println方法" class="headerlink" title="Logger.Println方法"></a>Logger.Println方法</h3><p><code>Logger.Println</code>方法用来输出日志，并且自动在行末添加换行符,类似的还有<code>Logger.Print</code>、<code>Logger.Printf</code>、<code>Logger.Fatalln</code>、<code>Logger.Fatal</code>、<code>Logger.Fatalf</code>、<code>Logger.Panicln</code>、<code>Logger.Panic</code>、<code>Logger.Panicf</code>，使用方法参考<code>fmt</code>模块，其中<code>Fatal</code>类型日志会在记录日志后调用<code>os.Exit(1)</code>推出程序，<code>Panic</code>类型日志会在记录日志后<strong>panic</strong></p><p><code>Logger.Println</code>方法原型为：<code>func (l *Logger) Println(v ...interface&#123;&#125;)</code></p><h3 id="通过默认Logger使用log"><a href="#通过默认Logger使用log" class="headerlink" title="通过默认Logger使用log"></a>通过默认Logger使用log</h3><p>默认<code>log</code>就已经有一个标准的<code>Logger</code>、因此可以直接使用<code>log.SetPrefix</code>、<code>log.SetOutput</code>、<code>log.SetFlags</code>、<code>log.Println</code>、<code>log.Print</code>、<code>log.Printf</code>、<code>log.Fatal</code>、<code>log.Fatalln</code>、<code>log.Fatalf</code>、<code>log.Panic</code>、<code>log.Panicln</code>、<code>log.Panicf</code></p><p>样例代码如下（输出到标准输出）：</p><pre><code>package mainimport(    &quot;log&quot;)func main()&#123;    log.Println(&quot;test log&quot;)    log.SetPrefix(&quot;test prefix&quot;)    log.Println(&quot;test log&quot;)    log.SetFlags(log.Ldate | log.Lmicroseconds | log.Llongfile)    log.Println(&quot;test log&quot;)&#125;</code></pre><p>样例代码2如下（输出到文件）：</p><pre><code>package mainimport(    &quot;os&quot;    &quot;log&quot;)func main()&#123;    if f,err := os.OpenFile(&quot;test.log&quot;,os.O_CREATE | os.O_TRUNC | os.O_RDWR,0666);err != nil&#123;        log.Fatalln(&quot;open file test.log failed&quot;)    &#125;else&#123;        log.SetOutput(f)        log.Println(&quot;test log&quot;)    &#125;&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang日志</tag>
+      
+      <tag>golang标准库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>golang标准库之flag</title>
+    <link href="/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bflag/"/>
+    <url>/2020/11/14/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bflag/</url>
+    
+    <content type="html"><![CDATA[<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>golang标准库<a href="https://studygolang.com/pkgdoc">flag</a>用于解析命令行参数,虽然现在更多使用的是flag的换代产品<a href="https://github.com/ogier/pflag">pflag</a>,但是由于pflag兼容flag,因此了解flag是十分有必要的</p><h3 id="参数类型"><a href="#参数类型" class="headerlink" title="参数类型"></a>参数类型</h3><p>flag支持的参数类型相对于pflag比较少</p><h3 id="flag-Type"><a href="#flag-Type" class="headerlink" title="flag.Type()"></a>flag.Type()</h3><pre><code>package mainimport(    &quot;flag&quot;)func main()&#123;    var name = flag.String(&quot;name&quot;,&quot;&quot;,&quot;user name&quot;)    flag.Parse()&#125;</code></pre><h3 id="flag-TypeVar"><a href="#flag-TypeVar" class="headerlink" title="flag.TypeVar()"></a>flag.TypeVar()</h3>]]></content>
+    
+    
+    <categories>
+      
+      <category>golang</category>
+      
+      <category>golang标准库</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>golang</tag>
+      
+      <tag>golang命令行</tag>
+      
+      <tag>golang标准库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>jenkins集成kubernetes实现动态jenkins slave</title>
+    <link href="/2020/11/14/jenkins%E9%9B%86%E6%88%90kubernetes%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81jenkins-slave/"/>
+    <url>/2020/11/14/jenkins%E9%9B%86%E6%88%90kubernetes%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81jenkins-slave/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>jenkins</category>
+      
+      <category>jenkins-slave</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>jenkins</tag>
+      
+      <tag>kubernetes</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>

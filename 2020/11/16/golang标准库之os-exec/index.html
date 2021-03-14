@@ -1,0 +1,668 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="iluoy">
+  <meta name="keywords" content="">
+  <title>golang标准库之os/exec - iluoy</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.1.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"iluoy.github.io","root":"/","version":"1.8.5","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"copy_btn":true,"image_zoom":{"enable":true},"lazyload":{"enable":true,"onlypost":false},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>iluoy</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/books/">
+                <i class="iconfont icon-book"></i>
+                书籍
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/movies/">
+                <i class="iconfont icon-youtube-fill"></i>
+                电影
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/musics/">
+                <i class="iconfont icon-music"></i>
+                音乐
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" href="javascript:">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="golang标准库之os/exec">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-11-16 19:36" pubdate>
+        2020年11月16日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      19
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">golang标准库之os/exec</h1>
+            
+            <div class="markdown-body">
+              <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>很多时候我们都通过直接调用外部系统命令以减少工作量,golang已内置了<code>os/exec</code>用来执行外部命令,<code>os/exec</code>模块主要通过<code>Cmd结构体</code>来实现执行外部命令,具体可见：<a target="_blank" rel="noopener" href="https://studygolang.com/pkgdoc">os/exec</a></p>
+<h3 id="Cmd结构体"><a href="#Cmd结构体" class="headerlink" title="Cmd结构体"></a>Cmd结构体</h3><p><code>Cmd</code>表示一个准备执行或者正在执行中的外部命令,其中<code>Cmd结构体</code>中使用最多的字段有：<code>Path</code>、<code>Args</code>、<code>Dir</code>、<code>Stdio</code>、<code>Stdout</code>、<code>Stderr</code>其结构体原型如下：</p>
+<pre><code>type Cmd struct &#123;
+    // Path是将要执行的命令的路径。
+    //
+    // 该字段不能为空，如为相对路径会相对于Dir字段。
+    Path string
+    // Args保管命令的参数，包括命令名作为第一个参数；如果为空切片或者nil，相当于无参数命令。
+    //
+    // 典型用法下，Path和Args都应被Command函数设定。
+    Args []string
+    // Env指定进程的环境，如为nil，则是在当前进程的环境下执行。
+    Env []string
+    // Dir指定命令的工作目录。如为空字符串，会在调用者的进程当前目录下执行。
+    Dir string
+    // Stdin指定进程的标准输入，如为nil，进程会从空设备读取（os.DevNull）
+    Stdin io.Reader
+    // Stdout和Stderr指定进程的标准输出和标准错误输出。
+    //
+    // 如果任一个为nil，Run方法会将对应的文件描述符关联到空设备（os.DevNull）
+    //
+    // 如果两个字段相同，同一时间最多有一个线程可以写入。
+    Stdout io.Writer
+    Stderr io.Writer
+    // ExtraFiles指定额外被新进程继承的已打开文件流，不包括标准输入、标准输出、标准错误输出。
+    // 如果本字段非nil，entry i会变成文件描述符3+i。
+    //
+    // BUG: 在OS X 10.6系统中，子进程可能会继承不期望的文件描述符。
+    // http://golang.org/issue/2603
+    ExtraFiles []*os.File
+    // SysProcAttr保管可选的、各操作系统特定的sys执行属性。
+    // Run方法会将它作为os.ProcAttr的Sys字段传递给os.StartProcess函数。
+    SysProcAttr *syscall.SysProcAttr
+    // Process是底层的，只执行一次的进程。
+    Process *os.Process
+    // ProcessState包含一个已经存在的进程的信息，只有在调用Wait或Run后才可用。
+    ProcessState *os.ProcessState
+    // 内含隐藏或非导出字段
+&#125;
+</code></pre>
+<h3 id="Command函数"><a href="#Command函数" class="headerlink" title="Command函数"></a>Command函数</h3><p>一般而言都是通过<code>os.Command</code>函数来实现Cmd初始化,<code>os.Command</code>仅仅设定了<code>Cmd</code>的<code>Path</code>和<code>Args</code>字段,因此在使用<code>os.Command</code>初始化<code>Cmd</code>后使用其返回值来配置<code>Stdin</code>、<code>Stdout</code>、<code>Stderr</code>等属性</p>
+<p>Command函数原型为：<code>func Command(name string, arg ...string) *Cmd</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;os&quot;
+    &quot;os/exec&quot;
+    &quot;fmt&quot;
+)
+
+func main()&#123;
+    // 执行ls -al命令
+    cmd := exec.Command(&quot;ls&quot;,&quot;-al&quot;)
+
+    // 设置执行ls -al命令时候标准输入、标准输出、标准错误输出输出,os.Stdin、os.Stdout、os.Stderr是os模块的变量
+    cmd.Stdin = os.Stdin
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
+
+    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Wait
+    if err := cmd.Run();err != nil&#123;
+        fmt.Println(err)
+    &#125;
+&#125;
+</code></pre>
+<h3 id="Run方法"><a href="#Run方法" class="headerlink" title="Run方法"></a>Run方法</h3><p>如上述，<code>Cmd.run</code>方法执行外部命令并且会阻塞直至外部命令执行完成</p>
+<p><code>Cmd.Run</code>方法原型: <code>func (c *Cmd) Run() error</code></p>
+<p>样例代码如下:</p>
+<pre><code>package main
+
+import(
+    &quot;os&quot;
+    &quot;os/exec&quot;
+    &quot;fmt&quot;
+)
+
+func main()&#123;
+    // 执行sleep命令,睡眠10s
+    cmd := exec.Command(&quot;sleep&quot;,&quot;10&quot;)
+
+    // 设置执行sleep 10命令时候标准输入、标准输出、标准错误输出输出,os.Stdin、os.Stdout、os.Stderr是os模块的变量
+    cmd.Stdin = os.Stdin
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
+
+    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Wait
+    err := cmd.Run()
+
+    fmt.Println(err)
+
+    fmt.Println(&quot;command exec finished&quot;)
+&#125;
+</code></pre>
+<h3 id="Start方法"><a href="#Start方法" class="headerlink" title="Start方法"></a>Start方法</h3><p>如上述，<code>Cmd.Start</code>方法执行外部命令并且不会阻塞,通常<code>Cmd.Start</code>配合<code>Cmd.Wait</code>、<code>Cmd.StdinPipe</code>、<code>Cmd.StdoutPipe</code>、<code>Cmd.StderrPipe</code>一起使用</p>
+<p><code>Cmd.Run</code>方法原型: <code>func (c *Cmd) Start() error</code></p>
+<p>样例代码如下:</p>
+<pre><code>package main
+
+import(
+    &quot;os/exec&quot;
+    &quot;fmt&quot;
+)
+
+func main()&#123;
+    // 执行sleep命令,睡眠10s
+    cmd := exec.Command(&quot;sleep&quot;,&quot;10&quot;)
+
+    // Cmd.Run用来运行命令,注意此命令会阻塞程序,如果想要不阻塞则使用Cmd.Start和Cmd.Wait
+    err := cmd.Start()
+    fmt.Println(&quot;command exec not finished&quot;)
+    cmd.Wait()
+    fmt.Println(&quot;command exec finished&quot;)
+    fmt.Println(err)
+&#125;
+</code></pre>
+<h3 id="Wait方法"><a href="#Wait方法" class="headerlink" title="Wait方法"></a>Wait方法</h3><p><code>Cmd.Wait</code>会阻塞直到命令执行完毕，<code>Cmd.Wait</code>的命令必须是被<code>Cmd.Start</code>方法开始执行的</p>
+<p><code>Cmd.Wait</code>方法原型：<code>func (c *Cmd) Wait() error</code></p>
+<p>样例代码见上</p>
+<h3 id="Output方法"><a href="#Output方法" class="headerlink" title="Output方法"></a>Output方法</h3><p><code>Cmd.Output</code>方法执行外部命令并且返回标准输出的切片</p>
+<p><code>Cmd.Output</code>方法原型：<code>func (c *Cmd) Output() ([]byte, error)</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;os/exec&quot;
+    &quot;fmt&quot;
+)
+
+func main()&#123;
+    cmd := exec.Command(&quot;ls&quot;,&quot;-a&quot;,&quot;-l&quot;)
+    if b,err := cmd.Output(); err != nil&#123;
+        fmt.Println(err)
+    &#125;else&#123;
+        fmt.Printf(&quot;output is %s\n&quot;,b)
+    &#125;
+&#125;
+</code></pre>
+<h3 id="CombinedOutput方法"><a href="#CombinedOutput方法" class="headerlink" title="CombinedOutput方法"></a>CombinedOutput方法</h3><p><code>Cmd.CombinedOutput</code>方法执行外部命令并且返回标准输出和标准错误输出合并的切片</p>
+<p><code>Cmd.CombinedOutput</code>方法原型：<code>func (c *Cmd) CombinedOutput() ([]byte, error)</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;fmt&quot;
+    &quot;os/exec&quot;
+)
+
+func main()&#123;
+    cmd := exec.Command(&quot;ls&quot;,&quot;-al&quot;)
+
+    if b,err := cmd.CombinedOutput();err != nil&#123;
+        fmt.Println(err)
+    &#125;else&#123;
+        fmt.Printf(&quot;output is %s\n&quot;,b)
+    &#125;
+&#125;
+</code></pre>
+<h3 id="LookPath函数"><a href="#LookPath函数" class="headerlink" title="LookPath函数"></a>LookPath函数</h3><p><code>LookPath</code>函数从环境变量中搜索可执行文件，如果参数有斜杠，则只在当前目录搜索，返回完整路径或者相对当前目录的相对路径</p>
+<p><code>LookPath</code>函数原型: <code>func LookPath(file string) (string, error)</code></p>
+<p>样例代码如下：</p>
+<pre><code>package main
+
+import(
+    &quot;fmt&quot;
+    &quot;os/exec&quot;
+)
+
+func main()&#123;
+    if file_path,err := exec.LookPath(&quot;ls&quot;);err != nil&#123;
+        fmt.Println(err)
+    &#125;else&#123;
+        fmt.Printf(&quot;exec file path is: %s\n&quot;,file_path)
+    &#125;
+
+    if file_path1,err := exec.LookPath(&quot;ls/a.out&quot;);err != nil&#123;
+        fmt.Println(err)
+    &#125;else&#123;
+        fmt.Printf(&quot;exec file path is: %s\n&quot;,file_path1)
+    &#125;
+&#125;
+</code></pre>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/golang/">golang</a>
+                    
+                      <a class="hover-with-bg" href="/categories/golang/golang%E6%A0%87%E5%87%86%E5%BA%93/">golang标准库</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/golang/">golang</a>
+                    
+                      <a class="hover-with-bg" href="/tags/golang%E6%A0%87%E5%87%86%E5%BA%93/">golang标准库</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos-user/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">golang标准库之os/user</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/11/16/golang%E6%A0%87%E5%87%86%E5%BA%93%E4%B9%8Bos/">
+                        <span class="hidden-mobile">golang标准库之os</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+<!-- SCRIPTS -->
+
+  <script  src="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":200})
+    NProgress.start()
+    document.addEventListener('DOMContentLoaded', function() {
+      window.NProgress && window.NProgress.inc();
+    })
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.5.3/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.12.0/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      var inputArea = document.querySelector("#local-search-input");
+      inputArea.onclick = function () {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+        this.onclick = null
+      }
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+
+</body>
+</html>

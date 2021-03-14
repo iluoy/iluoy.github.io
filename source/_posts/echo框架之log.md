@@ -7,3 +7,5 @@ categories: [golang,echo框架,echo log]
 
 ### 简介
 `echo`框架自带了日志处理机制，其由作者的[labstack log](https://github.com/labstack/gommon)模块具体实现。
+
+测试
